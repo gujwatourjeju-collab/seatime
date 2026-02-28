@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>물때 — 바다 조석 정보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sea: #0a4f6e;
+    --sea-light: #1a7fa0;
+    --foam: #e8f4f8;
+    --sand: #f5ede0;
+    --accent: #00c4a7;
+    --danger: #ff6b6b;
+    --text: #0d1f2d;
+    --muted: #6b8fa3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #0d1f2d;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 배경 파도 애니메이션 */
+  .bg-ocean {
+    position: fixed; inset: 0; z-index: 0;
+    background: linear-gradient(180deg, #0d1f2d 0%, #0a3347 40%, #0a4f6e 100%);
+    overflow: hidden;
+  }
+  .bg-wave {
+    position: absolute; bottom: 0; left: -50%; width: 200%; height: 200px;
+    background: rgba(0, 196, 167, 0.05);
+    border-radius: 50%;
+    animation: bgWave 8s ease-in-out infinite;
+  }
+  .bg-wave:nth-child(2) {
+    height: 150px; bottom: 20px;
+    background: rgba(26, 127, 160, 0.06);
+    animation-duration: 11s; animation-delay: -3s;
+  }
+  .bg-wave:nth-child(3) {
+    height: 120px; bottom: 40px;
+    background: rgba(0, 196, 167, 0.04);
+    animation-duration: 14s; animation-delay: -6s;
+  }
+  @keyframes bgWave {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(-5%) scaleY(1.1); }
+  }
+
+  /* 메인 레이아웃 */
+  .app {
+    position: relative; z-index: 1;
+    max-width: 480px; margin: 0 auto;
+    padding: 0 0 80px;
+    min-height: 100vh;
+  }
+
+  /* 헤더 */
+  .header {
+    padding: 52px 24px 20px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .header-title {
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 3px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .header-sub {
+    font-size: 1.6rem; font-weight: 900;
+    line-height: 1.1; letter-spacing: -1px;
+  }
+  .header-time {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+  .clock {
+    font-size: 1.5rem; font-weight: 500;
+    color: var(--accent); letter-spacing: 1px;
+  }
+  .date-str {
+    font-size: 0.7rem; color: var(--muted); margin-top: 2px;
+  }
+
+  /* 위치 선택 */
+  .location-section {
+    padding: 0 24px 20px;
+  }
+  .region-tabs {
+    display: flex; gap: 8px; margin-bottom: 14px;
+  }
+  .region-tab {
+    padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5);
+    font-size: 0.75rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; font-family: 'Noto Sans KR', sans-serif;
+  }
+  .region-tab.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #0d1f2d;
+  }
+  .station-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .station-btn {
+    padding: 12px 8px; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    position: relative; overflow: hidden;
+  }
+  .station-btn.active {
+    background: rgba(0, 196, 167, 0.15);
+    border-color: var(--accent); color: var(--accent);
+  }
+  .station-btn:active { transform: scale(0.97); }
+  .station-emoji { font-size: 1.1rem; display: block; margin-bottom: 3px; }
+
+  /* 메인 카드 */
+  .main-card {
+    margin: 0 16px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px; overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+
+  /* 파도 수위 시각화 */
+  .wave-viz {
+    position: relative; height: 180px; overflow: hidden;
+    background: linear-gradient(180deg, transparent, rgba(0,196,167,0.05));
+  }
+  .wave-fill {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, rgba(0,196,167,0.3), rgba(0,196,167,0.6));
+    transition: height 2s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 0%;
+  }
+  .wave-fill::before {
+    content: ""; position: absolute; top: -20px; left: -50%; width: 200%; height: 40px;
+    background: rgba(0, 196, 167, 0.4);
+    border-radius: 50%;
+    animation: waveTop 4s ease-in-out infinite;
+  }
+  @keyframes waveTop {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-10%); }
+  }
+
+  .wave-info {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .tide-name-badge {
+    background: var(--accent); color: #0d1f2d;
+    font-size: 0.7rem; font-weight: 900;
+    padding: 3px 12px; border-radius: 20px;
+    margin-bottom: 8px; letter-spacing: 1px;
+  }
+  .level-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 3.8rem; font-weight: 500;
+    line-height: 1; letter-spacing: -2px;
+    text-shadow: 0 2px 20px rgba(0,196,167,0.3);
+  }
+  .level-unit {
+    font-size: 1.2rem; opacity: 0.6; margin-left: 4px;
+  }
+  .tide-status {
+    margin-top: 6px; font-size: 0.8rem; font-weight: 700;
+    color: var(--accent); display: flex; align-items: center; gap: 4px;
+  }
+  .arrow-icon { font-size: 1.2rem; }
+
+  /* 물때 리스트 */
+  .tide-list {
+    padding: 16px;
+  }
+  .tide-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-radius: 16px; margin-bottom: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.2s;
+  }
+  .tide-item.current {
+    background: rgba(0,196,167,0.1);
+    border-color: rgba(0,196,167,0.3);
+  }
+  .tide-item.dim {
+    opacity: 0.45;
+  }
+  .tide-item-left { display: flex; align-items: center; gap: 12px; }
+  .tide-icon { font-size: 1rem; width: 20px; text-align: center; }
+  .tide-level-text {
+    font-size: 1rem; font-weight: 800;
+    font-family: 'DM Mono', monospace; letter-spacing: -0.5px;
+  }
+  .tide-label {
+    font-size: 0.65rem; color: var(--muted); margin-top: 1px; font-weight: 600;
+  }
+  .tide-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.7);
+  }
+  .day-badge {
+    font-size: 0.6rem; background: rgba(255,255,255,0.1);
+    color: var(--muted); padding: 1px 6px; border-radius: 6px;
+    font-weight: 700; margin-left: 6px; vertical-align: middle;
+  }
+
+  /* 날씨 카드 */
+  .weather-card {
+    margin: 0 16px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .weather-icon { font-size: 2rem; }
+  .weather-info { flex: 1; }
+  .weather-main { font-size: 0.85rem; font-weight: 800; }
+  .weather-detail { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+  .wind-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem; font-weight: 500; color: var(--accent);
+    text-align: right;
+  }
+  .wind-label { font-size: 0.65rem; color: var(--muted); text-align: right; }
+
+  /* 로딩 */
+  .loading {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 200px; gap: 16px; color: var(--muted);
+  }
+  .loading-wave {
+    display: flex; gap: 6px;
+  }
+  .loading-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); opacity: 0.3;
+    animation: loadPulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes loadPulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+  .loading-text { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+
+  /* 에러 */
+  .error-msg {
+    text-align: center; padding: 40px 24px;
+    color: var(--danger); font-size: 0.85rem; font-weight: 700;
+  }
+
+  /* 새로고침 버튼 */
+  .refresh-btn {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--accent); border: none;
+    color: #0d1f2d; font-size: 1.3rem; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,196,167,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; z-index: 100;
+  }
+  .refresh-btn:active { transform: scale(0.92); }
+  .refresh-btn.spinning { animation: spin 0.8s linear; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* 섹션 타이틀 */
+  .section-title {
+    padding: 0 24px 10px;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 2px; color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* 업데이트 시간 */
+  .update-time {
+    text-align: center; font-size: 0.65rem;
+    color: var(--muted); padding: 8px; margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-ocean">
+  <div class="bg-wave"></div>
+  <div class="bg-wave"></div>
+  <div class="bg-wave"></div>
+</div>
+
+<div class="app">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div>
+      <div class="header-title">🌊 실시간 물때</div>
+      <div class="header-sub">바다 조석<br>정보</div>
+    </div>
+    <div class="header-time">
+      <div class="clock" id="clock">--:--</div>
+      <div class="date-str" id="date-str">--</div>
+    </div>
+  </div>
+
+  <!-- 지역 탭 -->
+  <div class="location-section">
+    <div class="region-tabs">
+      <button class="region-tab active" onclick="switchRegion('jeju')">🏝 제주</button>
+      <button class="region-tab" onclick="switchRegion('west')">🌊 서해</button>
+    </div>
+    <div class="station-grid" id="station-grid"></div>
+  </div>
+
+  <!-- 날씨 -->
+  <div class="weather-card" id="weather-card" style="display:none;">
+    <div class="weather-icon" id="w-icon">🌤</div>
+    <div class="weather-info">
+      <div class="weather-main" id="w-main">--</div>
+      <div class="weather-detail" id="w-detail">바다 날씨 로드 중</div>
+    </div>
+    <div>
+      <div class="wind-display" id="w-wind">--</div>
+      <div class="wind-label">풍속</div>
+    </div>
+  </div>
+
+  <!-- 메인 카드 -->
+  <div class="section-title" id="station-label">관측소 선택</div>
+  <div class="main-card">
+    <div class="wave-viz">
+      <div class="wave-fill" id="wave-fill"></div>
+      <div class="wave-info">
+        <div class="tide-name-badge" id="tide-name" style="display:none;"></div>
+        <div class="level-display" id="level-display">
+          <span id="level-num">--</span><span class="level-unit">cm</span>
+        </div>
+        <div class="tide-status" id="tide-status"></div>
+      </div>
+    </div>
+    <div class="tide-list" id="tide-list">
+      <div class="loading">
+        <div class="loading-wave">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+        <div class="loading-text">관측소를 선택해주세요</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="update-time" id="update-time"></div>
+
+</div>
+
+<button class="refresh-btn" id="refresh-btn" onclick="refresh()" title="새로고침">↻</button>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby3S8MfzcX6pEUDpaOsC1ucQrP6go65KPedXvgNibHTUKpeJVkwSTpE8EudlBxZpn2lBA/exec';
+
+const REGIONS = {
+  jeju: [
+    { name: "제주",   emoji: "🌊", lat: 33.5275, lng: 126.543 },
+    { name: "성산포", emoji: "🌅", lat: 33.4747, lng: 126.927 },
+    { name: "서귀포", emoji: "🐬", lat: 33.2468, lng: 126.561 },
+    { name: "모슬포", emoji: "⚓", lat: 33.2147, lng: 126.251 },
+    { name: "추자도", emoji: "🏔", lat: 33.9611, lng: 126.889 },
+  ],
+  west: [
+    { name: "태안",   emoji: "🌾", lat: 36.7445, lng: 126.297 },
+    { name: "안흥",   emoji: "🦀", lat: 36.6747, lng: 126.115 },
+  ]
+};
+
+let currentStation = null;
+let currentRegion = 'jeju';
+
+// 시계
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+  const days = ['일','월','화','수','목','금','토'];
+  const dateStr = `${now.getMonth()+1}/${now.getDate()}(${days[now.getDay()]})`;
+  document.getElementById('date-str').textContent = dateStr;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// 지역 탭 전환
+function switchRegion(region) {
+  currentRegion = region;
+  document.querySelectorAll('.region-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && region === 'jeju') || (i === 1 && region === 'west'));
+  });
+  renderStations();
+}
+
+function renderStations() {
+  const grid = document.getElementById('station-grid');
+  const stations = REGIONS[currentRegion];
+  grid.innerHTML = stations.map(s => `
+    <button class="station-btn ${currentStation === s.name ? 'active' : ''}"
+            onclick="selectStation('${s.name}', ${s.lat}, ${s.lng})">
+      <span class="station-emoji">${s.emoji}</span>
+      ${s.name}
+    </button>
+  `).join('');
+}
+
+// 관측소 선택
+async function selectStation(name, lat, lng) {
+  currentStation = name;
+  renderStations();
+  document.getElementById('station-label').textContent = `📍 ${name} 물때`;
+  await Promise.all([loadTide(name), loadWeather(lat, lng)]);
+}
+
+// 물때 로드
+async function loadTide(stationName) {
+  showTideLoading();
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ station: stationName })
+    });
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data[0]?.error) {
+      showTideError(data[0]?.error || '데이터 오류');
+      return;
+    }
+
+    renderTide(data);
+    document.getElementById('update-time').textContent =
+      `마지막 업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+
+  } catch(e) {
+    showTideError('네트워크 오류');
+  }
+}
+
+function showTideLoading() {
+  document.getElementById('tide-list').innerHTML = `
+    <div class="loading">
+      <div class="loading-wave">
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+      </div>
+      <div class="loading-text">조석 데이터 로딩 중</div>
+    </div>`;
+  document.getElementById('level-num').textContent = '--';
+  document.getElementById('tide-status').textContent = '';
+  document.getElementById('tide-name').style.display = 'none';
+  document.getElementById('wave-fill').style.height = '0%';
+}
+
+function showTideError(msg) {
+  document.getElementById('tide-list').innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
+}
+
+function renderTide(data) {
+  const current = data.find(d => d.isCurrent);
+  if (!current) return;
+
+  // 물때 이름
+  const tideNameEl = document.getElementById('tide-name');
+  if (current.tideName) {
+    tideNameEl.textContent = current.tideName;
+    tideNameEl.style.display = 'inline-block';
+  }
+
+  // 수위
+  document.getElementById('level-num').textContent = current.level;
+
+  // 다음 물때
+  const getMins = (item) => item.mins ?? (parseInt(item.time.split(':')[0]) * 60 + parseInt(item.time.split(':')[1]));
+  const nowMins = getMins(current);
+  const nextTide = data.find(d => !d.isCurrent && getMins(d) > nowMins);
+
+  if (nextTide) {
+    const isFalling = nextTide.type === 'low';
+    const diff = getMins(nextTide) - nowMins;
+    const h = Math.floor(diff / 60);
+    const m = diff % 60;
+    const label = isFalling ? '간조' : '만조';
+    const timeStr = h > 0 ? `${h}시간 ${m}분` : `${m}분`;
+    document.getElementById('tide-status').innerHTML =
+      `<span class="arrow-icon">${isFalling ? '↓' : '↑'}</span>${label}까지 ${timeStr}`;
+  }
+
+  // 파도 높이
+  const levels = data.map(d => d.level).filter(Boolean);
+  const minL = Math.min(...levels), maxL = Math.max(...levels);
+  const pct = ((current.level - minL) / (maxL - minL)) * 75 + 15;
+  setTimeout(() => {
+    document.getElementById('wave-fill').style.height = pct + '%';
+  }, 100);
+
+  // 리스트
+  let html = '';
+  data.forEach(item => {
+    const isCurrent = item.isCurrent;
+    const isYesterday = item.isYesterday;
+    const isNextDay = item.isNextDay;
+    const isDim = isYesterday || isNextDay;
+
+    const icon = isCurrent ? '📍' : item.type === 'high' ? '▲' : '▼';
+    const iconColor = isCurrent ? '#00c4a7' : item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
+    const label = isCurrent ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
+    const badge = isYesterday ? '<span class="day-badge">어제</span>' :
+                  isNextDay   ? '<span class="day-badge">내일</span>' : '';
+
+    html += `
+      <div class="tide-item ${isCurrent ? 'current' : ''} ${isDim ? 'dim' : ''}">
+        <div class="tide-item-left">
+          <div class="tide-icon" style="color:${iconColor}">${icon}</div>
+          <div>
+            <div class="tide-level-text">${item.level}cm ${badge}</div>
+            <div class="tide-label">${label}</div>
+          </div>
+        </div>
+        <div class="tide-time">${item.time}</div>
+      </div>`;
+  });
+  document.getElementById('tide-list').innerHTML = html;
+}
+
+// 날씨 로드
+async function loadWeather(lat, lng) {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const c = json.current;
+
+    const dirs = ["북","북동","동","남동","남","남서","서","북서"];
+    const dir = dirs[Math.round(c.wind_direction_10m / 45) % 8];
+
+    const weatherEmoji = (code) => {
+      if (code === 0) return "☀️";
+      if (code <= 2)  return "🌤";
+      if (code === 3) return "☁️";
+      if (code <= 48) return "🌫";
+      if (code <= 55) return "🌦";
+      if (code <= 65) return "🌧";
+      if (code <= 75) return "❄️";
+      if (code <= 82) return "🌧";
+      return "⛈";
+    };
+    const weatherName = (code) => {
+      if (code === 0) return "맑음";
+      if (code <= 2)  return "대체로 맑음";
+      if (code === 3) return "흐림";
+      if (code <= 48) return "안개";
+      if (code <= 55) return "이슬비";
+      if (code <= 65) return "비";
+      if (code <= 75) return "눈";
+      if (code <= 82) return "소나기";
+      return "뇌우";
+    };
+    const windLevel = (v) => v < 1.5 ? "잔잔" : v < 3.3 ? "약한바람" : v < 5.4 ? "산들바람" : v < 7.9 ? "건들바람" : v < 10.7 ? "흔들바람" : "강풍";
+
+    document.getElementById('w-icon').textContent = weatherEmoji(c.weather_code);
+    document.getElementById('w-main').textContent = weatherName(c.weather_code);
+    document.getElementById('w-detail').textContent = `${dir}풍 · ${windLevel(c.wind_speed_10m)}`;
+    document.getElementById('w-wind').textContent = `${c.wind_speed_10m.toFixed(1)}m/s`;
+    document.getElementById('weather-card').style.display = 'flex';
+
+  } catch(e) {
+    console.log('날씨 로드 실패', e);
+  }
+}
+
+// 새로고침
+async function refresh() {
+  if (!currentStation) return;
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  setTimeout(() => btn.classList.remove('spinning'), 800);
+
+  const stations = [...REGIONS.jeju, ...REGIONS.west];
+  const s = stations.find(x => x.name === currentStation);
+  if (s) await Promise.all([loadTide(s.name), loadWeather(s.lat, s.lng)]);
+}
+
+// 초기 렌더
+renderStations();
+
+// 10분마다 자동 갱신
+setInterval(() => { if (currentStation) refresh(); }, 600000);
+</script>
+</body>
+</html>

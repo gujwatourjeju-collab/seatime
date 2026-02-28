@@ -31,6 +31,167 @@
     display:flex; flex-direction:column;
   }
 
+  /* ─── 스플래시 ──────────────────────────────────────── */
+  .splash {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #0a1a28;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .splash.hide {
+    opacity: 0;
+    transform: scale(1.04);
+    pointer-events: none;
+  }
+
+  /* 별 배경 */
+  .splash-stars {
+    position: absolute; inset: 0; overflow: hidden;
+  }
+  .splash-star {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    animation: starTwinkle var(--dur, 3s) ease-in-out var(--delay, 0s) infinite;
+  }
+  @keyframes starTwinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50%       { opacity: var(--op, 0.6); transform: scale(1); }
+  }
+
+  /* 바다 레이어 */
+  .splash-sea {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, #0a3347 0%, #062133 100%);
+    overflow: hidden;
+  }
+  .splash-wave-layer {
+    position: absolute; top: -28px; left: -60%; width: 220%; height: 56px;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .splash-wave-layer:nth-child(1) {
+    background: rgba(0,196,167,0.35);
+    animation: splashWave 3.8s ease-in-out infinite;
+  }
+  .splash-wave-layer:nth-child(2) {
+    background: rgba(0,150,130,0.25);
+    top: -18px; height: 40px;
+    animation: splashWave 5.2s ease-in-out -1.5s infinite;
+  }
+  .splash-wave-layer:nth-child(3) {
+    background: rgba(0,100,90,0.2);
+    top: -10px; height: 28px;
+    animation: splashWave 7s ease-in-out -3s infinite;
+  }
+  @keyframes splashWave {
+    0%, 100% { transform: translateX(0); }
+    50%       { transform: translateX(-10%); }
+  }
+  /* 바다 빛 반짝임 */
+  .splash-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(0,196,167,0.08) 50%, transparent 60%);
+    animation: shimmerMove 4s ease-in-out infinite;
+  }
+  @keyframes shimmerMove {
+    0%, 100% { transform: translateX(-100%) skewX(-15deg); }
+    50%       { transform: translateX(200%) skewX(-15deg); }
+  }
+
+  /* 로고 & 텍스트 */
+  .splash-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+    margin-bottom: 80px; /* 바다 위로 띄움 */
+  }
+  .splash-logo-wrap {
+    position: relative;
+    width: 96px; height: 96px;
+    margin-bottom: 20px;
+  }
+  .splash-logo-ring {
+    position: absolute; inset: -10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,196,167,0.3);
+    animation: ringPulse 2.4s ease-in-out infinite;
+  }
+  .splash-logo-ring:nth-child(2) {
+    inset: -20px;
+    border-color: rgba(0,196,167,0.15);
+    animation-delay: -0.6s;
+  }
+  .splash-logo-ring:nth-child(3) {
+    inset: -32px;
+    border-color: rgba(0,196,167,0.07);
+    animation-delay: -1.2s;
+  }
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(0.92); opacity: 0.4; }
+    50%       { transform: scale(1.04); opacity: 1; }
+  }
+  .splash-logo-img {
+    width: 96px; height: 96px; border-radius: 24px;
+    object-fit: cover;
+    box-shadow: 0 8px 32px rgba(0,196,167,0.35), 0 2px 8px rgba(0,0,0,0.5);
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-6px); }
+  }
+
+  .splash-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 2rem; font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeSlideUp 0.8s ease 0.3s both;
+  }
+  .splash-sub {
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--muted); letter-spacing: 1.5px;
+    margin-top: 6px;
+    animation: fadeSlideUp 0.8s ease 0.5s both;
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 로딩 상태 */
+  .splash-status {
+    position: absolute; bottom: 52px;
+    left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    z-index: 2;
+    animation: fadeSlideUp 0.8s ease 0.7s both;
+  }
+  .splash-status-text {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 2px; color: var(--muted);
+  }
+  .splash-bar-wrap {
+    width: 120px; height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px; overflow: hidden;
+  }
+  .splash-bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #00c4a7, #00e6c8);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px rgba(0,196,167,0.6);
+  }
+
   .bg-ocean {
     position:fixed; inset:0; z-index:0;
     background:linear-gradient(180deg,#0d1f2d 0%,#0a3347 50%,#0a4f6e 100%);
@@ -282,6 +443,38 @@
 </style>
 </head>
 <body>
+
+<!-- ─── 스플래시 화면 ─────────────────────────────────── -->
+<div class="splash" id="splash">
+  <div class="splash-stars" id="splash-stars"></div>
+
+  <div class="splash-content">
+    <div class="splash-logo-wrap">
+      <div class="splash-logo-ring"></div>
+      <div class="splash-logo-ring"></div>
+      <div class="splash-logo-ring"></div>
+      <img class="splash-logo-img"
+           src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png"
+           alt="바당때">
+    </div>
+    <div class="splash-title">바당때</div>
+    <div class="splash-sub">바다 앞에 서기 전, 바당때 먼저</div>
+  </div>
+
+  <div class="splash-sea">
+    <div class="splash-wave-layer"></div>
+    <div class="splash-wave-layer"></div>
+    <div class="splash-wave-layer"></div>
+    <div class="splash-shimmer"></div>
+  </div>
+
+  <div class="splash-status">
+    <div class="splash-status-text" id="splash-status-text">불러오는 중</div>
+    <div class="splash-bar-wrap">
+      <div class="splash-bar-fill" id="splash-bar"></div>
+    </div>
+  </div>
+</div>
 
 <div class="bg-ocean">
   <div class="bg-wave"></div><div class="bg-wave"></div><div class="bg-wave"></div>
@@ -749,10 +942,95 @@ async function refresh(){
   await Promise.all([loadTide(currentStation),loadWeather(s.lat,s.lng)]);
 }
 
+// ─── 스플래시 ────────────────────────────────────────────
+function makeSplashStars() {
+  const container = document.getElementById('splash-stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'splash-star';
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*55}%;
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*4}s;
+      --op:${0.3+Math.random()*0.7};
+      width:${Math.random()<0.2?3:2}px;
+      height:${Math.random()<0.2?3:2}px;
+    `;
+    container.appendChild(s);
+  }
+}
+
+function setSplashProgress(pct, text) {
+  document.getElementById('splash-bar').style.width = pct + '%';
+  if (text) document.getElementById('splash-status-text').textContent = text;
+}
+
+function hideSplash() {
+  const el = document.getElementById('splash');
+  el.classList.add('hide');
+  setTimeout(() => { el.style.display = 'none'; }, 650);
+}
+
 // ─── 시작 ────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
-  const last=localStorage.getItem('lastStation');
-  if(last&&STATIONS[last])selectStation(last);
+window.addEventListener('DOMContentLoaded', async () => {
+  makeSplashStars();
+
+  const last = localStorage.getItem('lastStation');
+
+  if (!last || !STATIONS[last]) {
+    setSplashProgress(100, '준비 완료');
+    setTimeout(hideSplash, 900);
+    return;
+  }
+
+  // 저장된 관측소 있음 → 스플래시 유지하며 백그라운드 로드
+  const region = STATIONS[last].region;
+  const rInfo  = REGION_INFO[region];
+  document.getElementById('loc-icon').textContent = EMOJI[last] || '📍';
+  document.getElementById('loc-text').textContent  = `${rInfo.label} · ${last}`;
+  currentStation = last;
+
+  setSplashProgress(10, '관측소 확인 중');
+  const s = STATIONS[last];
+  const weatherPromise = loadWeather(s.lat, s.lng).catch(() => {});
+
+  let tideData = null;
+  try {
+    if (s.type === 'blend') {
+      setSplashProgress(35, '조석 데이터 수신 중');
+      const [r1, r2] = await Promise.all([callGAS(s.obs1), callGAS(s.obs2)]);
+      setSplashProgress(75, '데이터 처리 중');
+      tideData = blendTides(r1, r2, s.w1, s.w2, s.timeCorr);
+    } else if (s.type === 'scale') {
+      setSplashProgress(35, '조석 데이터 수신 중');
+      const raw = await callGAS(s.obs);
+      setSplashProgress(75, '데이터 처리 중');
+      tideData = scaleTides(raw, s.scale, s.timeCorr);
+    } else {
+      setSplashProgress(35, '조석 데이터 수신 중');
+      tideData = await callGAS(s.obs);
+      setSplashProgress(75, '데이터 처리 중');
+    }
+  } catch(e) { tideData = null; }
+
+  await weatherPromise;
+  setSplashProgress(95, '화면 준비 중');
+  await new Promise(r => setTimeout(r, 200));
+
+  if (tideData) {
+    const cleaned = tideData.filter(d => d && (d.isCurrent || d.time));
+    if (cleaned.length && !cleaned[0]?.error) {
+      document.getElementById('wave-card').style.display = 'block';
+      renderTide(cleaned, last);
+      document.getElementById('update-time').textContent =
+        `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+    }
+  }
+
+  setSplashProgress(100, '준비 완료 ✓');
+  await new Promise(r => setTimeout(r, 380));
+  hideSplash();
 });
 
 setInterval(()=>{if(currentStation)refresh();},600000);

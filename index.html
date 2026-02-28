@@ -178,6 +178,20 @@
   .empty-icon{font-size:2.5rem;opacity:0.4;}
   .empty-text{font-size:0.82rem;font-weight:700;text-align:center;line-height:1.6;}
 
+  .footer-credit{
+    text-align:center;padding:16px 20px 8px;
+    border-top:1px solid rgba(255,255,255,0.06);
+    margin-top:8px;
+  }
+  .credit-row{
+    font-size:0.6rem;color:rgba(255,255,255,0.25);
+    margin-bottom:4px;font-weight:600;
+  }
+  .credit-row a{color:rgba(255,255,255,0.3);text-decoration:none;}
+  .credit-row a:hover{color:var(--accent);}
+  .credit-divider{height:1px;background:rgba(255,255,255,0.06);margin:8px 0;}
+  .credit-maker{color:rgba(255,255,255,0.35)!important;font-weight:700!important;}
+
   /* ─── 바텀 시트 ─────────────────────────────────────── */
   .sheet-overlay{
     position:fixed;inset:0;z-index:200;
@@ -315,6 +329,12 @@
     </div>
 
     <div class="update-time" id="update-time"></div>
+
+    <div class="footer-credit">
+      <div class="credit-row">조석 데이터 · <a href="https://www.khoa.go.kr" target="_blank">국립해양조사원 KHOA</a></div>
+      <div class="credit-divider"></div>
+      <div class="credit-row credit-maker">Made by Boungje Min</div>
+    </div>
   </div>
 </div>
 

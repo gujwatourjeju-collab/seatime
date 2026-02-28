@@ -422,42 +422,30 @@ async function loadTide(name) {
   document.getElementById('wave-card').style.display = 'none';
 
   try {
-    const s = STATIONS[name];
-    let data;
-
-    if (s.type === 'blend') {
-      // 김녕: 두 관측소 가중평균
-      const [r1, r2] = await Promise.all([
-        fetchStation(s.obs1),
-        fetchStation(s.obs2)
-      ]);
-      data = blendAndProcess(r1, r2, s.w1, s.w2, s.timeCorr, name);
-
-    } else if (s.type === 'scale') {
-      // 만대항: 태안 수위 보정
-      const raw = await fetchStation(s.obs);
-      data = scaleAndProcess(raw, s.scale, s.timeCorr, name);
-
-    } else {
-      // 단순 단일 관측소
-      const raw = await fetchStation(s.obs);
-      data = processTimeline(raw, name);
-    }
+    // 1. 이제 GAS 주소가 아니라 내 저장소의 데이터를 직접 읽습니다.
+    const res = await fetch('./data/tide_all.json');
+    if (!res.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
+    
+    const allData = await res.json();
+    
+    // 2. 전체 데이터 중 지금 클릭한 지점(name) 것만 쏙 빼옵니다.
+    const data = allData[name];
 
     if (!data || data.length === 0) {
-      showError('데이터 없음');
+      showError(name + ' 데이터가 파일에 없습니다.');
       return;
     }
 
+    // 3. 화면에 예쁘게 그리기
     renderTide(data, name);
     document.getElementById('update-time').textContent =
-      `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+      `동기화: ${new Date().toLocaleTimeString('ko-KR')}`;
 
   } catch(e) {
-    showError('오류: ' + e.message);
+    showError('데이터 로드 실패: ' + e.message);
+    console.error("에러 상세:", e);
   }
 }
-
 async function fetchStation(obsCode) {
   const res = await fetch(GAS_URL, {
     method: 'POST',
@@ -685,6 +673,30 @@ async function refresh() {
   setTimeout(() => btn.classList.remove('spinning'), 800);
   const s = STATIONS[currentStation];
   await Promise.all([loadTide(currentStation), loadWeather(s.lat, s.lng)]);
+}
+  window.addEventListener('DOMContentLoaded', () => {
+  updateClock();
+  
+  // 브라우저가 기억하고 있는 마지막 장소 확인
+  const lastSaved = localStorage.getItem('myTideStation');
+  
+  if (lastSaved && STATIONS[lastSaved]) {
+    // 기억하는 게 있다면 바로 실행!
+    selectStation(lastSaved);
+  }
+});
+
+// 관측소 선택 함수 (저장 기능 추가 버전)
+async function selectStation(name) {
+  currentStation = name;
+  setActiveChip(name);
+  
+  // 선택한 장소를 브라우저 메모리에 저장
+  localStorage.setItem('myTideStation', name);
+  
+  const s = STATIONS[name];
+  // 날씨는 실시간이 중요하니 그대로 API 호출하고, 물때는 파일을 읽습니다.
+  await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
 }
 
 // 10분마다 자동 갱신

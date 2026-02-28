@@ -8,12 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sea: #0a4f6e;
-    --sea-light: #1a7fa0;
     --accent: #00c4a7;
     --danger: #ff6b6b;
     --blue: #5ba4f5;
-    --text: #0d1f2d;
     --muted: #6b8fa3;
   }
 
@@ -29,7 +26,6 @@
     flex-direction: column;
   }
 
-  /* 배경 */
   .bg-ocean {
     position: fixed; inset: 0; z-index: 0;
     background: linear-gradient(180deg, #0d1f2d 0%, #0a3347 50%, #0a4f6e 100%);
@@ -56,7 +52,6 @@
     overflow: hidden;
   }
 
-  /* 헤더 */
   .header {
     padding: 48px 20px 10px;
     display: flex; align-items: center; justify-content: space-between;
@@ -77,11 +72,7 @@
     letter-spacing: 1px;
   }
 
-  /* 위치 선택 - 컴팩트 */
-  .location-bar {
-    padding: 10px 20px;
-    flex-shrink: 0;
-  }
+  .location-bar { padding: 10px 20px; flex-shrink: 0; }
   .location-scroll {
     display: flex; gap: 7px; overflow-x: auto;
     scrollbar-width: none; -webkit-overflow-scrolling: touch;
@@ -96,7 +87,6 @@
     font-size: 0.78rem; font-weight: 700; cursor: pointer;
     transition: all 0.2s; white-space: nowrap;
     font-family: 'Noto Sans KR', sans-serif;
-    display: flex; align-items: center; gap: 5px;
   }
   .station-chip.active {
     background: rgba(0,196,167,0.2);
@@ -109,7 +99,6 @@
     align-self: center; margin: 0 2px;
   }
 
-  /* 메인 컨텐츠 스크롤 영역 */
   .content {
     flex: 1; overflow-y: auto;
     padding: 0 16px 20px;
@@ -117,7 +106,6 @@
   }
   .content::-webkit-scrollbar { display: none; }
 
-  /* 날씨 바 */
   .weather-bar {
     display: none;
     align-items: center; gap: 10px;
@@ -135,13 +123,11 @@
     font-size: 0.9rem; font-weight: 500; color: var(--accent);
   }
 
-  /* 파도 카드 */
   .wave-card {
     border-radius: 24px; overflow: hidden;
     border: 1px solid rgba(255,255,255,0.1);
     margin-bottom: 10px;
-    position: relative;
-    height: 160px;
+    position: relative; height: 160px;
     background: rgba(255,255,255,0.05);
   }
   .wave-fill {
@@ -164,7 +150,6 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 24px;
   }
-  .wave-left {}
   .tide-name-badge {
     display: inline-block;
     background: var(--accent); color: #0d1f2d;
@@ -194,8 +179,6 @@
     margin-top: 8px; letter-spacing: 0.5px;
   }
 
-  /* 물때 리스트 */
-  .tide-list {}
   .tide-item {
     display: flex; align-items: center; justify-content: space-between;
     padding: 11px 14px; border-radius: 14px; margin-bottom: 7px;
@@ -224,7 +207,6 @@
     font-weight: 700; margin-left: 5px; vertical-align: middle;
   }
 
-  /* 로딩 */
   .loading {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -249,12 +231,11 @@
     color: var(--danger); font-size: 0.82rem; font-weight: 700;
   }
 
-  /* 새로고침 */
   .refresh-btn {
     position: fixed; bottom: 20px; right: 20px;
     width: 48px; height: 48px; border-radius: 50%;
     background: var(--accent); border: none;
-    color: #0d1f2d; font-size: 1.2rem; cursor: pointer;
+    color: #0d1f2d; cursor: pointer;
     box-shadow: 0 4px 18px rgba(0,196,167,0.4);
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s; z-index: 100;
@@ -269,11 +250,10 @@
     font-family: 'DM Mono', monospace;
   }
 
-  /* 초기 안내 */
   .empty-state {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    height: 100%; gap: 12px; color: var(--muted);
+    height: 200px; gap: 12px; color: var(--muted);
     padding: 40px;
   }
   .empty-icon { font-size: 2.5rem; opacity: 0.4; }
@@ -290,7 +270,6 @@
 
 <div class="app">
 
-  <!-- 헤더 -->
   <div class="header">
     <div class="header-left">
       <div class="header-icon">🌊</div>
@@ -302,10 +281,8 @@
     <div class="clock" id="clock">--:--:--</div>
   </div>
 
-  <!-- 위치 선택 칩 -->
   <div class="location-bar">
-    <div class="location-scroll" id="location-scroll">
-      <!-- 제주 -->
+    <div class="location-scroll">
       <div class="station-chip" onclick="selectStation('김녕')">🏄 김녕</div>
       <div class="station-chip" onclick="selectStation('제주')">🌊 제주</div>
       <div class="station-chip" onclick="selectStation('성산포')">🌅 성산포</div>
@@ -313,17 +290,14 @@
       <div class="station-chip" onclick="selectStation('모슬포')">⚓ 모슬포</div>
       <div class="station-chip" onclick="selectStation('추자도')">🏔 추자도</div>
       <div class="divider-chip"></div>
-      <!-- 서해 -->
       <div class="station-chip" onclick="selectStation('만대항')">🦀 만대항</div>
       <div class="station-chip" onclick="selectStation('태안')">🌾 태안</div>
       <div class="station-chip" onclick="selectStation('안흥')">⛵ 안흥</div>
     </div>
   </div>
 
-  <!-- 스크롤 컨텐츠 -->
-  <div class="content" id="content">
+  <div class="content">
 
-    <!-- 날씨 -->
     <div class="weather-bar" id="weather-bar">
       <div class="w-icon" id="w-icon">🌤</div>
       <div>
@@ -333,11 +307,10 @@
       <div class="w-wind" id="w-wind">--</div>
     </div>
 
-    <!-- 파도 카드 -->
     <div class="wave-card" id="wave-card" style="display:none;">
       <div class="wave-fill" id="wave-fill"></div>
       <div class="wave-info">
-        <div class="wave-left">
+        <div>
           <div class="tide-name-badge" id="tide-name"></div>
           <div class="level-display">
             <span id="level-num">--</span><span class="level-unit">cm</span>
@@ -352,11 +325,10 @@
       </div>
     </div>
 
-    <!-- 물때 리스트 -->
     <div id="tide-list">
       <div class="empty-state">
         <div class="empty-icon">🌊</div>
-        <div class="empty-text">위에서 관측소를 선택하면<br>실시간 물때 정보를 확인할 수 있어요</div>
+        <div class="empty-text">관측소를 선택하면<br>실시간 물때 정보를 확인할 수 있어요</div>
       </div>
     </div>
 
@@ -365,7 +337,7 @@
 
 </div>
 
-<button class="refresh-btn" id="refresh-btn" onclick="refresh()" title="새로고침">
+<button class="refresh-btn" id="refresh-btn" onclick="refresh()">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="23 4 23 10 17 10"></polyline>
     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
@@ -373,660 +345,262 @@
 </button>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZnWjHzlOjJ285f5PxRtY85JehphoOFiEQp7r3pWHIr6SvXRwAeNJgTZPLBqNPNLHapA/exec';
-
-
-
-// 관측소 설정
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby3S8MfzcX6pEUDpaOsC1ucQrP6go65KPedXvgNibHTUKpeJVkwSTpE8EudlBxZpn2lBA/exec';
 
 const STATIONS = {
-
-  '김녕':  { type: 'blend', obs1: 'DT_0004', obs2: 'DT_0022', w1: 0.48, w2: 0.52, timeCorr: +10, lat: 33.558, lng: 126.751 },
-
-  '제주':  { type: 'single', obs: 'DT_0004', lat: 33.5275, lng: 126.543 },
-
-  '성산포':{ type: 'single', obs: 'DT_0022', lat: 33.4747, lng: 126.927 },
-
-  '서귀포':{ type: 'single', obs: 'DT_0061', lat: 33.2468, lng: 126.561 },
-
-  '모슬포':{ type: 'single', obs: 'DT_0020', lat: 33.2147, lng: 126.251 },
-
-  '추자도':{ type: 'single', obs: 'DT_0021', lat: 33.9611, lng: 126.889 },
-
-  '만대항':{ type: 'scale',  obs: 'DT_0050', scale: 1.10, timeCorr: +3, lat: 36.626, lng: 126.309 },
-
-  '태안':  { type: 'single', obs: 'DT_0050', lat: 36.7445, lng: 126.297 },
-
-  '안흥':  { type: 'single', obs: 'DT_0067', lat: 36.6747, lng: 126.115 },
-
+  '김녕':  { type: 'blend',  obs1: 'DT_0004', obs2: 'DT_0022', w1: 0.48, w2: 0.52, timeCorr: +10, lat: 33.558,  lng: 126.751 },
+  '제주':  { type: 'single', obs:  'DT_0004', lat: 33.5275, lng: 126.543 },
+  '성산포':{ type: 'single', obs:  'DT_0022', lat: 33.4747, lng: 126.927 },
+  '서귀포':{ type: 'single', obs:  'DT_0061', lat: 33.2468, lng: 126.561 },
+  '모슬포':{ type: 'single', obs:  'DT_0020', lat: 33.2147, lng: 126.251 },
+  '추자도':{ type: 'single', obs:  'DT_0021', lat: 33.9611, lng: 126.889 },
+  '만대항':{ type: 'scale',  obs:  'DT_0050', scale: 1.10, timeCorr: +3, lat: 36.626, lng: 126.309 },
+  '태안':  { type: 'single', obs:  'DT_0050', lat: 36.7445, lng: 126.297 },
+  '안흥':  { type: 'single', obs:  'DT_0067', lat: 36.6747, lng: 126.115 },
 };
-
-
 
 let currentStation = null;
 
-
-
-// 시계
-
+// ─── 시계 ───────────────────────────────────────────────
 function updateClock() {
-
   const now = new Date();
-
-  const h = String(now.getHours()).padStart(2,'0');
-
-  const m = String(now.getMinutes()).padStart(2,'0');
-
-  const s = String(now.getSeconds()).padStart(2,'0');
-
-  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-
+  document.getElementById('clock').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') + ':' +
+    String(now.getSeconds()).padStart(2,'0');
 }
-
 setInterval(updateClock, 1000);
-
 updateClock();
 
-
-
-// 칩 활성화
-
+// ─── 칩 활성화 ──────────────────────────────────────────
 function setActiveChip(name) {
-
   document.querySelectorAll('.station-chip').forEach(c => {
-
     c.classList.toggle('active', c.textContent.trim().includes(name));
-
   });
-
 }
 
-
-
-// 관측소 선택
-
+// ─── 관측소 선택 (localStorage 저장) ────────────────────
 async function selectStation(name) {
-
   currentStation = name;
-
+  localStorage.setItem('lastStation', name);
   setActiveChip(name);
-
   const s = STATIONS[name];
-
   await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
-
 }
 
-
-
-// ─── 물때 로드 ─────────────────────────────────────────
-
+// ─── 물때 로드 ──────────────────────────────────────────
 async function loadTide(name) {
-
   showLoading();
-
   document.getElementById('wave-card').style.display = 'none';
 
-
-
   try {
+    const s = STATIONS[name];
+    let data;
 
-    // 1. 이제 GAS 주소가 아니라 내 저장소의 데이터를 직접 읽습니다.
-
-    const res = await fetch('./data/tide_all.json');
-
-    if (!res.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
-
-    
-
-    const allData = await res.json();
-
-    
-
-    // 2. 전체 데이터 중 지금 클릭한 지점(name) 것만 쏙 빼옵니다.
-
-    const data = allData[name];
-
-
-
-    if (!data || data.length === 0) {
-
-      showError(name + ' 데이터가 파일에 없습니다.');
-
-      return;
-
+    if (s.type === 'blend') {
+      const [r1, r2] = await Promise.all([callGAS(s.obs1), callGAS(s.obs2)]);
+      data = blendTides(r1, r2, s.w1, s.w2, s.timeCorr);
+    } else if (s.type === 'scale') {
+      const raw = await callGAS(s.obs);
+      data = scaleTides(raw, s.scale, s.timeCorr);
+    } else {
+      data = await callGAS(s.obs);
     }
 
-
-
-    // 3. 화면에 예쁘게 그리기
+    if (!data || !data.length || data[0]?.error) {
+      showError(data?.[0]?.error || '데이터 없음');
+      return;
+    }
 
     renderTide(data, name);
-
     document.getElementById('update-time').textContent =
-
-      `동기화: ${new Date().toLocaleTimeString('ko-KR')}`;
-
-
+      `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
 
   } catch(e) {
-
-    showError('데이터 로드 실패: ' + e.message);
-
-    console.error("에러 상세:", e);
-
+    showError('오류: ' + e.message);
   }
-
 }
 
-async function fetchStation(obsCode) {
-
+async function callGAS(obsCode) {
   const res = await fetch(GAS_URL, {
-
     method: 'POST',
-
-    body: JSON.stringify({ station: getStationNameByObs(obsCode) || obsCode, obsCode })
-
+    body: JSON.stringify({ obsCode })
   });
-
   return await res.json();
-
 }
 
-
-
-function getStationNameByObs(obs) {
-
-  for (const [k, v] of Object.entries(STATIONS)) {
-
-    if (v.obs === obs || v.obs1 === obs || v.obs2 === obs) return k;
-
-  }
-
-  return null;
-
-}
-
-
-
-// 원시 데이터(GAS 배열) → 타임라인 처리
-
-function rawToTides(data) {
-
-  // GAS에서 이미 처리된 배열이면 그대로, 아니면 변환
-
-  return Array.isArray(data) ? data : [];
-
-}
-
-
-
-// 단일 관측소 처리
-
-function processTimeline(data, stationName) {
-
-  return rawToTides(data);
-
-}
-
-
-
-// 가중평균 (김녕)
-
-function blendAndProcess(data1, data2, w1, w2, timeCorr, stationName) {
-
-  // GAS에서 이미 처리된 데이터 → current 찾아서 수위/시간만 재보정
-
-  // 두 데이터셋의 각 물때를 매칭해서 평균
-
-  const tides1 = data1.filter(d => !d.isCurrent);
-
-  const tides2 = data2.filter(d => !d.isCurrent);
-
-  const current1 = data1.find(d => d.isCurrent);
-
-
+// ─── 가중평균 (김녕) ────────────────────────────────────
+function blendTides(data1, data2, w1, w2, timeCorr) {
+  const tides1  = data1.filter(d => !d.isCurrent);
+  const tides2  = data2.filter(d => !d.isCurrent);
+  const current = data1.find(d => d.isCurrent);
 
   const used = new Set();
-
   const blended = [];
 
-
-
   tides1.forEach(t1 => {
-
     const matched = tides2
-
       .filter(t2 => t2.type === t1.type && !used.has(t2.time))
-
-      .sort((a, b) => Math.abs(getMins(a) - getMins(t1)) - Math.abs(getMins(b) - getMins(t1)))[0];
-
-
-
+      .sort((a, b) => Math.abs(toMins(a) - toMins(t1)) - Math.abs(toMins(b) - toMins(t1)))[0];
     if (!matched) return;
-
     used.add(matched.time);
 
-
-
-    const bMins = Math.round(getMins(t1) * w1 + getMins(matched) * w2) + timeCorr;
-
+    const bMins  = Math.round(toMins(t1) * w1 + toMins(matched) * w2) + timeCorr;
     const bLevel = Math.round(t1.level * w1 + matched.level * w2);
-
-    const absMin = ((bMins % 1440) + 1440) % 1440;
-
-    const h = String(Math.floor(absMin / 60)).padStart(2,'0');
-
-    const m = String(absMin % 60).padStart(2,'0');
-
-
-
-    blended.push({
-
-      ...t1,
-
-      time: `${h}:${m}`,
-
-      mins: bMins,
-
-      level: bLevel,
-
-    });
-
+    blended.push({ ...t1, time: minsToTime(bMins), mins: bMins, level: bLevel });
   });
-
-
 
   blended.sort((a, b) => a.mins - b.mins);
 
-
-
-  // 현재 보간
-
-  if (current1) {
-
-    const nowMins = current1.mins;
-
-    let nowLevel = current1.level;
-
+  if (current) {
+    const nowMins = toMins(current);
+    let nowLevel  = current.level;
     for (let i = 0; i < blended.length; i++) {
-
       if (nowMins < blended[i].mins) {
-
         if (i > 0) {
-
           const prev = blended[i-1], next = blended[i];
-
-          const ratio = (nowMins - prev.mins) / (next.mins - prev.mins);
-
-          nowLevel = Math.round(prev.level + (next.level - prev.level) * ratio);
-
+          nowLevel = Math.round(prev.level + (next.level - prev.level) * (nowMins - prev.mins) / (next.mins - prev.mins));
         }
-
         break;
-
       }
-
     }
-
-    const insertIdx = blended.findIndex(t => t.mins > nowMins);
-
-    const cur = {
-
-      ...current1,
-
-      level: nowLevel,
-
-      tideName: current1.tideName,
-
-    };
-
-    if (insertIdx === -1) blended.push(cur);
-
-    else blended.splice(insertIdx, 0, cur);
-
+    const idx = blended.findIndex(t => t.mins > nowMins);
+    const cur = { ...current, level: nowLevel };
+    if (idx === -1) blended.push(cur); else blended.splice(idx, 0, cur);
   }
 
-
-
   return blended;
-
 }
 
-
-
-// 수위 보정 (만대항)
-
-function scaleAndProcess(data, scale, timeCorr, stationName) {
-
+// ─── 수위 보정 (만대항) ──────────────────────────────────
+function scaleTides(data, scale, timeCorr) {
   return data.map(item => {
-
     if (item.isCurrent) return item;
-
-    const newMins = (item.mins || 0) + timeCorr;
-
-    const absMin = ((newMins % 1440) + 1440) % 1440;
-
-    const h = String(Math.floor(absMin / 60)).padStart(2,'0');
-
-    const m = String(absMin % 60).padStart(2,'0');
-
-    return {
-
-      ...item,
-
-      time: `${h}:${m}`,
-
-      mins: newMins,
-
-      level: item.isCurrent ? item.level : Math.round(item.level * scale),
-
-    };
-
+    const newMins = toMins(item) + timeCorr;
+    return { ...item, time: minsToTime(newMins), mins: newMins, level: Math.round(item.level * scale) };
   });
-
 }
 
-
-
-function getMins(item) {
-
+// ─── 유틸 ────────────────────────────────────────────────
+function toMins(item) {
   if (item.mins != null) return item.mins;
-
   const [h, m] = item.time.split(':').map(Number);
-
-  return (item.isNextDay ? h*60+m+1440 : h*60+m);
-
+  return item.isNextDay ? h*60+m+1440 : h*60+m;
+}
+function minsToTime(mins) {
+  const abs = ((mins % 1440) + 1440) % 1440;
+  return String(Math.floor(abs/60)).padStart(2,'0') + ':' + String(abs%60).padStart(2,'0');
 }
 
-
-
-// ─── 렌더링 ───────────────────────────────────────────
-
+// ─── 렌더링 ──────────────────────────────────────────────
 function renderTide(data, name) {
-
   const current = data.find(d => d.isCurrent);
-
   if (!current) { showError('현재 데이터 없음'); return; }
 
-
-
-  // 파도 카드
-
   document.getElementById('wave-card').style.display = 'block';
-
   document.getElementById('station-display').textContent = `📍 ${name}`;
 
-
-
   const tideNameEl = document.getElementById('tide-name');
-
   tideNameEl.textContent = current.tideName || '';
-
   tideNameEl.style.display = current.tideName ? 'inline-block' : 'none';
-
-
 
   document.getElementById('level-num').textContent = current.level;
 
-
-
-  const nowMins = getMins(current);
-
-  const nextTide = data.find(d => !d.isCurrent && getMins(d) > nowMins);
-
-
+  const nowMins  = toMins(current);
+  const nextTide = data.find(d => !d.isCurrent && toMins(d) > nowMins);
 
   if (nextTide) {
-
     const isFalling = nextTide.type === 'low';
-
-    const diff = getMins(nextTide) - nowMins;
-
-    const h = Math.floor(diff / 60);
-
-    const m = diff % 60;
-
-    const label = isFalling ? '간조' : '만조';
-
+    const diff = toMins(nextTide) - nowMins;
+    const h = Math.floor(diff/60), m = diff%60;
     document.getElementById('tide-status').innerHTML =
-
       `<span>${isFalling ? '↓' : '↑'}</span> 물이 ${isFalling ? '빠지는 중' : '차오르는 중'}`;
-
     document.getElementById('time-left').textContent =
-
-      `${label} ${h > 0 ? h+'시간 ' : ''}${m}분 전`;
-
+      `${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
   }
-
-
-
-  // 파도 높이
 
   const levels = data.map(d => d.level).filter(Boolean);
-
   const minL = Math.min(...levels), maxL = Math.max(...levels);
-
   const pct = maxL > minL ? ((current.level - minL) / (maxL - minL)) * 75 + 15 : 50;
+  setTimeout(() => { document.getElementById('wave-fill').style.height = pct + '%'; }, 100);
 
-  setTimeout(() => {
-
-    document.getElementById('wave-fill').style.height = pct + '%';
-
-  }, 100);
-
-
-
-  // 리스트
-
-  let html = '';
-
-  data.forEach(item => {
-
-    const isCurrent  = item.isCurrent;
-
-    const isYesterday = item.isYesterday;
-
-    const isNextDay  = item.isNextDay;
-
-    const isDim = isYesterday || isNextDay;
-
-    const icon = isCurrent ? '📍' : item.type === 'high' ? '▲' : '▼';
-
+  document.getElementById('tide-list').innerHTML = data.map(item => {
+    const isCurrent = item.isCurrent;
+    const isDim     = item.isYesterday || item.isNextDay;
+    const icon      = isCurrent ? '📍' : item.type === 'high' ? '▲' : '▼';
     const iconColor = isCurrent ? '#00c4a7' : item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
-
-    const label = isCurrent ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
-
-    const badge = isYesterday ? '<span class="day-badge">어제</span>' :
-
-                  isNextDay   ? '<span class="day-badge">내일</span>' : '';
-
-
-
-    html += `
-
-      <div class="tide-item ${isCurrent ? 'current' : ''} ${isDim ? 'dim' : ''}">
-
+    const label     = isCurrent ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
+    const badge     = item.isYesterday ? '<span class="day-badge">어제</span>' :
+                      item.isNextDay   ? '<span class="day-badge">내일</span>' : '';
+    return `
+      <div class="tide-item ${isCurrent?'current':''} ${isDim?'dim':''}">
         <div class="tide-item-left">
-
           <div class="tide-icon" style="color:${iconColor}">${icon}</div>
-
           <div>
-
             <div class="tide-level-text">${item.level}cm${badge}</div>
-
             <div class="tide-label">${label}</div>
-
           </div>
-
         </div>
-
         <div class="tide-time">${item.time}</div>
-
       </div>`;
-
-  });
-
-  document.getElementById('tide-list').innerHTML = html;
-
+  }).join('');
 }
-
-
 
 function showLoading() {
-
   document.getElementById('tide-list').innerHTML = `
-
     <div class="loading">
-
       <div class="loading-wave">
-
-        <div class="loading-dot"></div>
-
-        <div class="loading-dot"></div>
-
-        <div class="loading-dot"></div>
-
+        <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
       </div>
-
       <div class="loading-text">데이터 로딩 중</div>
-
     </div>`;
-
   document.getElementById('level-num').textContent = '--';
-
   document.getElementById('tide-status').textContent = '';
-
   document.getElementById('time-left').textContent = '--';
-
   document.getElementById('wave-fill').style.height = '0%';
-
 }
-
-
 
 function showError(msg) {
-
   document.getElementById('tide-list').innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
-
   document.getElementById('wave-card').style.display = 'none';
-
 }
 
-
-
-// ─── 날씨 ─────────────────────────────────────────────
-
+// ─── 날씨 ────────────────────────────────────────────────
 async function loadWeather(lat, lng) {
-
   try {
-
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`;
+    const c = (await (await fetch(url)).json()).current;
+    const dirs  = ["북","북동","동","남동","남","남서","서","북서"];
+    const dir   = dirs[Math.round(c.wind_direction_10m / 45) % 8];
+    const emo   = v => v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
+    const wname = v => v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
+    const wlv   = v => v<1.5?"잔잔":v<3.3?"약한바람":v<5.4?"산들바람":v<7.9?"건들바람":v<10.7?"흔들바람":"강풍";
 
-    const json = await (await fetch(url)).json();
-
-    const c = json.current;
-
-    const dirs = ["북","북동","동","남동","남","남서","서","북서"];
-
-    const dir = dirs[Math.round(c.wind_direction_10m / 45) % 8];
-
-
-
-    const emo = (code) => code===0?"☀️":code<=2?"🌤":code===3?"☁️":code<=48?"🌫":code<=55?"🌦":code<=65?"🌧":code<=75?"❄️":code<=82?"🌧":"⛈";
-
-    const wname = (code) => code===0?"맑음":code<=2?"대체로 맑음":code===3?"흐림":code<=48?"안개":code<=55?"이슬비":code<=65?"비":code<=75?"눈":code<=82?"소나기":"뇌우";
-
-    const wlv = (v) => v<1.5?"잔잔":v<3.3?"약한바람":v<5.4?"산들바람":v<7.9?"건들바람":v<10.7?"흔들바람":"강풍";
-
-
-
-    document.getElementById('w-icon').textContent = emo(c.weather_code);
-
-    document.getElementById('w-main').textContent = `${wname(c.weather_code)} · ${wlv(c.wind_speed_10m)}`;
-
+    document.getElementById('w-icon').textContent   = emo(c.weather_code);
+    document.getElementById('w-main').textContent   = `${wname(c.weather_code)} · ${wlv(c.wind_speed_10m)}`;
     document.getElementById('w-detail').textContent = `${dir}풍`;
-
-    document.getElementById('w-wind').textContent = `${c.wind_speed_10m.toFixed(1)}m/s`;
-
+    document.getElementById('w-wind').textContent   = `${c.wind_speed_10m.toFixed(1)}m/s`;
     document.getElementById('weather-bar').classList.add('visible');
-
   } catch(e) {}
-
 }
 
-
-
-// ─── 새로고침 ─────────────────────────────────────────
-
+// ─── 새로고침 ────────────────────────────────────────────
 async function refresh() {
-
   if (!currentStation) return;
-
   const btn = document.getElementById('refresh-btn');
-
   btn.classList.add('spinning');
-
   setTimeout(() => btn.classList.remove('spinning'), 800);
-
   const s = STATIONS[currentStation];
-
   await Promise.all([loadTide(currentStation), loadWeather(s.lat, s.lng)]);
-
 }
 
-  window.addEventListener('DOMContentLoaded', () => {
-
-  updateClock();
-
-  
-
-  // 브라우저가 기억하고 있는 마지막 장소 확인
-
-  const lastSaved = localStorage.getItem('myTideStation');
-
-  
-
-  if (lastSaved && STATIONS[lastSaved]) {
-
-    // 기억하는 게 있다면 바로 실행!
-
-    selectStation(lastSaved);
-
-  }
-
+// ─── 시작: 마지막 관측소 복원 ───────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const last = localStorage.getItem('lastStation');
+  if (last && STATIONS[last]) selectStation(last);
 });
 
-
-
-// 관측소 선택 함수 (저장 기능 추가 버전)
-
-async function selectStation(name) {
-
-  currentStation = name;
-
-  setActiveChip(name);
-
-  
-
-  // 선택한 장소를 브라우저 메모리에 저장
-
-  localStorage.setItem('myTideStation', name);
-
-  
-
-  const s = STATIONS[name];
-
-  // 날씨는 실시간이 중요하니 그대로 API 호출하고, 물때는 파일을 읽습니다.
-
-  await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
-
-}
-
-
-
 // 10분마다 자동 갱신
-
 setInterval(() => { if (currentStation) refresh(); }, 600000);
 </script>
 </body>

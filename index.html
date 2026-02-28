@@ -293,7 +293,7 @@
 </button>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwZnWjHzlOjJ285f5PxRtY85JehphoOFiEQp7r3pWHIr6SvXRwAeNJgTZPLBqNPNLHapA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwqeaT7S4TrCikMHpaJdMKQSZGKb866MUDygr6sTaX9ROi9zPJD4RYt7ByyMDMvEDAlnQ/exec';
 
 // ─── 관측소 데이터 ─────────────────────────────────────
 const STATIONS = {
@@ -414,7 +414,8 @@ async function loadTide(name) {
 
 async function callGAS(obsCode) {
   try {
-    const res = await fetch(GAS_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ obsCode }) });
+    const fd = new FormData(); fd.append("obsCode", obsCode);
+    const res = await fetch(GAS_URL, { method:"POST", body: fd });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error("응답 형식 오류");

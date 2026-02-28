@@ -31,7 +31,6 @@
     display:flex; flex-direction:column;
   }
 
-  /* 배경 — 더 연하게 */
   .bg-ocean {
     position:fixed; inset:0; z-index:0;
     background:linear-gradient(180deg,#0d1f2d 0%,#0a3347 50%,#0a4f6e 100%);
@@ -39,7 +38,7 @@
   }
   .bg-wave {
     position:absolute; bottom:0; left:-50%; width:200%; height:180px;
-    background:rgba(0,196,167,0.015); /* 0.04 → 0.015 */
+    background:rgba(0,196,167,0.015);
     border-radius:50%;
     animation:bgWave 8s ease-in-out infinite;
   }
@@ -53,23 +52,16 @@
     height:100dvh; display:flex; flex-direction:column; overflow:hidden;
   }
 
-  /* 헤더 */
   .header {
     padding:48px 20px 10px;
     display:flex; align-items:center; justify-content:space-between;
     flex-shrink:0;
   }
   .header-left{display:flex;align-items:center;gap:10px;}
-  .header-icon{
-    width:36px;height:36px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),#0097a7);
-    display:flex;align-items:center;justify-content:center;font-size:1.1rem;
-  }
   .header-title{font-size:1.1rem;font-weight:900;letter-spacing:-0.5px;}
   .header-sub{font-size:0.65rem;color:var(--muted);font-weight:600;}
   .clock{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--accent);letter-spacing:1px;}
 
-  /* 위치 선택 버튼 */
   .location-btn-bar {
     padding:4px 20px 10px;
     flex-shrink:0;
@@ -88,11 +80,9 @@
   .location-btn-text{flex:1;}
   .location-btn-arrow{font-size:0.7rem;opacity:0.5;}
 
-  /* 컨텐츠 */
   .content{flex:1;overflow-y:auto;padding:0 16px 20px;scrollbar-width:none;}
   .content::-webkit-scrollbar{display:none;}
 
-  /* 날씨 */
   .weather-bar{
     display:none;align-items:center;gap:10px;
     background:rgba(255,255,255,0.05);
@@ -105,7 +95,6 @@
   .w-sub{font-size:0.65rem;color:var(--muted);}
   .w-wind{font-family:'DM Mono',monospace;font-size:0.9rem;font-weight:500;color:var(--accent);}
 
-  /* 파도 카드 */
   .wave-card{
     border-radius:24px;overflow:hidden;
     border:1px solid rgba(255,255,255,0.1);
@@ -141,7 +130,6 @@
   .wave-right{text-align:right;}
   .time-left-label{font-size:0.6rem;color:var(--muted);font-weight:700;margin-bottom:2px;}
   .time-left-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:#fff;}
-
   .station-name-display{font-size:0.65rem;color:var(--muted);font-weight:700;margin-top:8px;letter-spacing:0.5px;}
 
   /* 수위 게이지 */
@@ -185,7 +173,6 @@
   }
   .gauge-label-bot span{ display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:rgba(255,100,100,0.9); }
 
-  /* 물때 리스트 */
   .tide-item{
     display:flex;align-items:center;justify-content:space-between;
     padding:11px 14px;border-radius:14px;margin-bottom:7px;
@@ -200,7 +187,6 @@
   .tide-time{font-family:'DM Mono',monospace;font-size:0.9rem;font-weight:500;color:rgba(255,255,255,0.65);}
   .day-badge{font-size:0.55rem;background:rgba(255,255,255,0.1);color:var(--muted);padding:1px 5px;border-radius:5px;font-weight:700;margin-left:5px;vertical-align:middle;}
 
-  /* 로딩 */
   .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:120px;gap:12px;color:var(--muted);}
   .loading-wave{display:flex;gap:5px;}
   .loading-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:0.3;animation:loadPulse 1.2s ease-in-out infinite;}
@@ -210,7 +196,6 @@
   .loading-text{font-size:0.72rem;font-weight:700;letter-spacing:1px;}
   .error-msg{text-align:center;padding:30px;color:var(--danger);font-size:0.82rem;font-weight:700;}
 
-  /* 새로고침 */
   .refresh-btn{
     position:fixed;bottom:20px;right:20px;
     width:48px;height:48px;border-radius:50%;
@@ -234,16 +219,12 @@
     border-top:1px solid rgba(255,255,255,0.06);
     margin-top:8px;
   }
-  .credit-row{
-    font-size:0.6rem;color:rgba(255,255,255,0.25);
-    margin-bottom:4px;font-weight:600;
-  }
+  .credit-row{font-size:0.6rem;color:rgba(255,255,255,0.25);margin-bottom:4px;font-weight:600;}
   .credit-row a{color:rgba(255,255,255,0.3);text-decoration:none;}
   .credit-row a:hover{color:var(--accent);}
   .credit-divider{height:1px;background:rgba(255,255,255,0.06);margin:8px 0;}
   .credit-maker{color:rgba(255,255,255,0.35)!important;font-weight:700!important;}
 
-  /* ─── 바텀 시트 ─────────────────────────────────────── */
   .sheet-overlay{
     position:fixed;inset:0;z-index:200;
     background:rgba(0,0,0,0.5);
@@ -251,7 +232,6 @@
     transition:opacity 0.3s;
   }
   .sheet-overlay.open{opacity:1;pointer-events:auto;}
-
   .sheet{
     position:fixed;bottom:0;left:0;right:0;z-index:201;
     max-width:480px;margin:0 auto;
@@ -263,22 +243,10 @@
     padding-bottom:env(safe-area-inset-bottom);
   }
   .sheet.open{transform:translateY(0);}
-
-  .sheet-handle{
-    width:36px;height:4px;border-radius:2px;
-    background:rgba(255,255,255,0.2);
-    margin:12px auto 0;
-  }
-
-  /* 1단계: 지역 선택 */
+  .sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);margin:12px auto 0;}
   .sheet-step{padding:16px 20px 24px;}
-  .sheet-title{
-    font-size:0.65rem;font-weight:700;letter-spacing:2px;
-    color:var(--muted);text-transform:uppercase;margin-bottom:14px;
-  }
-  .region-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  }
+  .sheet-title{font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+  .region-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .region-item{
     display:flex;align-items:center;gap:10px;
     padding:14px 16px;border-radius:16px;
@@ -291,8 +259,6 @@
   .region-emoji{font-size:1.4rem;}
   .region-label{font-size:0.9rem;font-weight:900;}
   .region-count{font-size:0.6rem;color:var(--muted);font-weight:600;margin-top:1px;}
-
-  /* 2단계: 관측소 선택 */
   .sheet-back{
     display:flex;align-items:center;gap:6px;
     font-size:0.72rem;font-weight:700;color:var(--muted);
@@ -300,9 +266,7 @@
     background:none;border:none;padding:0;
     font-family:'Noto Sans KR',sans-serif;
   }
-  .station-grid{
-    display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
-  }
+  .station-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .station-item{
     display:flex;flex-direction:column;align-items:center;gap:4px;
     padding:12px 8px;border-radius:14px;
@@ -324,7 +288,6 @@
 </div>
 
 <div class="app">
-
   <div class="header">
     <div class="header-left">
       <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
@@ -336,7 +299,6 @@
     <div class="clock" id="clock">--:--:--</div>
   </div>
 
-  <!-- 위치 선택 버튼 -->
   <div class="location-btn-bar">
     <div class="location-btn" onclick="openSheet()">
       <span class="location-btn-icon" id="loc-icon">📍</span>
@@ -346,7 +308,6 @@
   </div>
 
   <div class="content">
-
     <div class="weather-bar" id="weather-bar">
       <div class="w-icon" id="w-icon">🌤</div>
       <div>
@@ -370,7 +331,6 @@
           <div class="station-name-display" id="station-display"></div>
         </div>
       </div>
-      <!-- 수위 게이지 -->
       <div class="tide-gauge">
         <div class="gauge-label-top" id="gauge-top-label">--<span id="gauge-top-val">--</span></div>
         <div class="gauge-bar">
@@ -399,12 +359,9 @@
   </div>
 </div>
 
-<!-- 바텀 시트 -->
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
-
-  <!-- 1단계: 지역 -->
   <div class="sheet-step" id="step-region">
     <div class="sheet-title">지역 선택</div>
     <div class="region-grid">
@@ -426,8 +383,6 @@
       </div>
     </div>
   </div>
-
-  <!-- 2단계: 관측소 -->
   <div class="sheet-step" id="step-station" style="display:none;">
     <button class="sheet-back" onclick="backToRegion()">← 지역 다시 선택</button>
     <div class="sheet-title" id="step-station-title">관측소 선택</div>
@@ -520,23 +475,17 @@ function closeSheet() {
 function showRegionStep() {
   document.getElementById('step-region').style.display = 'block';
   document.getElementById('step-station').style.display = 'none';
-  // 현재 지역 활성화
   document.querySelectorAll('.region-item').forEach(el => {
     const r = el.getAttribute('onclick').match(/'(\w+)'/)?.[1];
     el.classList.toggle('active', currentStation && STATIONS[currentStation]?.region === r);
   });
 }
-function backToRegion() {
-  showRegionStep();
-}
+function backToRegion() { showRegionStep(); }
 function selectRegion(region) {
-  // 2단계로 전환
   document.getElementById('step-region').style.display = 'none';
   document.getElementById('step-station').style.display = 'block';
-
   const info = REGION_INFO[region];
   document.getElementById('step-station-title').textContent = `${info.emoji} ${info.label} 관측소`;
-
   const names = Object.keys(STATIONS).filter(k => STATIONS[k].region === region);
   document.getElementById('station-grid').innerHTML = names.map(name => `
     <div class="station-item ${currentStation===name?'active':''}" onclick="pickStation('${name}')">
@@ -544,22 +493,16 @@ function selectRegion(region) {
       <span class="station-item-name">${name}</span>
     </div>`).join('');
 }
-function pickStation(name) {
-  closeSheet();
-  selectStation(name);
-}
+function pickStation(name) { closeSheet(); selectStation(name); }
 
 // ─── 관측소 선택 ────────────────────────────────────────
 async function selectStation(name) {
   currentStation = name;
   localStorage.setItem('lastStation', name);
-
-  // 버튼 텍스트 업데이트
   const region = STATIONS[name].region;
   const rInfo  = REGION_INFO[region];
   document.getElementById('loc-icon').textContent = EMOJI[name] || '📍';
   document.getElementById('loc-text').textContent = `${rInfo.label} · ${name}`;
-
   const s = STATIONS[name];
   await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
 }
@@ -593,10 +536,7 @@ async function callGAS(obsCode) {
     if (!res.ok) throw new Error("HTTP " + res.status);
     const text = await res.text();
     const data = JSON.parse(text);
-    if (!Array.isArray(data)) {
-      console.error("GAS 비배열 응답:", text.substring(0,200));
-      throw new Error("응답 형식 오류");
-    }
+    if (!Array.isArray(data)) throw new Error("응답 형식 오류");
     return data;
   } catch(e) {
     console.error("GAS 오류:", obsCode, e);
@@ -669,79 +609,98 @@ function animateWave(pct, isFalling){
   setTimeout(()=>{el.style.height=pct+'%';},80);
 }
 
-function updateGauge(data, current, pct) {
-  const nowMins  = toMins(current);
-  const tides    = data.filter(d => !d.isCurrent);
-  const isFalling = data.find(d=>!d.isCurrent&&toMins(d)>nowMins)?.type==='low';
+// ─── [수정] 수위 게이지 업데이트 ────────────────────────
+// 변경사항:
+//   1. isFalling을 renderTide에서 계산해 파라미터로 전달 (중복 계산 제거, 죽은 pct 파라미터 제거)
+//   2. fromTide/toTide undefined 엣지케이스: fallback을 isCurrent 제외 조석의 min/max로 보완
+//   3. gaugePct에 clamp(0~100) 추가 — blend/scale 보정으로 범위 초과 방지
+function updateGauge(data, current, isFalling) {
+  const nowMins = toMins(current);
+  const tides   = data.filter(d => !d.isCurrent); // isCurrent 제외
 
   let fromTide, toTide;
   if (!isFalling) {
     // 차오르는 중: 직전 간조 → 다음 만조
-    fromTide = [...tides].reverse().find(d => toMins(d) < nowMins && d.type==='low');
-    toTide   = tides.find(d => toMins(d) > nowMins && d.type==='high');
+    fromTide = [...tides].reverse().find(d => toMins(d) <= nowMins && d.type === 'low');
+    toTide   = tides.find(d => toMins(d) > nowMins && d.type === 'high');
   } else {
     // 빠지는 중: 직전 만조 → 다음 간조
-    fromTide = [...tides].reverse().find(d => toMins(d) < nowMins && d.type==='high');
-    toTide   = tides.find(d => toMins(d) > nowMins && d.type==='low');
+    fromTide = [...tides].reverse().find(d => toMins(d) <= nowMins && d.type === 'high');
+    toTide   = tides.find(d => toMins(d) > nowMins && d.type === 'low');
   }
 
-  // 상단 = 높은 쪽(만조), 하단 = 낮은 쪽(간조)
+  // 상단 = 만조(높은 쪽), 하단 = 간조(낮은 쪽)
   const highTide = isFalling ? fromTide : toTide;
   const lowTide  = isFalling ? toTide   : fromTide;
 
   document.getElementById('gauge-top-label').childNodes[0].textContent = highTide ? '만조' : '--';
-  document.getElementById('gauge-top-val').textContent  = highTide ? highTide.level+'cm' : '--';
+  document.getElementById('gauge-top-val').textContent  = highTide ? highTide.level + 'cm' : '--';
   document.getElementById('gauge-bot-label').childNodes[0].textContent = lowTide ? '간조' : '--';
-  document.getElementById('gauge-bot-val').textContent  = lowTide ? lowTide.level+'cm' : '--';
+  document.getElementById('gauge-bot-val').textContent  = lowTide ? lowTide.level + 'cm' : '--';
 
-  // 게이지 fill & dot 위치: 간조~만조 범위 내 현재 위치
-  const lowL  = lowTide  ? lowTide.level  : Math.min(...data.map(d=>d.level));
-  const highL = highTide ? highTide.level : Math.max(...data.map(d=>d.level));
-  const gaugePct = highL > lowL ? ((current.level - lowL) / (highL - lowL)) * 100 : 50;
+  // fallback: fromTide/toTide 없을 때 오늘 전체 조석 min/max 사용 (isCurrent 제외)
+  const tidesWithLevel = tides.filter(d => d.level != null);
+  const fallbackLow    = tidesWithLevel.length ? Math.min(...tidesWithLevel.map(d => d.level)) : 0;
+  const fallbackHigh   = tidesWithLevel.length ? Math.max(...tidesWithLevel.map(d => d.level)) : 100;
+
+  const lowL  = lowTide  ? lowTide.level  : fallbackLow;
+  const highL = highTide ? highTide.level : fallbackHigh;
+
+  // clamp 적용: 수위 보정으로 인한 범위 초과 방지
+  const rawPct   = highL > lowL ? ((current.level - lowL) / (highL - lowL)) * 100 : 50;
+  const gaugePct = Math.min(100, Math.max(0, rawPct));
+
   setTimeout(() => {
     document.getElementById('gauge-fill').style.height = gaugePct + '%';
-    document.getElementById('gauge-dot').style.bottom  = 'calc('+gaugePct+'% - 4px)';
+    document.getElementById('gauge-dot').style.bottom  = 'calc(' + gaugePct + '% - 4px)';
   }, 80);
 }
 
 // ─── 렌더링 ──────────────────────────────────────────────
-function renderTide(data,name){
-  const current=data.find(d=>d.isCurrent);
-  if(!current){showError('현재 데이터 없음');return;}
+function renderTide(data, name) {
+  const current = data.find(d => d.isCurrent);
+  if (!current) { showError('현재 데이터 없음'); return; }
 
-  document.getElementById('wave-card').style.display='block';
-  document.getElementById('station-display').textContent=`📍 ${name}`;
+  document.getElementById('wave-card').style.display = 'block';
+  document.getElementById('station-display').textContent = `📍 ${name}`;
 
-  const tideNameEl=document.getElementById('tide-name');
-  tideNameEl.textContent=current.tideName||'';
-  tideNameEl.style.display=current.tideName?'inline-block':'none';
-  document.getElementById('level-num').textContent=current.level;
+  const tideNameEl = document.getElementById('tide-name');
+  tideNameEl.textContent = current.tideName || '';
+  tideNameEl.style.display = current.tideName ? 'inline-block' : 'none';
+  document.getElementById('level-num').textContent = current.level;
 
-  const nowMins=toMins(current);
-  const nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nowMins);
-  const isFalling=nextTide?.type==='low';
+  const nowMins  = toMins(current);
+  const nextTide = data.find(d => !d.isCurrent && toMins(d) > nowMins);
 
-  if(nextTide){
-    const diff=toMins(nextTide)-nowMins;
-    const h=Math.floor(diff/60),m=diff%60;
-    document.getElementById('tide-status').innerHTML=`<span>${isFalling?'↓':'↑'}</span> 물이 ${isFalling?'빠지는 중':'차오르는 중'}`;
-    document.getElementById('time-left').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
+  // [수정] isFalling 한 번만 계산 → animateWave·updateGauge 모두에 전달
+  const isFalling = nextTide?.type === 'low';
+
+  if (nextTide) {
+    const diff = toMins(nextTide) - nowMins;
+    const h = Math.floor(diff / 60), m = diff % 60;
+    document.getElementById('tide-status').innerHTML =
+      `<span>${isFalling ? '↓' : '↑'}</span> 물이 ${isFalling ? '빠지는 중' : '차오르는 중'}`;
+    document.getElementById('time-left').textContent =
+      `${isFalling ? '간조' : '만조'} ${h > 0 ? h + '시간 ' : ''}${m}분 전`;
   }
 
-  const levels=data.map(d=>d.level).filter(Boolean);
-  const minL=Math.min(...levels),maxL=Math.max(...levels);
-  const pct=maxL>minL?((current.level-minL)/(maxL-minL))*75+15:50;
-  animateWave(pct, isFalling);
-  updateGauge(data, current, pct);
+  const levels = data.map(d => d.level).filter(Boolean);
+  const minL = Math.min(...levels), maxL = Math.max(...levels);
+  const pct = maxL > minL ? ((current.level - minL) / (maxL - minL)) * 75 + 15 : 50;
 
-  document.getElementById('tide-list').innerHTML=data.map(item=>{
-    const isCur=item.isCurrent;
-    const isDim=item.isYesterday||item.isNextDay;
-    const icon=isCur?'📍':item.type==='high'?'▲':'▼';
-    const color=isCur?'#00c4a7':item.type==='high'?'#5ba4f5':'#ff6b6b';
-    const label=isCur?'현재 예상 수위':item.type==='high'?'만조':'간조';
-    const badge=item.isYesterday?'<span class="day-badge">어제</span>':item.isNextDay?'<span class="day-badge">내일</span>':'';
-    return`<div class="tide-item ${isCur?'current':''} ${isDim?'dim':''}">
+  animateWave(pct, isFalling);
+  updateGauge(data, current, isFalling); // [수정] pct 제거, isFalling 전달
+
+  document.getElementById('tide-list').innerHTML = data.map(item => {
+    const isCur = item.isCurrent;
+    const isDim = item.isYesterday || item.isNextDay;
+    const icon  = isCur ? '📍' : item.type === 'high' ? '▲' : '▼';
+    const color = isCur ? '#00c4a7' : item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
+    const label = isCur ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
+    const badge = item.isYesterday
+      ? '<span class="day-badge">어제</span>'
+      : item.isNextDay ? '<span class="day-badge">내일</span>' : '';
+    return `<div class="tide-item ${isCur ? 'current' : ''} ${isDim ? 'dim' : ''}">
         <div class="tide-item-left">
           <div class="tide-icon" style="color:${color}">${icon}</div>
           <div><div class="tide-level-text">${item.level}cm${badge}</div><div class="tide-label">${label}</div></div>
@@ -798,7 +757,6 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 setInterval(()=>{if(currentStation)refresh();},600000);
 
-// ─── PWA 서비스워커 등록 ────────────────────────────────
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
 }

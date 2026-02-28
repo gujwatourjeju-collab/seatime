@@ -68,8 +68,11 @@ animation: starTwinkle var(–dur, 3s) ease-in-out var(–delay, 0s) infinite;
 .splash-water {
 position: absolute; bottom: 0; left: 0; right: 0;
 height: 0%;
-background: linear-gradient(180deg, rgba(0,196,167,0.18) 0%, rgba(0,100,90,0.55) 100%);
-transition: height 0s; /* JS에서 제어 */
+background: linear-gradient(180deg,
+rgba(0,196,167,0.12) 0%,
+rgba(0,140,120,0.4) 40%,
+rgba(0,80,70,0.7) 100%);
+transition: height 0s;
 overflow: hidden;
 }
 /* 물 표면 파도 */
@@ -166,56 +169,24 @@ from { opacity: 0; transform: translateY(12px); }
 to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 로딩 텍스트 (물 위에) */
-.splash-status {
-position: absolute; bottom: 40px;
-left: 0; right: 0;
-display: flex; flex-direction: column; align-items: center; gap: 6px;
-z-index: 3;
+/* 로딩 상태 텍스트 */
+.splash-status-text {
+margin-top: 18px;
+font-size: 0.6rem; font-weight: 700;
+letter-spacing: 2.5px; color: rgba(255,255,255,0.35);
+min-height: 1em;
 animation: fadeSlideUp 0.8s ease 0.7s both;
 }
-.splash-status-text {
-font-size: 0.62rem; font-weight: 700;
-letter-spacing: 2px; color: rgba(255,255,255,0.4);
-}
 
 ```
-/* ─── PWA 설치 유도 화면 ────────────────────────────── */
-```
-
-.pwa-gate {
-position: fixed; inset: 0; z-index: 9998;
-background: #0a1a28;
-display: none; flex-direction: column;
-align-items: center; justify-content: center;
-overflow: hidden;
-padding: 32px 28px;
-text-align: center;
-}
-.pwa-gate.show { display: flex; }
-.pwa-gate-bg {
-position: absolute; bottom: 0; left: 0; right: 0;
-height: 38%;
-background: linear-gradient(180deg, #0a3347 0%, #062133 100%);
-overflow: hidden;
-}
-.pwa-gate-wave {
-position: absolute; top: -20px; left: -60%; width: 220%; height: 44px;
-border-radius: 50%; opacity: 0.5;
-}
-.pwa-gate-wave:nth-child(1){ background:rgba(0,196,167,0.3); animation:splashWave 4s ease-in-out infinite; }
-.pwa-gate-wave:nth-child(2){ background:rgba(0,150,130,0.2); top:-12px; animation:splashWave 6s ease-in-out -2s infinite; }
-
-.pwa-gate-content { position: relative; z-index: 2; width: 100%; max-width: 340px; }
-
-.pwa-app-icon {
 width: 80px; height: 80px; border-radius: 20px;
 object-fit: cover;
 box-shadow: 0 8px 32px rgba(0,196,167,0.3), 0 2px 8px rgba(0,0,0,0.5);
 margin-bottom: 20px;
 animation: logoFloat 3s ease-in-out infinite;
+```
+
 }
-.pwa-gate-title {
 font-size: 1.5rem; font-weight: 900;
 letter-spacing: -0.5px;
 background: linear-gradient(135deg, #fff 30%, var(–accent));
@@ -223,19 +194,15 @@ background: linear-gradient(135deg, #fff 30%, var(–accent));
 background-clip: text;
 margin-bottom: 8px;
 }
-.pwa-gate-desc {
 font-size: 0.8rem; color: var(–muted);
 font-weight: 600; line-height: 1.7;
 margin-bottom: 32px;
 }
-.pwa-gate-desc strong { color: rgba(255,255,255,0.75); }
 
 /* 기능 뱃지 */
-.pwa-features {
 display: flex; gap: 8px; justify-content: center;
 flex-wrap: wrap; margin-bottom: 32px;
 }
-.pwa-feature-chip {
 display: flex; align-items: center; gap: 5px;
 background: rgba(0,196,167,0.1);
 border: 1px solid rgba(0,196,167,0.2);
@@ -244,7 +211,6 @@ font-size: 0.68rem; font-weight: 700; color: var(–accent);
 }
 
 /* 설치 버튼 */
-.pwa-install-btn {
 width: 100%; padding: 16px;
 background: linear-gradient(135deg, var(–accent), #00a88e);
 border: none; border-radius: 16px;
@@ -257,20 +223,16 @@ display: flex; align-items: center; justify-content: center; gap: 8px;
 margin-bottom: 12px;
 animation: installPulse 2.5s ease-in-out infinite;
 }
-.pwa-install-btn:active { transform: scale(0.97); }
 @keyframes installPulse {
 0%, 100% { box-shadow: 0 6px 24px rgba(0,196,167,0.4); }
 50%       { box-shadow: 0 6px 36px rgba(0,196,167,0.7); }
 }
 
 /* 설치 완료 상태 */
-.pwa-installed-msg {
 display: none;
 flex-direction: column; align-items: center; gap: 12px;
 margin-bottom: 12px;
 }
-.pwa-installed-msg.show { display: flex; }
-.pwa-installed-check {
 width: 56px; height: 56px; border-radius: 50%;
 background: rgba(0,196,167,0.15);
 border: 2px solid var(–accent);
@@ -282,10 +244,8 @@ animation: checkPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
 from { transform: scale(0); opacity: 0; }
 to   { transform: scale(1); opacity: 1; }
 }
-.pwa-installed-text {
 font-size: 0.82rem; font-weight: 700; color: var(–accent);
 }
-.pwa-enter-btn {
 width: 100%; padding: 16px;
 background: var(–accent);
 border: none; border-radius: 16px;
@@ -296,11 +256,8 @@ box-shadow: 0 6px 24px rgba(0,196,167,0.4);
 transition: all 0.2s;
 display: none;
 }
-.pwa-enter-btn.show { display: block; }
-.pwa-enter-btn:active { transform: scale(0.97); }
 
 /* 설치 안내 말풍선 */
-.pwa-hint {
 margin-top: 10px;
 font-size: 0.62rem; color: rgba(255,255,255,0.25);
 font-weight: 600;
@@ -713,54 +670,25 @@ cursor:pointer;transition:all 0.2s;text-align:center;
     </div>
     <div class="splash-title">바당때</div>
     <div class="splash-sub">바다 앞에 서기 전, 바당때 먼저</div>
-  </div>
-
-  <div class="splash-status">
-    <div class="splash-status-text" id="splash-status-text">불러오는 중</div>
+    <div class="splash-status-text" id="splash-status-text"></div>
   </div>
 </div>
 
-<!-- ─── PWA 설치 게이트 (안드로이드 전용) ──────────────── -->
-
-<div class="pwa-gate" id="pwa-gate">
-  <div class="pwa-gate-bg">
-    <div class="pwa-gate-wave"></div>
-    <div class="pwa-gate-wave"></div>
-  </div>
-
-  <div class="pwa-gate-content">
-    <img class="pwa-app-icon"
-         src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png"
-         alt="바당때">
-
 ```
-<div class="pwa-gate-title">바당때 설치하기</div>
-<div class="pwa-gate-desc">
   <strong>바당때</strong>를 홈 화면에 추가하면<br>
   더 빠르게, 앱처럼 사용할 수 있어요
 </div>
 
-<div class="pwa-features">
-  <div class="pwa-feature-chip">⚡ 빠른 실행</div>
-  <div class="pwa-feature-chip">📴 오프라인 지원</div>
-  <div class="pwa-feature-chip">🌊 풀스크린</div>
 </div>
 
 <!-- 설치 전 버튼 -->
-<button class="pwa-install-btn" id="pwa-install-btn" onclick="triggerInstall()">
   <span>📲</span> 홈 화면에 추가
 </button>
 
 <!-- 설치 완료 상태 -->
-<div class="pwa-installed-msg" id="pwa-installed-msg">
-  <div class="pwa-installed-check">✓</div>
-  <div class="pwa-installed-text">설치 완료! 바당때가 준비됐어요</div>
 </div>
-<button class="pwa-enter-btn" id="pwa-enter-btn" onclick="enterApp()">
   바당때 시작하기 →
 </button>
-
-<div class="pwa-hint" id="pwa-hint">설치 후 바당때를 더 쾌적하게 이용할 수 있어요</div>
 ```
 
   </div>
@@ -1236,56 +1164,6 @@ async function refresh(){
 }
 
 
-// ─── PWA 설치 게이트 (안드로이드 전용) ──────────────────
-let deferredPrompt = null;
-const isAndroid = /Android/i.test(navigator.userAgent);
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                  || window.navigator.standalone === true;
-
-// beforeinstallprompt 가로채기 (페이지 로드 초반에 발생하므로 즉시 등록)
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-function showPwaGate() {
-  document.getElementById('pwa-gate').classList.add('show');
-}
-
-function hidePwaGate() {
-  const el = document.getElementById('pwa-gate');
-  el.style.transition = 'opacity 0.5s ease';
-  el.style.opacity = '0';
-  setTimeout(() => { el.classList.remove('show'); el.style.opacity = ''; }, 500);
-}
-
-async function triggerInstall() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-
-  if (outcome === 'accepted') {
-    // 설치 수락 → 완료 UI 표시
-    document.getElementById('pwa-install-btn').style.display = 'none';
-    document.getElementById('pwa-installed-msg').classList.add('show');
-    document.getElementById('pwa-enter-btn').classList.add('show');
-    document.getElementById('pwa-hint').textContent = '설치된 앱에서 바당때를 열어주세요 🌊';
-  }
-  // 거절 → 아무것도 안 함 (강제 유지)
-}
-
-function enterApp() {
-  hidePwaGate();
-}
-
-// appinstalled 이벤트 (이미 설치 완료된 경우 자동 처리)
-window.addEventListener('appinstalled', () => {
-  document.getElementById('pwa-install-btn').style.display = 'none';
-  document.getElementById('pwa-installed-msg').classList.add('show');
-  document.getElementById('pwa-enter-btn').classList.add('show');
-});
-
 // ─── 스플래시 ────────────────────────────────────────────
 function makeSplashStars() {
   const container = document.getElementById('splash-stars');
@@ -1305,12 +1183,13 @@ function makeSplashStars() {
   }
 }
 
-function setSplashProgress(pct, text) {
-  // pct(0~100) → 화면 아래에서 텍스트 바로 밑까지 차오르도록 매핑
-  // 목표 최대 높이: 약 52% (로고+텍스트 바로 아래까지)
+function setSplashProgress(pct, text, duration) {
+  // pct(0~100) → 화면 맨 아래에서 텍스트 아래까지 주르륵 차오름
+  // 최대 높이 55% (화면 중간보다 살짝 위, 로고/텍스트 바로 밑)
   const waterEl = document.getElementById('splash-water');
-  const targetH = pct * 0.52; // 100% → 52vh
-  waterEl.style.transition = pct === 0 ? 'none' : 'height 0.7s cubic-bezier(0.4,0,0.2,1)';
+  const targetH = pct * 0.55;
+  const dur = duration ?? 1.1;
+  waterEl.style.transition = pct === 0 ? 'none' : `height ${dur}s cubic-bezier(0.2, 0.8, 0.3, 1)`;
   waterEl.style.height = targetH + '%';
   if (text) document.getElementById('splash-status-text').textContent = text;
 }
@@ -1318,15 +1197,7 @@ function setSplashProgress(pct, text) {
 function hideSplash() {
   const el = document.getElementById('splash');
   el.classList.add('hide');
-  setTimeout(() => {
-    el.style.display = 'none';
-    // 안드로이드이고, 이미 설치된 앱(standalone)이 아니고,
-    // 브라우저가 설치 프롬프트를 지원하는 경우 → PWA 게이트 표시
-    if (isAndroid && !isStandalone && deferredPrompt) {
-      showPwaGate();
-    }
-    // deferredPrompt가 없는 경우(이미 설치됨, 미지원 브라우저)는 그냥 진입
-  }, 650);
+  setTimeout(() => { el.style.display = 'none'; }, 650);
 }
 
 // ─── 시작 ────────────────────────────────────────────────
@@ -1337,8 +1208,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   if (!last || !STATIONS[last]) {
     // 관측소 없음: 물이 살짝 차올랐다 앱 진입
-    setTimeout(() => setSplashProgress(60, ''), 100);
-    setTimeout(hideSplash, 1100);
+    setTimeout(() => setSplashProgress(60, '', 1.4), 100);
+    setTimeout(hideSplash, 1400);
     return;
   }
 
@@ -1349,31 +1220,31 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('loc-text').textContent  = `${rInfo.label} · ${last}`;
   currentStation = last;
 
-  setSplashProgress(10, '관측소 확인 중');
+  setSplashProgress(10, '관측소 확인 중', 0.8);
   const s = STATIONS[last];
   const weatherPromise = loadWeather(s.lat, s.lng).catch(() => {});
 
   let tideData = null;
   try {
     if (s.type === 'blend') {
-      setSplashProgress(35, '조석 데이터 수신 중');
+      setSplashProgress(35, '조석 데이터 수신 중', 1.2);
       const [r1, r2] = await Promise.all([callGAS(s.obs1), callGAS(s.obs2)]);
-      setSplashProgress(75, '데이터 처리 중');
+      setSplashProgress(75, '데이터 처리 중', 1.5);
       tideData = blendTides(r1, r2, s.w1, s.w2, s.timeCorr);
     } else if (s.type === 'scale') {
-      setSplashProgress(35, '조석 데이터 수신 중');
+      setSplashProgress(35, '조석 데이터 수신 중', 1.2);
       const raw = await callGAS(s.obs);
-      setSplashProgress(75, '데이터 처리 중');
+      setSplashProgress(75, '데이터 처리 중', 1.5);
       tideData = scaleTides(raw, s.scale, s.timeCorr);
     } else {
-      setSplashProgress(35, '조석 데이터 수신 중');
+      setSplashProgress(35, '조석 데이터 수신 중', 1.2);
       tideData = await callGAS(s.obs);
-      setSplashProgress(75, '데이터 처리 중');
+      setSplashProgress(75, '데이터 처리 중', 1.5);
     }
   } catch(e) { tideData = null; }
 
   await weatherPromise;
-  setSplashProgress(95, '화면 준비 중');
+  setSplashProgress(95, '화면 준비 중', 1.0);
   await new Promise(r => setTimeout(r, 200));
 
   if (tideData) {
@@ -1386,7 +1257,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  setSplashProgress(100, '준비 완료 ✓');
+  setSplashProgress(100, '준비 완료 ✓', 0.5);
   await new Promise(r => setTimeout(r, 380));
   hideSplash();
 });

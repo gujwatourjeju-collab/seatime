@@ -10,209 +10,246 @@
   :root {
     --accent: #00c4a7;
     --danger: #ff6b6b;
-    --blue: #5ba4f5;
     --muted: #6b8fa3;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
   body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: #0d1f2d;
-    color: #fff;
-    height: 100dvh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    font-family:'Noto Sans KR',sans-serif;
+    background:#0d1f2d; color:#fff;
+    height:100dvh; overflow:hidden;
+    display:flex; flex-direction:column;
   }
 
+  /* 배경 — 더 연하게 */
   .bg-ocean {
-    position: fixed; inset: 0; z-index: 0;
-    background: linear-gradient(180deg, #0d1f2d 0%, #0a3347 50%, #0a4f6e 100%);
-    overflow: hidden;
+    position:fixed; inset:0; z-index:0;
+    background:linear-gradient(180deg,#0d1f2d 0%,#0a3347 50%,#0a4f6e 100%);
+    overflow:hidden;
   }
   .bg-wave {
-    position: absolute; bottom: 0; left: -50%; width: 200%; height: 180px;
-    background: rgba(0,196,167,0.04); border-radius: 50%;
-    animation: bgWave 8s ease-in-out infinite;
+    position:absolute; bottom:0; left:-50%; width:200%; height:180px;
+    background:rgba(0,196,167,0.015); /* 0.04 → 0.015 */
+    border-radius:50%;
+    animation:bgWave 8s ease-in-out infinite;
   }
-  .bg-wave:nth-child(2) { height: 130px; bottom: 20px; animation-duration: 11s; animation-delay: -3s; }
-  .bg-wave:nth-child(3) { height: 100px; bottom: 40px; animation-duration: 14s; animation-delay: -6s; }
-  @keyframes bgWave { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-5%)} }
+  .bg-wave:nth-child(2){height:130px;bottom:20px;animation-duration:11s;animation-delay:-3s;}
+  .bg-wave:nth-child(3){height:100px;bottom:40px;animation-duration:14s;animation-delay:-6s;}
+  @keyframes bgWave{0%,100%{transform:translateX(0)}50%{transform:translateX(-5%)}}
 
   .app {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 480px; margin: 0 auto;
-    height: 100dvh;
-    display: flex; flex-direction: column;
-    overflow: hidden;
+    position:relative; z-index:1;
+    width:100%; max-width:480px; margin:0 auto;
+    height:100dvh; display:flex; flex-direction:column; overflow:hidden;
   }
 
   /* 헤더 */
   .header {
-    padding: 48px 20px 8px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
+    padding:48px 20px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
   }
-  .header-left { display: flex; align-items: center; gap: 10px; }
-  .header-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), #0097a7);
-    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  .header-left{display:flex;align-items:center;gap:10px;}
+  .header-icon{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),#0097a7);
+    display:flex;align-items:center;justify-content:center;font-size:1.1rem;
   }
-  .header-title { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.5px; }
-  .header-sub { font-size: 0.65rem; color: var(--muted); font-weight: 600; }
-  .clock { font-family:'DM Mono',monospace; font-size:1.1rem; font-weight:500; color:var(--accent); letter-spacing:1px; }
+  .header-title{font-size:1.1rem;font-weight:900;letter-spacing:-0.5px;}
+  .header-sub{font-size:0.65rem;color:var(--muted);font-weight:600;}
+  .clock{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--accent);letter-spacing:1px;}
 
-  /* 지역 탭 */
-  .region-bar {
-    padding: 6px 20px 0;
-    display: flex; gap: 6px;
-    flex-shrink: 0;
+  /* 위치 선택 버튼 */
+  .location-btn-bar {
+    padding:4px 20px 10px;
+    flex-shrink:0;
   }
-  .region-tab {
-    padding: 5px 14px; border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.45);
-    font-size: 0.72rem; font-weight: 900; cursor: pointer;
-    transition: all 0.2s; white-space: nowrap;
-    font-family: 'Noto Sans KR', sans-serif;
-    letter-spacing: 0.3px;
+  .location-btn {
+    display:flex; align-items:center; gap:8px;
+    padding:9px 16px; border-radius:20px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.07);
+    color:#fff; font-size:0.82rem; font-weight:700;
+    cursor:pointer; font-family:'Noto Sans KR',sans-serif;
+    transition:all 0.2s;
   }
-  .region-tab.active {
-    background: var(--accent); border-color: var(--accent); color: #0d1f2d;
-  }
-  .region-tab:active { transform: scale(0.95); }
-
-  /* 관측소 칩 */
-  .location-bar { padding: 8px 20px; flex-shrink: 0; }
-  .location-scroll {
-    display: flex; gap: 6px; overflow-x: auto;
-    scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  .location-scroll::-webkit-scrollbar { display: none; }
-  .station-chip {
-    flex-shrink: 0;
-    padding: 6px 13px; border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.5);
-    font-size: 0.75rem; font-weight: 700; cursor: pointer;
-    transition: all 0.2s; white-space: nowrap;
-    font-family: 'Noto Sans KR', sans-serif;
-  }
-  .station-chip.active {
-    background: rgba(0,196,167,0.2);
-    border-color: var(--accent); color: var(--accent);
-  }
-  .station-chip:active { transform: scale(0.95); }
+  .location-btn:active{transform:scale(0.97);}
+  .location-btn-icon{font-size:1rem;}
+  .location-btn-text{flex:1;}
+  .location-btn-arrow{font-size:0.7rem;opacity:0.5;}
 
   /* 컨텐츠 */
-  .content { flex: 1; overflow-y: auto; padding: 0 16px 20px; scrollbar-width: none; }
-  .content::-webkit-scrollbar { display: none; }
+  .content{flex:1;overflow-y:auto;padding:0 16px 20px;scrollbar-width:none;}
+  .content::-webkit-scrollbar{display:none;}
 
   /* 날씨 */
-  .weather-bar {
-    display: none; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px; padding: 10px 14px; margin-bottom: 10px;
+  .weather-bar{
+    display:none;align-items:center;gap:10px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:10px 14px;margin-bottom:10px;
   }
-  .weather-bar.visible { display: flex; }
-  .w-icon { font-size: 1.3rem; }
-  .w-text { flex: 1; font-size: 0.78rem; font-weight: 700; }
-  .w-sub { font-size: 0.65rem; color: var(--muted); }
-  .w-wind { font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:500; color:var(--accent); }
+  .weather-bar.visible{display:flex;}
+  .w-icon{font-size:1.3rem;}
+  .w-text{flex:1;font-size:0.78rem;font-weight:700;}
+  .w-sub{font-size:0.65rem;color:var(--muted);}
+  .w-wind{font-family:'DM Mono',monospace;font-size:0.9rem;font-weight:500;color:var(--accent);}
 
   /* 파도 카드 */
-  .wave-card {
-    border-radius: 24px; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: 10px; position: relative; height: 160px;
-    background: rgba(255,255,255,0.05);
+  .wave-card{
+    border-radius:24px;overflow:hidden;
+    border:1px solid rgba(255,255,255,0.1);
+    margin-bottom:10px;position:relative;height:160px;
+    background:rgba(255,255,255,0.05);
   }
-
-  /* 물 채우기 — 차오를 때 */
-  .wave-fill {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(180deg, rgba(0,196,167,0.25), rgba(0,196,167,0.6));
-    height: 0%;
-    transition: height 2.2s cubic-bezier(0.4, 0, 0.2, 1);
+  .wave-fill{
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(180deg,rgba(0,196,167,0.25),rgba(0,196,167,0.6));
+    height:0%;
+    transition:height 2.2s cubic-bezier(0.4,0,0.2,1);
   }
-
-  /* 빠질 때: top 기준으로 전환 */
-
-  .wave-fill::before {
-    content: ""; position: absolute; top: -18px; left: -50%; width: 200%; height: 36px;
-    background: rgba(0,196,167,0.35); border-radius: 50%;
-    animation: waveTop 4s ease-in-out infinite;
+  .wave-fill::before{
+    content:"";position:absolute;top:-18px;left:-50%;width:200%;height:36px;
+    background:rgba(0,196,167,0.35);border-radius:50%;
+    animation:waveTop 4s ease-in-out infinite;
   }
+  @keyframes waveTop{0%,100%{transform:translateX(0)}50%{transform:translateX(-8%)}}
 
-  @keyframes waveTop { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-8%)} }
-
-  .wave-info {
-    position: absolute; inset: 0; z-index: 2;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 24px;
+  .wave-info{
+    position:absolute;inset:0;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 24px;
   }
-  .tide-name-badge {
-    display: inline-block; background: var(--accent); color: #0d1f2d;
-    font-size: 0.65rem; font-weight: 900;
-    padding: 2px 10px; border-radius: 20px; margin-bottom: 6px; letter-spacing: 0.5px;
+  .tide-name-badge{
+    display:inline-block;background:var(--accent);color:#0d1f2d;
+    font-size:0.65rem;font-weight:900;
+    padding:2px 10px;border-radius:20px;margin-bottom:6px;letter-spacing:0.5px;
   }
-  .level-display { font-family:'DM Mono',monospace; font-size:3.2rem; font-weight:500; line-height:1; letter-spacing:-2px; }
-  .level-unit { font-size:1rem; opacity:0.6; margin-left:3px; }
-  .tide-status { font-size:0.72rem; font-weight:700; color:var(--accent); margin-top:4px; display:flex; align-items:center; gap:3px; }
-  .wave-right { text-align: right; }
-  .time-left-label { font-size:0.6rem; color:var(--muted); font-weight:700; margin-bottom:2px; }
-  .time-left-val { font-family:'DM Mono',monospace; font-size:1rem; font-weight:500; color:#fff; }
-  .station-name-display { font-size:0.65rem; color:var(--muted); font-weight:700; margin-top:8px; letter-spacing:0.5px; }
+  .level-display{font-family:'DM Mono',monospace;font-size:3.2rem;font-weight:500;line-height:1;letter-spacing:-2px;}
+  .level-unit{font-size:1rem;opacity:0.6;margin-left:3px;}
+  .tide-status{font-size:0.72rem;font-weight:700;color:var(--accent);margin-top:4px;display:flex;align-items:center;gap:3px;}
+  .wave-right{text-align:right;}
+  .time-left-label{font-size:0.6rem;color:var(--muted);font-weight:700;margin-bottom:2px;}
+  .time-left-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:#fff;}
+  .station-name-display{font-size:0.65rem;color:var(--muted);font-weight:700;margin-top:8px;letter-spacing:0.5px;}
 
   /* 물때 리스트 */
-  .tide-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 11px 14px; border-radius: 14px; margin-bottom: 7px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+  .tide-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 14px;border-radius:14px;margin-bottom:7px;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
   }
-  .tide-item.current { background:rgba(0,196,167,0.1); border-color:rgba(0,196,167,0.3); }
-  .tide-item.dim { opacity: 0.4; }
-  .tide-item-left { display:flex; align-items:center; gap:10px; }
-  .tide-icon { font-size:0.9rem; width:18px; text-align:center; }
-  .tide-level-text { font-size:0.95rem; font-weight:800; font-family:'DM Mono',monospace; letter-spacing:-0.5px; }
-  .tide-label { font-size:0.6rem; color:var(--muted); margin-top:1px; font-weight:600; }
-  .tide-time { font-family:'DM Mono',monospace; font-size:0.9rem; font-weight:500; color:rgba(255,255,255,0.65); }
-  .day-badge { font-size:0.55rem; background:rgba(255,255,255,0.1); color:var(--muted); padding:1px 5px; border-radius:5px; font-weight:700; margin-left:5px; vertical-align:middle; }
+  .tide-item.current{background:rgba(0,196,167,0.1);border-color:rgba(0,196,167,0.3);}
+  .tide-item.dim{opacity:0.4;}
+  .tide-item-left{display:flex;align-items:center;gap:10px;}
+  .tide-icon{font-size:0.9rem;width:18px;text-align:center;}
+  .tide-level-text{font-size:0.95rem;font-weight:800;font-family:'DM Mono',monospace;letter-spacing:-0.5px;}
+  .tide-label{font-size:0.6rem;color:var(--muted);margin-top:1px;font-weight:600;}
+  .tide-time{font-family:'DM Mono',monospace;font-size:0.9rem;font-weight:500;color:rgba(255,255,255,0.65);}
+  .day-badge{font-size:0.55rem;background:rgba(255,255,255,0.1);color:var(--muted);padding:1px 5px;border-radius:5px;font-weight:700;margin-left:5px;vertical-align:middle;}
 
   /* 로딩 */
-  .loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:120px; gap:12px; color:var(--muted); }
-  .loading-wave { display:flex; gap:5px; }
-  .loading-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); opacity:0.3; animation:loadPulse 1.2s ease-in-out infinite; }
-  .loading-dot:nth-child(2) { animation-delay:0.2s; }
-  .loading-dot:nth-child(3) { animation-delay:0.4s; }
-  @keyframes loadPulse { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
-  .loading-text { font-size:0.72rem; font-weight:700; letter-spacing:1px; }
-
-  .error-msg { text-align:center; padding:30px; color:var(--danger); font-size:0.82rem; font-weight:700; }
+  .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:120px;gap:12px;color:var(--muted);}
+  .loading-wave{display:flex;gap:5px;}
+  .loading-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:0.3;animation:loadPulse 1.2s ease-in-out infinite;}
+  .loading-dot:nth-child(2){animation-delay:0.2s;}
+  .loading-dot:nth-child(3){animation-delay:0.4s;}
+  @keyframes loadPulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+  .loading-text{font-size:0.72rem;font-weight:700;letter-spacing:1px;}
+  .error-msg{text-align:center;padding:30px;color:var(--danger);font-size:0.82rem;font-weight:700;}
 
   /* 새로고침 */
-  .refresh-btn {
-    position:fixed; bottom:20px; right:20px;
-    width:48px; height:48px; border-radius:50%;
-    background:var(--accent); border:none; color:#0d1f2d; cursor:pointer;
+  .refresh-btn{
+    position:fixed;bottom:20px;right:20px;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--accent);border:none;color:#0d1f2d;cursor:pointer;
     box-shadow:0 4px 18px rgba(0,196,167,0.4);
-    display:flex; align-items:center; justify-content:center;
-    transition:all 0.2s; z-index:100;
+    display:flex;align-items:center;justify-content:center;
+    transition:all 0.2s;z-index:100;
   }
-  .refresh-btn:active { transform:scale(0.92); }
-  .refresh-btn.spinning svg { animation:spin 0.8s linear; }
-  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .refresh-btn:active{transform:scale(0.92);}
+  .refresh-btn.spinning svg{animation:spin 0.8s linear;}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-  .update-time { text-align:center; font-size:0.6rem; color:rgba(255,255,255,0.2); padding:6px; font-family:'DM Mono',monospace; }
+  .update-time{text-align:center;font-size:0.6rem;color:rgba(255,255,255,0.2);padding:6px;font-family:'DM Mono',monospace;}
 
-  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; gap:12px; color:var(--muted); padding:40px; }
-  .empty-icon { font-size:2.5rem; opacity:0.4; }
-  .empty-text { font-size:0.82rem; font-weight:700; text-align:center; line-height:1.6; }
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--muted);padding:40px;}
+  .empty-icon{font-size:2.5rem;opacity:0.4;}
+  .empty-text{font-size:0.82rem;font-weight:700;text-align:center;line-height:1.6;}
+
+  /* ─── 바텀 시트 ─────────────────────────────────────── */
+  .sheet-overlay{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.5);
+    opacity:0;pointer-events:none;
+    transition:opacity 0.3s;
+  }
+  .sheet-overlay.open{opacity:1;pointer-events:auto;}
+
+  .sheet{
+    position:fixed;bottom:0;left:0;right:0;z-index:201;
+    max-width:480px;margin:0 auto;
+    background:#0f2535;
+    border-radius:24px 24px 0 0;
+    border-top:1px solid rgba(255,255,255,0.1);
+    transform:translateY(100%);
+    transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .sheet.open{transform:translateY(0);}
+
+  .sheet-handle{
+    width:36px;height:4px;border-radius:2px;
+    background:rgba(255,255,255,0.2);
+    margin:12px auto 0;
+  }
+
+  /* 1단계: 지역 선택 */
+  .sheet-step{padding:16px 20px 24px;}
+  .sheet-title{
+    font-size:0.65rem;font-weight:700;letter-spacing:2px;
+    color:var(--muted);text-transform:uppercase;margin-bottom:14px;
+  }
+  .region-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .region-item{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;border-radius:16px;
+    border:1px solid rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.05);
+    cursor:pointer;transition:all 0.2s;
+  }
+  .region-item:active{transform:scale(0.97);}
+  .region-item.active{background:rgba(0,196,167,0.15);border-color:var(--accent);}
+  .region-emoji{font-size:1.4rem;}
+  .region-label{font-size:0.9rem;font-weight:900;}
+  .region-count{font-size:0.6rem;color:var(--muted);font-weight:600;margin-top:1px;}
+
+  /* 2단계: 관측소 선택 */
+  .sheet-back{
+    display:flex;align-items:center;gap:6px;
+    font-size:0.72rem;font-weight:700;color:var(--muted);
+    cursor:pointer;margin-bottom:14px;
+    background:none;border:none;padding:0;
+    font-family:'Noto Sans KR',sans-serif;
+  }
+  .station-grid{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  }
+  .station-item{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:12px 8px;border-radius:14px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    cursor:pointer;transition:all 0.2s;text-align:center;
+  }
+  .station-item:active{transform:scale(0.95);}
+  .station-item.active{background:rgba(0,196,167,0.15);border-color:var(--accent);}
+  .station-item-emoji{font-size:1.1rem;}
+  .station-item-name{font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.85);}
+  .station-item.active .station-item-name{color:var(--accent);}
 </style>
 </head>
 <body>
@@ -234,17 +271,13 @@
     <div class="clock" id="clock">--:--:--</div>
   </div>
 
-  <!-- 지역 탭 -->
-  <div class="region-bar">
-    <button class="region-tab active" onclick="switchRegion('jeju')">🏝 제주</button>
-    <button class="region-tab" onclick="switchRegion('west')">🌊 서해</button>
-    <button class="region-tab" onclick="switchRegion('south')">🐬 남해</button>
-    <button class="region-tab" onclick="switchRegion('east')">🏔 동해</button>
-  </div>
-
-  <!-- 관측소 칩 -->
-  <div class="location-bar">
-    <div class="location-scroll" id="location-scroll"></div>
+  <!-- 위치 선택 버튼 -->
+  <div class="location-btn-bar">
+    <div class="location-btn" onclick="openSheet()">
+      <span class="location-btn-icon" id="loc-icon">📍</span>
+      <span class="location-btn-text" id="loc-text">관측소 선택</span>
+      <span class="location-btn-arrow">▼</span>
+    </div>
   </div>
 
   <div class="content">
@@ -277,11 +310,47 @@
     <div id="tide-list">
       <div class="empty-state">
         <div class="empty-icon">🌊</div>
-        <div class="empty-text">관측소를 선택하면<br>실시간 물때 정보를 확인할 수 있어요</div>
+        <div class="empty-text">위 버튼을 눌러<br>관측소를 선택해주세요</div>
       </div>
     </div>
 
     <div class="update-time" id="update-time"></div>
+  </div>
+</div>
+
+<!-- 바텀 시트 -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+
+  <!-- 1단계: 지역 -->
+  <div class="sheet-step" id="step-region">
+    <div class="sheet-title">지역 선택</div>
+    <div class="region-grid">
+      <div class="region-item" onclick="selectRegion('jeju')">
+        <span class="region-emoji">🏝</span>
+        <div><div class="region-label">제주</div><div class="region-count">6개 관측소</div></div>
+      </div>
+      <div class="region-item" onclick="selectRegion('west')">
+        <span class="region-emoji">🌊</span>
+        <div><div class="region-label">서해</div><div class="region-count">17개 관측소</div></div>
+      </div>
+      <div class="region-item" onclick="selectRegion('south')">
+        <span class="region-emoji">🐬</span>
+        <div><div class="region-label">남해</div><div class="region-count">5개 관측소</div></div>
+      </div>
+      <div class="region-item" onclick="selectRegion('east')">
+        <span class="region-emoji">🏔</span>
+        <div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2단계: 관측소 -->
+  <div class="sheet-step" id="step-station" style="display:none;">
+    <button class="sheet-back" onclick="backToRegion()">← 지역 다시 선택</button>
+    <div class="sheet-title" id="step-station-title">관측소 선택</div>
+    <div class="station-grid" id="station-grid"></div>
   </div>
 </div>
 
@@ -293,98 +362,123 @@
 </button>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwqeaT7S4TrCikMHpaJdMKQSZGKb866MUDygr6sTaX9ROi9zPJD4RYt7ByyMDMvEDAlnQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbys6JvzPILFYr5ned43ZYzlyATe6zNLnfj4WVKZJdtH3DuIvf4aLMwjEgJ3wzHPO1qJ/exec';
 
-// ─── 관측소 데이터 ─────────────────────────────────────
 const STATIONS = {
-  // 제주
-  '김녕':    { type:'blend',  obs1:'DT_0004', obs2:'DT_0022', w1:0.48, w2:0.52, timeCorr:+10, lat:33.558,  lng:126.751, region:'jeju' },
-  '제주':    { type:'single', obs:'DT_0004',  lat:33.5275, lng:126.543,  region:'jeju' },
-  '성산포':  { type:'single', obs:'DT_0022',  lat:33.4747, lng:126.927,  region:'jeju' },
-  '서귀포':  { type:'single', obs:'DT_0061',  lat:33.2468, lng:126.561,  region:'jeju' },
-  '모슬포':  { type:'single', obs:'DT_0020',  lat:33.2147, lng:126.251,  region:'jeju' },
-  '추자도':  { type:'single', obs:'DT_0021',  lat:33.9611, lng:126.889,  region:'jeju' },
-  // 서해
-  '만대항':  { type:'scale',  obs:'DT_0050',  scale:1.10, timeCorr:+3, lat:36.626,  lng:126.309, region:'west' },
-  '태안':    { type:'single', obs:'DT_0050',  lat:36.7445, lng:126.297,  region:'west' },
-  '안흥':    { type:'single', obs:'DT_0067',  lat:36.6747, lng:126.115,  region:'west' },
-  '보령':    { type:'single', obs:'DT_0025',  lat:36.4167, lng:126.483,  region:'west' },
-  '서천마량':{ type:'single', obs:'DT_0051',  lat:36.0833, lng:126.633,  region:'west' },
-  '군산':    { type:'single', obs:'DT_0018',  lat:35.9833, lng:126.717,  region:'west' },
-  '위도':    { type:'single', obs:'DT_0068',  lat:35.6167, lng:126.300,  region:'west' },
-  '어청도':  { type:'single', obs:'DT_0037',  lat:36.1167, lng:125.983,  region:'west' },
-  '흑산도':  { type:'single', obs:'DT_0035',  lat:34.6833, lng:125.433,  region:'west' },
-  '향화도':  { type:'single', obs:'DT_0066',  lat:35.8833, lng:126.517,  region:'west' },
-  '인천송도':{ type:'single', obs:'DT_0052',  lat:37.3833, lng:126.633,  region:'west' },
-  '강화대교':{ type:'single', obs:'DT_0032',  lat:37.7333, lng:126.533,  region:'west' },
-  '덕적도':  { type:'single', obs:'DT_0065',  lat:37.2333, lng:126.133,  region:'west' },
-  '굴업도':  { type:'single', obs:'DT_0038',  lat:37.1833, lng:126.250,  region:'west' },
-  '대청도':  { type:'single', obs:'DT_0036',  lat:37.8333, lng:124.717,  region:'west' },
-  '연평도':  { type:'single', obs:'DT_0060',  lat:37.6667, lng:125.683,  region:'west' },
-  '장항':    { type:'single', obs:'DT_0024',  lat:36.0000, lng:126.700,  region:'west' },
-  // 남해
-  '통영':    { type:'single', obs:'DT_0014',  lat:34.8500, lng:128.433,  region:'south' },
-  '거문도':  { type:'single', obs:'DT_0031',  lat:34.0167, lng:127.300,  region:'south' },
-  '마산':    { type:'single', obs:'DT_0062',  lat:35.2000, lng:128.567,  region:'south' },
-  '가덕도':  { type:'single', obs:'DT_0063',  lat:35.0167, lng:128.817,  region:'south' },
-  '진해':    { type:'single', obs:'DT_0054',  lat:35.1000, lng:128.700,  region:'south' },
-  // 동해
-  '속초':    { type:'single', obs:'DT_0012',  lat:38.2000, lng:128.600,  region:'east' },
-  '후포':    { type:'single', obs:'DT_0011',  lat:36.6833, lng:129.450,  region:'east' },
-  '울릉도':  { type:'single', obs:'DT_0013',  lat:37.5000, lng:130.900,  region:'east' },
+  '김녕':    {type:'blend', obs1:'DT_0004',obs2:'DT_0022',w1:0.48,w2:0.52,timeCorr:+10,lat:33.558, lng:126.751,region:'jeju'},
+  '제주':    {type:'single',obs:'DT_0004', lat:33.5275,lng:126.543, region:'jeju'},
+  '성산포':  {type:'single',obs:'DT_0022', lat:33.4747,lng:126.927, region:'jeju'},
+  '서귀포':  {type:'single',obs:'DT_0061', lat:33.2468,lng:126.561, region:'jeju'},
+  '모슬포':  {type:'single',obs:'DT_0020', lat:33.2147,lng:126.251, region:'jeju'},
+  '추자도':  {type:'single',obs:'DT_0021', lat:33.9611,lng:126.889, region:'jeju'},
+  '만대항':  {type:'scale', obs:'DT_0050', scale:1.10,timeCorr:+3,lat:36.626, lng:126.309,region:'west'},
+  '태안':    {type:'single',obs:'DT_0050', lat:36.7445,lng:126.297, region:'west'},
+  '안흥':    {type:'single',obs:'DT_0067', lat:36.6747,lng:126.115, region:'west'},
+  '보령':    {type:'single',obs:'DT_0025', lat:36.4167,lng:126.483, region:'west'},
+  '서천마량':{type:'single',obs:'DT_0051', lat:36.0833,lng:126.633, region:'west'},
+  '군산':    {type:'single',obs:'DT_0018', lat:35.9833,lng:126.717, region:'west'},
+  '위도':    {type:'single',obs:'DT_0068', lat:35.6167,lng:126.300, region:'west'},
+  '어청도':  {type:'single',obs:'DT_0037', lat:36.1167,lng:125.983, region:'west'},
+  '흑산도':  {type:'single',obs:'DT_0035', lat:34.6833,lng:125.433, region:'west'},
+  '향화도':  {type:'single',obs:'DT_0066', lat:35.8833,lng:126.517, region:'west'},
+  '인천송도':{type:'single',obs:'DT_0052', lat:37.3833,lng:126.633, region:'west'},
+  '강화대교':{type:'single',obs:'DT_0032', lat:37.7333,lng:126.533, region:'west'},
+  '덕적도':  {type:'single',obs:'DT_0065', lat:37.2333,lng:126.133, region:'west'},
+  '굴업도':  {type:'single',obs:'DT_0038', lat:37.1833,lng:126.250, region:'west'},
+  '대청도':  {type:'single',obs:'DT_0036', lat:37.8333,lng:124.717, region:'west'},
+  '연평도':  {type:'single',obs:'DT_0060', lat:37.6667,lng:125.683, region:'west'},
+  '장항':    {type:'single',obs:'DT_0024', lat:36.0000,lng:126.700, region:'west'},
+  '통영':    {type:'single',obs:'DT_0014', lat:34.8500,lng:128.433, region:'south'},
+  '거문도':  {type:'single',obs:'DT_0031', lat:34.0167,lng:127.300, region:'south'},
+  '마산':    {type:'single',obs:'DT_0062', lat:35.2000,lng:128.567, region:'south'},
+  '가덕도':  {type:'single',obs:'DT_0063', lat:35.0167,lng:128.817, region:'south'},
+  '진해':    {type:'single',obs:'DT_0054', lat:35.1000,lng:128.700, region:'south'},
+  '속초':    {type:'single',obs:'DT_0012', lat:38.2000,lng:128.600, region:'east'},
+  '후포':    {type:'single',obs:'DT_0011', lat:36.6833,lng:129.450, region:'east'},
+  '울릉도':  {type:'single',obs:'DT_0013', lat:37.5000,lng:130.900, region:'east'},
 };
 
-const REGION_EMOJI = {
-  jeju:  { 김녕:'🏄', 제주:'🌊', 성산포:'🌅', 서귀포:'🐬', 모슬포:'⚓', 추자도:'🏔' },
-  west:  { 만대항:'🦀', 태안:'🌾', 안흥:'⛵', 보령:'🏖', 서천마량:'🎣', 군산:'🌉', 위도:'🏝', 어청도:'⚓', 흑산도:'🌑', 향화도:'🌿', 인천송도:'🏙', 강화대교:'🌁', 덕적도:'🏔', 굴업도:'🦅', 대청도:'🔵', 연평도:'🟡', 장항:'🌊' },
-  south: { 통영:'🦪', 거문도:'🏝', 마산:'🐟', 가덕도:'⚓', 진해:'🌸' },
-  east:  { 속초:'🌊', 후포:'🎣', 울릉도:'🌋' },
+const REGION_INFO = {
+  jeju:  {label:'제주', emoji:'🏝'},
+  west:  {label:'서해', emoji:'🌊'},
+  south: {label:'남해', emoji:'🐬'},
+  east:  {label:'동해', emoji:'🏔'},
+};
+
+const EMOJI = {
+  김녕:'🏄',제주:'🌊',성산포:'🌅',서귀포:'🐬',모슬포:'⚓',추자도:'🏔',
+  만대항:'🦀',태안:'🌾',안흥:'⛵',보령:'🏖',서천마량:'🎣',군산:'🌉',
+  위도:'🏝',어청도:'⚓',흑산도:'🌑',향화도:'🌿',인천송도:'🏙',강화대교:'🌁',
+  덕적도:'🏔',굴업도:'🦅',대청도:'🔵',연평도:'🟡',장항:'🌊',
+  통영:'🦪',거문도:'🏝',마산:'🐟',가덕도:'⚓',진해:'🌸',
+  속초:'🌊',후포:'🎣',울릉도:'🌋',
 };
 
 let currentStation = null;
-let currentRegion  = 'jeju';
 
 // ─── 시계 ───────────────────────────────────────────────
 function updateClock() {
   const n = new Date();
   document.getElementById('clock').textContent =
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+    String(n.getHours()).padStart(2,'0')+':'+
+    String(n.getMinutes()).padStart(2,'0')+':'+
+    String(n.getSeconds()).padStart(2,'0');
 }
-setInterval(updateClock, 1000); updateClock();
+setInterval(updateClock,1000); updateClock();
 
-// ─── 지역 탭 전환 ───────────────────────────────────────
-function switchRegion(region) {
-  currentRegion = region;
-  document.querySelectorAll('.region-tab').forEach((t, i) => {
-    const regions = ['jeju','west','south','east'];
-    t.classList.toggle('active', regions[i] === region);
+// ─── 바텀 시트 ──────────────────────────────────────────
+function openSheet() {
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  showRegionStep();
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+function showRegionStep() {
+  document.getElementById('step-region').style.display = 'block';
+  document.getElementById('step-station').style.display = 'none';
+  // 현재 지역 활성화
+  document.querySelectorAll('.region-item').forEach(el => {
+    const r = el.getAttribute('onclick').match(/'(\w+)'/)?.[1];
+    el.classList.toggle('active', currentStation && STATIONS[currentStation]?.region === r);
   });
-  renderChips();
 }
+function backToRegion() {
+  showRegionStep();
+}
+function selectRegion(region) {
+  // 2단계로 전환
+  document.getElementById('step-region').style.display = 'none';
+  document.getElementById('step-station').style.display = 'block';
 
-function renderChips() {
-  const scroll = document.getElementById('location-scroll');
-  const emojis = REGION_EMOJI[currentRegion] || {};
-  const names  = Object.keys(STATIONS).filter(k => STATIONS[k].region === currentRegion);
-  scroll.innerHTML = names.map(name => `
-    <div class="station-chip ${currentStation===name?'active':''}" onclick="selectStation('${name}')">
-      ${emojis[name]||'📍'} ${name}
+  const info = REGION_INFO[region];
+  document.getElementById('step-station-title').textContent = `${info.emoji} ${info.label} 관측소`;
+
+  const names = Object.keys(STATIONS).filter(k => STATIONS[k].region === region);
+  document.getElementById('station-grid').innerHTML = names.map(name => `
+    <div class="station-item ${currentStation===name?'active':''}" onclick="pickStation('${name}')">
+      <span class="station-item-emoji">${EMOJI[name]||'📍'}</span>
+      <span class="station-item-name">${name}</span>
     </div>`).join('');
 }
-
-// ─── 칩 활성화 ──────────────────────────────────────────
-function setActiveChip(name) {
-  document.querySelectorAll('.station-chip').forEach(c => {
-    c.classList.toggle('active', c.textContent.trim().includes(name));
-  });
+function pickStation(name) {
+  closeSheet();
+  selectStation(name);
 }
 
 // ─── 관측소 선택 ────────────────────────────────────────
 async function selectStation(name) {
   currentStation = name;
   localStorage.setItem('lastStation', name);
-  localStorage.setItem('lastRegion', STATIONS[name].region);
-  setActiveChip(name);
+
+  // 버튼 텍스트 업데이트
+  const region = STATIONS[name].region;
+  const rInfo  = REGION_INFO[region];
+  document.getElementById('loc-icon').textContent = EMOJI[name] || '📍';
+  document.getElementById('loc-text').textContent = `${rInfo.label} · ${name}`;
+
   const s = STATIONS[name];
   await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
 }
@@ -397,225 +491,191 @@ async function loadTide(name) {
     const s = STATIONS[name];
     let data;
     if (s.type === 'blend') {
-      const [r1, r2] = await Promise.all([callGAS(s.obs1), callGAS(s.obs2)]);
-      data = blendTides(r1, r2, s.w1, s.w2, s.timeCorr);
+      const [r1,r2] = await Promise.all([callGAS(s.obs1),callGAS(s.obs2)]);
+      data = blendTides(r1,r2,s.w1,s.w2,s.timeCorr);
     } else if (s.type === 'scale') {
-      const raw = await callGAS(s.obs);
-      data = scaleTides(raw, s.scale, s.timeCorr);
+      data = scaleTides(await callGAS(s.obs), s.scale, s.timeCorr);
     } else {
       data = await callGAS(s.obs);
     }
     data = data.filter(d => d && (d.isCurrent || d.time));
-    if (!data || !data.length || data[0]?.error) { showError(data?.[0]?.error || "데이터 없음"); return; }
+    if (!data.length || data[0]?.error) { showError(data[0]?.error||'데이터 없음'); return; }
     renderTide(data, name);
     document.getElementById('update-time').textContent = `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
-  } catch(e) { showError('오류: ' + e.message); }
+  } catch(e) { showError('오류: '+e.message); }
 }
 
 async function callGAS(obsCode) {
   try {
-    const fd = new FormData(); fd.append("obsCode", obsCode);
-    const res = await fetch(GAS_URL, { method:"POST", body: fd });
-    if (!res.ok) throw new Error("HTTP " + res.status);
+    const fd = new FormData(); fd.append('obsCode', obsCode);
+    const res = await fetch(GAS_URL, {method:'POST', body:fd});
+    if (!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    if (!Array.isArray(data)) throw new Error("응답 형식 오류");
+    if (!Array.isArray(data)) throw new Error('응답 형식 오류');
     return data;
   } catch(e) {
-    console.error("GAS 오류:", obsCode, e);
-    return [{ error: e.message }];
+    console.error('GAS 오류:', obsCode, e);
+    return [{error: e.message}];
   }
 }
 
 // ─── 가중평균 (김녕) ────────────────────────────────────
-function blendTides(data1, data2, w1, w2, timeCorr) {
-  const tides1  = data1.filter(d => !d.isCurrent);
-  const tides2  = data2.filter(d => !d.isCurrent);
-  const current = data1.find(d => d.isCurrent);
-  const used = new Set();
-  const blended = [];
-  tides1.forEach(t1 => {
-    const matched = tides2
-      .filter(t2 => t2.type===t1.type && !used.has(t2.time))
-      .sort((a,b) => Math.abs(toMins(a)-toMins(t1)) - Math.abs(toMins(b)-toMins(t1)))[0];
-    if (!matched) return;
+function blendTides(data1,data2,w1,w2,timeCorr) {
+  const tides1=data1.filter(d=>!d.isCurrent);
+  const tides2=data2.filter(d=>!d.isCurrent);
+  const current=data1.find(d=>d.isCurrent);
+  const used=new Set(), blended=[];
+  tides1.forEach(t1=>{
+    const matched=tides2
+      .filter(t2=>t2.type===t1.type&&!used.has(t2.time))
+      .sort((a,b)=>Math.abs(toMins(a)-toMins(t1))-Math.abs(toMins(b)-toMins(t1)))[0];
+    if(!matched)return;
     used.add(matched.time);
-    const bMins  = Math.round(toMins(t1)*w1 + toMins(matched)*w2) + timeCorr;
-    const bLevel = Math.round(t1.level*w1 + matched.level*w2);
-    blended.push({ ...t1, time:minsToTime(bMins), mins:bMins, level:bLevel });
+    const bMins=Math.round(toMins(t1)*w1+toMins(matched)*w2)+timeCorr;
+    const bLevel=Math.round(t1.level*w1+matched.level*w2);
+    blended.push({...t1,time:minsToTime(bMins),mins:bMins,level:bLevel});
   });
-  blended.sort((a,b) => a.mins - b.mins);
-  if (current) {
-    const nowMins = toMins(current);
-    let nowLevel  = current.level;
-    for (let i=0; i<blended.length; i++) {
-      if (nowMins < blended[i].mins) {
-        if (i>0) {
-          const p=blended[i-1], n=blended[i];
-          nowLevel = Math.round(p.level + (n.level-p.level)*(nowMins-p.mins)/(n.mins-p.mins));
-        }
+  blended.sort((a,b)=>a.mins-b.mins);
+  if(current){
+    const nowMins=toMins(current);
+    let nowLevel=current.level;
+    for(let i=0;i<blended.length;i++){
+      if(nowMins<blended[i].mins){
+        if(i>0){const p=blended[i-1],n=blended[i];nowLevel=Math.round(p.level+(n.level-p.level)*(nowMins-p.mins)/(n.mins-p.mins));}
         break;
       }
     }
-    const idx = blended.findIndex(t => t.mins > nowMins);
-    const cur = { ...current, level:nowLevel };
-    if (idx===-1) blended.push(cur); else blended.splice(idx,0,cur);
+    const idx=blended.findIndex(t=>t.mins>nowMins);
+    const cur={...current,level:nowLevel};
+    if(idx===-1)blended.push(cur);else blended.splice(idx,0,cur);
   }
   return blended;
 }
 
 // ─── 수위 보정 (만대항) ──────────────────────────────────
-function scaleTides(data, scale, timeCorr) {
-  return data.map(item => {
-    if (item.isCurrent) return item;
-    const newMins = toMins(item) + timeCorr;
-    return { ...item, time:minsToTime(newMins), mins:newMins, level:Math.round(item.level*scale) };
+function scaleTides(data,scale,timeCorr){
+  return data.map(item=>{
+    if(item.isCurrent)return item;
+    const newMins=toMins(item)+timeCorr;
+    return{...item,time:minsToTime(newMins),mins:newMins,level:Math.round(item.level*scale)};
   });
 }
 
 // ─── 유틸 ────────────────────────────────────────────────
-function toMins(item) {
-  if (!item) return 0;
-  if (item.mins != null) return item.mins;
-  if (!item.time) return 0;
-  const [h,m] = item.time.split(':').map(Number);
-  return item.isNextDay ? h*60+m+1440 : h*60+m;
+function toMins(item){
+  if(!item)return 0;
+  if(item.mins!=null)return item.mins;
+  if(!item.time)return 0;
+  const[h,m]=item.time.split(':').map(Number);
+  return item.isNextDay?h*60+m+1440:h*60+m;
 }
-function minsToTime(mins) {
-  const abs = ((mins%1440)+1440)%1440;
+function minsToTime(mins){
+  const abs=((mins%1440)+1440)%1440;
   return String(Math.floor(abs/60)).padStart(2,'0')+':'+String(abs%60).padStart(2,'0');
 }
 
-// ─── 파도 애니메이션 (방향 구분) ─────────────────────────
-function animateWave(pct, isFalling) {
-  const el = document.getElementById('wave-fill');
-  // 항상 bottom 기준, falling 클래스 제거
-  el.classList.remove('falling');
-  el.style.top = '';
-
-  if (!isFalling) {
-    // 차오를 때: 0%에서 pct%로 올라옴
-    el.style.transition = 'none';
-    el.style.height = '0%';
-    void el.offsetWidth;
-    el.style.transition = 'height 2.2s cubic-bezier(0.4, 0, 0.2, 1)';
-    setTimeout(() => { el.style.height = pct + '%'; }, 80);
-  } else {
-    // 빠질 때: 100%에서 pct%로 줄어듦
-    el.style.transition = 'none';
-    el.style.height = '100%';
-    void el.offsetWidth;
-    el.style.transition = 'height 2.2s cubic-bezier(0.4, 0, 0.2, 1)';
-    setTimeout(() => { el.style.height = pct + '%'; }, 80);
-  }
+// ─── 파도 애니메이션 ─────────────────────────────────────
+function animateWave(pct,isFalling){
+  const el=document.getElementById('wave-fill');
+  el.style.transition='none';
+  el.style.height=isFalling?'100%':'0%';
+  void el.offsetWidth;
+  el.style.transition='height 2.2s cubic-bezier(0.4,0,0.2,1)';
+  setTimeout(()=>{el.style.height=pct+'%';},80);
 }
 
 // ─── 렌더링 ──────────────────────────────────────────────
-function renderTide(data, name) {
-  const current = data.find(d => d.isCurrent);
-  if (!current) { showError('현재 데이터 없음'); return; }
+function renderTide(data,name){
+  const current=data.find(d=>d.isCurrent);
+  if(!current){showError('현재 데이터 없음');return;}
 
-  document.getElementById('wave-card').style.display = 'block';
-  document.getElementById('station-display').textContent = `📍 ${name}`;
+  document.getElementById('wave-card').style.display='block';
+  document.getElementById('station-display').textContent=`📍 ${name}`;
 
-  const tideNameEl = document.getElementById('tide-name');
-  tideNameEl.textContent = current.tideName || '';
-  tideNameEl.style.display = current.tideName ? 'inline-block' : 'none';
-  document.getElementById('level-num').textContent = current.level;
+  const tideNameEl=document.getElementById('tide-name');
+  tideNameEl.textContent=current.tideName||'';
+  tideNameEl.style.display=current.tideName?'inline-block':'none';
+  document.getElementById('level-num').textContent=current.level;
 
-  const nowMins  = toMins(current);
-  const nextTide = data.find(d => !d.isCurrent && toMins(d) > nowMins);
-  const isFalling = nextTide?.type === 'low';
+  const nowMins=toMins(current);
+  const nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nowMins);
+  const isFalling=nextTide?.type==='low';
 
-  if (nextTide) {
-    const diff = toMins(nextTide) - nowMins;
-    const h = Math.floor(diff/60), m = diff%60;
-    document.getElementById('tide-status').innerHTML =
-      `<span>${isFalling?'↓':'↑'}</span> 물이 ${isFalling?'빠지는 중':'차오르는 중'}`;
-    document.getElementById('time-left').textContent =
-      `${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
+  if(nextTide){
+    const diff=toMins(nextTide)-nowMins;
+    const h=Math.floor(diff/60),m=diff%60;
+    document.getElementById('tide-status').innerHTML=`<span>${isFalling?'↓':'↑'}</span> 물이 ${isFalling?'빠지는 중':'차오르는 중'}`;
+    document.getElementById('time-left').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
   }
 
-  // 파도 높이 계산 & 방향 애니메이션
-  const levels = data.map(d => d.level).filter(Boolean);
-  const minL = Math.min(...levels), maxL = Math.max(...levels);
-  const pct = maxL > minL ? ((current.level - minL) / (maxL - minL)) * 75 + 15 : 50;
-  animateWave(pct, isFalling);
+  const levels=data.map(d=>d.level).filter(Boolean);
+  const minL=Math.min(...levels),maxL=Math.max(...levels);
+  const pct=maxL>minL?((current.level-minL)/(maxL-minL))*75+15:50;
+  animateWave(pct,isFalling);
 
-  // 리스트
-  document.getElementById('tide-list').innerHTML = data.map(item => {
-    const isCur  = item.isCurrent;
-    const isDim  = item.isYesterday || item.isNextDay;
-    const icon   = isCur ? '📍' : item.type==='high' ? '▲' : '▼';
-    const color  = isCur ? '#00c4a7' : item.type==='high' ? '#5ba4f5' : '#ff6b6b';
-    const label  = isCur ? '현재 예상 수위' : item.type==='high' ? '만조' : '간조';
-    const badge  = item.isYesterday ? '<span class="day-badge">어제</span>' :
-                   item.isNextDay   ? '<span class="day-badge">내일</span>' : '';
-    return `
-      <div class="tide-item ${isCur?'current':''} ${isDim?'dim':''}">
+  document.getElementById('tide-list').innerHTML=data.map(item=>{
+    const isCur=item.isCurrent;
+    const isDim=item.isYesterday||item.isNextDay;
+    const icon=isCur?'📍':item.type==='high'?'▲':'▼';
+    const color=isCur?'#00c4a7':item.type==='high'?'#5ba4f5':'#ff6b6b';
+    const label=isCur?'현재 예상 수위':item.type==='high'?'만조':'간조';
+    const badge=item.isYesterday?'<span class="day-badge">어제</span>':item.isNextDay?'<span class="day-badge">내일</span>':'';
+    return`<div class="tide-item ${isCur?'current':''} ${isDim?'dim':''}">
         <div class="tide-item-left">
           <div class="tide-icon" style="color:${color}">${icon}</div>
-          <div>
-            <div class="tide-level-text">${item.level}cm${badge}</div>
-            <div class="tide-label">${label}</div>
-          </div>
+          <div><div class="tide-level-text">${item.level}cm${badge}</div><div class="tide-label">${label}</div></div>
         </div>
         <div class="tide-time">${item.time}</div>
       </div>`;
   }).join('');
 }
 
-function showLoading() {
-  document.getElementById('tide-list').innerHTML = `
-    <div class="loading">
-      <div class="loading-wave"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
-      <div class="loading-text">데이터 로딩 중</div>
-    </div>`;
-  document.getElementById('level-num').textContent = '--';
-  document.getElementById('tide-status').textContent = '';
-  document.getElementById('time-left').textContent = '--';
-  document.getElementById('wave-fill').style.height = '0%';
+function showLoading(){
+  document.getElementById('tide-list').innerHTML=`<div class="loading"><div class="loading-wave"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div><div class="loading-text">데이터 로딩 중</div></div>`;
+  document.getElementById('level-num').textContent='--';
+  document.getElementById('tide-status').textContent='';
+  document.getElementById('time-left').textContent='--';
+  document.getElementById('wave-fill').style.height='0%';
 }
-function showError(msg) {
-  document.getElementById('tide-list').innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
-  document.getElementById('wave-card').style.display = 'none';
+function showError(msg){
+  document.getElementById('tide-list').innerHTML=`<div class="error-msg">⚠️ ${msg}</div>`;
+  document.getElementById('wave-card').style.display='none';
 }
 
 // ─── 날씨 ────────────────────────────────────────────────
-async function loadWeather(lat, lng) {
-  try {
-    const c = (await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`)).json()).current;
-    const dirs  = ["북","북동","동","남동","남","남서","서","북서"];
-    const dir   = dirs[Math.round(c.wind_direction_10m/45)%8];
-    const emo   = v => v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
-    const wname = v => v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
-    const wlv   = v => v<1.5?"잔잔":v<3.3?"약한바람":v<5.4?"산들바람":v<7.9?"건들바람":v<10.7?"흔들바람":"강풍";
-    document.getElementById('w-icon').textContent   = emo(c.weather_code);
-    document.getElementById('w-main').textContent   = `${wname(c.weather_code)} · ${wlv(c.wind_speed_10m)}`;
-    document.getElementById('w-detail').textContent = `${dir}풍`;
-    document.getElementById('w-wind').textContent   = `${c.wind_speed_10m.toFixed(1)}m/s`;
+async function loadWeather(lat,lng){
+  try{
+    const c=(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`)).json()).current;
+    const dirs=["북","북동","동","남동","남","남서","서","북서"];
+    const dir=dirs[Math.round(c.wind_direction_10m/45)%8];
+    const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
+    const wname=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
+    const wlv=v=>v<1.5?"잔잔":v<3.3?"약한바람":v<5.4?"산들바람":v<7.9?"건들바람":v<10.7?"흔들바람":"강풍";
+    document.getElementById('w-icon').textContent=emo(c.weather_code);
+    document.getElementById('w-main').textContent=`${wname(c.weather_code)} · ${wlv(c.wind_speed_10m)}`;
+    document.getElementById('w-detail').textContent=`${dir}풍`;
+    document.getElementById('w-wind').textContent=`${c.wind_speed_10m.toFixed(1)}m/s`;
     document.getElementById('weather-bar').classList.add('visible');
-  } catch(e) {}
+  }catch(e){}
 }
 
 // ─── 새로고침 ────────────────────────────────────────────
-async function refresh() {
-  if (!currentStation) return;
-  const btn = document.getElementById('refresh-btn');
+async function refresh(){
+  if(!currentStation)return;
+  const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
-  setTimeout(() => btn.classList.remove('spinning'), 800);
-  const s = STATIONS[currentStation];
-  await Promise.all([loadTide(currentStation), loadWeather(s.lat, s.lng)]);
+  setTimeout(()=>btn.classList.remove('spinning'),800);
+  const s=STATIONS[currentStation];
+  await Promise.all([loadTide(currentStation),loadWeather(s.lat,s.lng)]);
 }
 
 // ─── 시작 ────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const lastRegion  = localStorage.getItem('lastRegion')  || 'jeju';
-  const lastStation = localStorage.getItem('lastStation');
-  switchRegion(lastRegion);
-  if (lastStation && STATIONS[lastStation]) selectStation(lastStation);
+window.addEventListener('DOMContentLoaded',()=>{
+  const last=localStorage.getItem('lastStation');
+  if(last&&STATIONS[last])selectStation(last);
 });
 
-setInterval(() => { if (currentStation) refresh(); }, 600000);
+setInterval(()=>{if(currentStation)refresh();},600000);
 </script>
 </body>
 </html>

@@ -373,212 +373,660 @@
 </button>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby3S8MfzcX6pEUDpaOsC1ucQrP6go65KPedXvgNibHTUKpeJVkwSTpE8EudlBxZpn2lBA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyaAFYrXj2TwRs7yf1MEnrP5IIK-SGC7Np8Zw3mfablLvto7dhrgLttmqsD74cD1jjNYg/exec';
 
-// 1. 관측소 설정
+
+
+// 관측소 설정
+
 const STATIONS = {
+
   '김녕':  { type: 'blend', obs1: 'DT_0004', obs2: 'DT_0022', w1: 0.48, w2: 0.52, timeCorr: +10, lat: 33.558, lng: 126.751 },
+
   '제주':  { type: 'single', obs: 'DT_0004', lat: 33.5275, lng: 126.543 },
+
   '성산포':{ type: 'single', obs: 'DT_0022', lat: 33.4747, lng: 126.927 },
+
   '서귀포':{ type: 'single', obs: 'DT_0061', lat: 33.2468, lng: 126.561 },
+
   '모슬포':{ type: 'single', obs: 'DT_0020', lat: 33.2147, lng: 126.251 },
+
   '추자도':{ type: 'single', obs: 'DT_0021', lat: 33.9611, lng: 126.889 },
+
   '만대항':{ type: 'scale',  obs: 'DT_0050', scale: 1.10, timeCorr: +3, lat: 36.626, lng: 126.309 },
+
   '태안':  { type: 'single', obs: 'DT_0050', lat: 36.7445, lng: 126.297 },
+
   '안흥':  { type: 'single', obs: 'DT_0067', lat: 36.6747, lng: 126.115 },
+
 };
+
+
 
 let currentStation = null;
 
-// 2. 시계 기능
+
+
+// 시계
+
 function updateClock() {
+
   const now = new Date();
+
   const h = String(now.getHours()).padStart(2,'0');
+
   const m = String(now.getMinutes()).padStart(2,'0');
+
   const s = String(now.getSeconds()).padStart(2,'0');
+
   document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
 }
+
 setInterval(updateClock, 1000);
+
 updateClock();
 
-// 3. 칩 활성화 표시
+
+
+// 칩 활성화
+
 function setActiveChip(name) {
+
   document.querySelectorAll('.station-chip').forEach(c => {
+
     c.classList.toggle('active', c.textContent.trim().includes(name));
+
   });
+
 }
 
-// 4. 관측소 선택 (저장 기능 포함)
+
+
+// 관측소 선택
+
 async function selectStation(name) {
-  if (!STATIONS[name]) return;
+
   currentStation = name;
+
   setActiveChip(name);
-  
-  // 브라우저에 선택한 지점 저장
-  localStorage.setItem('myTideStation', name);
-  
+
   const s = STATIONS[name];
-  // 물때(파일)와 날씨(API)를 동시에 가져옴
+
   await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
+
 }
 
-// 5. 물때 로드 (GitHub Actions로 생성된 파일 읽기)
+
+
+// ─── 물때 로드 ─────────────────────────────────────────
+
 async function loadTide(name) {
+
   showLoading();
+
   document.getElementById('wave-card').style.display = 'none';
 
+
+
   try {
-    // 경로를 확실하게 하기 위해 './data/tide_all.json' 호출
+
+    // 1. 이제 GAS 주소가 아니라 내 저장소의 데이터를 직접 읽습니다.
+
     const res = await fetch('./data/tide_all.json');
+
     if (!res.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
+
     
+
     const allData = await res.json();
+
+    
+
+    // 2. 전체 데이터 중 지금 클릭한 지점(name) 것만 쏙 빼옵니다.
+
     const data = allData[name];
 
+
+
     if (!data || data.length === 0) {
+
       showError(name + ' 데이터가 파일에 없습니다.');
+
       return;
+
     }
 
+
+
+    // 3. 화면에 예쁘게 그리기
+
     renderTide(data, name);
+
     document.getElementById('update-time').textContent =
+
       `동기화: ${new Date().toLocaleTimeString('ko-KR')}`;
 
+
+
   } catch(e) {
+
     showError('데이터 로드 실패: ' + e.message);
+
     console.error("에러 상세:", e);
+
   }
+
 }
 
-// 6. 렌더링 (화면에 그리기)
+async function fetchStation(obsCode) {
+
+  const res = await fetch(GAS_URL, {
+
+    method: 'POST',
+
+    body: JSON.stringify({ station: getStationNameByObs(obsCode) || obsCode, obsCode })
+
+  });
+
+  return await res.json();
+
+}
+
+
+
+function getStationNameByObs(obs) {
+
+  for (const [k, v] of Object.entries(STATIONS)) {
+
+    if (v.obs === obs || v.obs1 === obs || v.obs2 === obs) return k;
+
+  }
+
+  return null;
+
+}
+
+
+
+// 원시 데이터(GAS 배열) → 타임라인 처리
+
+function rawToTides(data) {
+
+  // GAS에서 이미 처리된 배열이면 그대로, 아니면 변환
+
+  return Array.isArray(data) ? data : [];
+
+}
+
+
+
+// 단일 관측소 처리
+
+function processTimeline(data, stationName) {
+
+  return rawToTides(data);
+
+}
+
+
+
+// 가중평균 (김녕)
+
+function blendAndProcess(data1, data2, w1, w2, timeCorr, stationName) {
+
+  // GAS에서 이미 처리된 데이터 → current 찾아서 수위/시간만 재보정
+
+  // 두 데이터셋의 각 물때를 매칭해서 평균
+
+  const tides1 = data1.filter(d => !d.isCurrent);
+
+  const tides2 = data2.filter(d => !d.isCurrent);
+
+  const current1 = data1.find(d => d.isCurrent);
+
+
+
+  const used = new Set();
+
+  const blended = [];
+
+
+
+  tides1.forEach(t1 => {
+
+    const matched = tides2
+
+      .filter(t2 => t2.type === t1.type && !used.has(t2.time))
+
+      .sort((a, b) => Math.abs(getMins(a) - getMins(t1)) - Math.abs(getMins(b) - getMins(t1)))[0];
+
+
+
+    if (!matched) return;
+
+    used.add(matched.time);
+
+
+
+    const bMins = Math.round(getMins(t1) * w1 + getMins(matched) * w2) + timeCorr;
+
+    const bLevel = Math.round(t1.level * w1 + matched.level * w2);
+
+    const absMin = ((bMins % 1440) + 1440) % 1440;
+
+    const h = String(Math.floor(absMin / 60)).padStart(2,'0');
+
+    const m = String(absMin % 60).padStart(2,'0');
+
+
+
+    blended.push({
+
+      ...t1,
+
+      time: `${h}:${m}`,
+
+      mins: bMins,
+
+      level: bLevel,
+
+    });
+
+  });
+
+
+
+  blended.sort((a, b) => a.mins - b.mins);
+
+
+
+  // 현재 보간
+
+  if (current1) {
+
+    const nowMins = current1.mins;
+
+    let nowLevel = current1.level;
+
+    for (let i = 0; i < blended.length; i++) {
+
+      if (nowMins < blended[i].mins) {
+
+        if (i > 0) {
+
+          const prev = blended[i-1], next = blended[i];
+
+          const ratio = (nowMins - prev.mins) / (next.mins - prev.mins);
+
+          nowLevel = Math.round(prev.level + (next.level - prev.level) * ratio);
+
+        }
+
+        break;
+
+      }
+
+    }
+
+    const insertIdx = blended.findIndex(t => t.mins > nowMins);
+
+    const cur = {
+
+      ...current1,
+
+      level: nowLevel,
+
+      tideName: current1.tideName,
+
+    };
+
+    if (insertIdx === -1) blended.push(cur);
+
+    else blended.splice(insertIdx, 0, cur);
+
+  }
+
+
+
+  return blended;
+
+}
+
+
+
+// 수위 보정 (만대항)
+
+function scaleAndProcess(data, scale, timeCorr, stationName) {
+
+  return data.map(item => {
+
+    if (item.isCurrent) return item;
+
+    const newMins = (item.mins || 0) + timeCorr;
+
+    const absMin = ((newMins % 1440) + 1440) % 1440;
+
+    const h = String(Math.floor(absMin / 60)).padStart(2,'0');
+
+    const m = String(absMin % 60).padStart(2,'0');
+
+    return {
+
+      ...item,
+
+      time: `${h}:${m}`,
+
+      mins: newMins,
+
+      level: item.isCurrent ? item.level : Math.round(item.level * scale),
+
+    };
+
+  });
+
+}
+
+
+
+function getMins(item) {
+
+  if (item.mins != null) return item.mins;
+
+  const [h, m] = item.time.split(':').map(Number);
+
+  return (item.isNextDay ? h*60+m+1440 : h*60+m);
+
+}
+
+
+
+// ─── 렌더링 ───────────────────────────────────────────
+
 function renderTide(data, name) {
+
   const current = data.find(d => d.isCurrent);
+
   if (!current) { showError('현재 데이터 없음'); return; }
 
+
+
+  // 파도 카드
+
   document.getElementById('wave-card').style.display = 'block';
+
   document.getElementById('station-display').textContent = `📍 ${name}`;
 
+
+
   const tideNameEl = document.getElementById('tide-name');
+
   tideNameEl.textContent = current.tideName || '';
+
   tideNameEl.style.display = current.tideName ? 'inline-block' : 'none';
+
+
 
   document.getElementById('level-num').textContent = current.level;
 
+
+
   const nowMins = getMins(current);
+
   const nextTide = data.find(d => !d.isCurrent && getMins(d) > nowMins);
 
+
+
   if (nextTide) {
+
     const isFalling = nextTide.type === 'low';
+
     const diff = getMins(nextTide) - nowMins;
+
     const h = Math.floor(diff / 60);
+
     const m = diff % 60;
+
     const label = isFalling ? '간조' : '만조';
+
     document.getElementById('tide-status').innerHTML =
+
       `<span>${isFalling ? '↓' : '↑'}</span> 물이 ${isFalling ? '빠지는 중' : '차오르는 중'}`;
+
     document.getElementById('time-left').textContent =
+
       `${label} ${h > 0 ? h+'시간 ' : ''}${m}분 전`;
+
   }
+
+
+
+  // 파도 높이
 
   const levels = data.map(d => d.level).filter(Boolean);
+
   const minL = Math.min(...levels), maxL = Math.max(...levels);
+
   const pct = maxL > minL ? ((current.level - minL) / (maxL - minL)) * 75 + 15 : 50;
+
   setTimeout(() => {
+
     document.getElementById('wave-fill').style.height = pct + '%';
+
   }, 100);
 
+
+
+  // 리스트
+
   let html = '';
+
   data.forEach(item => {
+
     const isCurrent  = item.isCurrent;
+
     const isYesterday = item.isYesterday;
+
     const isNextDay  = item.isNextDay;
+
     const isDim = isYesterday || isNextDay;
+
     const icon = isCurrent ? '📍' : item.type === 'high' ? '▲' : '▼';
+
     const iconColor = isCurrent ? '#00c4a7' : item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
+
     const label = isCurrent ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
+
     const badge = isYesterday ? '<span class="day-badge">어제</span>' :
+
                   isNextDay   ? '<span class="day-badge">내일</span>' : '';
 
+
+
     html += `
+
       <div class="tide-item ${isCurrent ? 'current' : ''} ${isDim ? 'dim' : ''}">
+
         <div class="tide-item-left">
+
           <div class="tide-icon" style="color:${iconColor}">${icon}</div>
+
           <div>
+
             <div class="tide-level-text">${item.level}cm${badge}</div>
+
             <div class="tide-label">${label}</div>
+
           </div>
+
         </div>
+
         <div class="tide-time">${item.time}</div>
+
       </div>`;
+
   });
+
   document.getElementById('tide-list').innerHTML = html;
+
 }
 
-function getMins(item) {
-  if (item.mins != null) return item.mins;
-  const [h, m] = item.time.split(':').map(Number);
-  return (item.isNextDay ? h*60+m+1440 : h*60+m);
-}
+
 
 function showLoading() {
+
   document.getElementById('tide-list').innerHTML = `
+
     <div class="loading">
+
       <div class="loading-wave">
+
         <div class="loading-dot"></div>
+
         <div class="loading-dot"></div>
+
         <div class="loading-dot"></div>
+
       </div>
+
       <div class="loading-text">데이터 로딩 중</div>
+
     </div>`;
+
   document.getElementById('level-num').textContent = '--';
+
   document.getElementById('tide-status').textContent = '';
+
   document.getElementById('time-left').textContent = '--';
+
   document.getElementById('wave-fill').style.height = '0%';
+
 }
+
+
 
 function showError(msg) {
+
   document.getElementById('tide-list').innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
+
   document.getElementById('wave-card').style.display = 'none';
+
 }
 
-// 7. 날씨 로드 (Open-Meteo API)
+
+
+// ─── 날씨 ─────────────────────────────────────────────
+
 async function loadWeather(lat, lng) {
+
   try {
+
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`;
+
     const json = await (await fetch(url)).json();
+
     const c = json.current;
+
     const dirs = ["북","북동","동","남동","남","남서","서","북서"];
+
     const dir = dirs[Math.round(c.wind_direction_10m / 45) % 8];
 
+
+
     const emo = (code) => code===0?"☀️":code<=2?"🌤":code===3?"☁️":code<=48?"🌫":code<=55?"🌦":code<=65?"🌧":code<=75?"❄️":code<=82?"🌧":"⛈";
+
     const wname = (code) => code===0?"맑음":code<=2?"대체로 맑음":code===3?"흐림":code<=48?"안개":code<=55?"이슬비":code<=65?"비":code<=75?"눈":code<=82?"소나기":"뇌우";
+
     const wlv = (v) => v<1.5?"잔잔":v<3.3?"약한바람":v<5.4?"산들바람":v<7.9?"건들바람":v<10.7?"흔들바람":"강풍";
 
+
+
     document.getElementById('w-icon').textContent = emo(c.weather_code);
+
     document.getElementById('w-main').textContent = `${wname(c.weather_code)} · ${wlv(c.wind_speed_10m)}`;
+
     document.getElementById('w-detail').textContent = `${dir}풍`;
+
     document.getElementById('w-wind').textContent = `${c.wind_speed_10m.toFixed(1)}m/s`;
+
     document.getElementById('weather-bar').classList.add('visible');
+
   } catch(e) {}
+
 }
 
-// 8. 새로고침 및 초기화
+
+
+// ─── 새로고침 ─────────────────────────────────────────
+
 async function refresh() {
+
   if (!currentStation) return;
+
   const btn = document.getElementById('refresh-btn');
+
   btn.classList.add('spinning');
+
   setTimeout(() => btn.classList.remove('spinning'), 800);
-  await selectStation(currentStation);
+
+  const s = STATIONS[currentStation];
+
+  await Promise.all([loadTide(currentStation), loadWeather(s.lat, s.lng)]);
+
 }
 
-// 페이지 로드 시 기억된 장소 불러오기
-window.addEventListener('load', () => {
+  window.addEventListener('DOMContentLoaded', () => {
+
+  updateClock();
+
+  
+
+  // 브라우저가 기억하고 있는 마지막 장소 확인
+
   const lastSaved = localStorage.getItem('myTideStation');
+
+  
+
   if (lastSaved && STATIONS[lastSaved]) {
+
+    // 기억하는 게 있다면 바로 실행!
+
     selectStation(lastSaved);
+
   }
+
 });
 
+
+
+// 관측소 선택 함수 (저장 기능 추가 버전)
+
+async function selectStation(name) {
+
+  currentStation = name;
+
+  setActiveChip(name);
+
+  
+
+  // 선택한 장소를 브라우저 메모리에 저장
+
+  localStorage.setItem('myTideStation', name);
+
+  
+
+  const s = STATIONS[name];
+
+  // 날씨는 실시간이 중요하니 그대로 API 호출하고, 물때는 파일을 읽습니다.
+
+  await Promise.all([loadTide(name), loadWeather(s.lat, s.lng)]);
+
+}
+
+
+
 // 10분마다 자동 갱신
+
 setInterval(() => { if (currentStation) refresh(); }, 600000);
 </script>
 </body>

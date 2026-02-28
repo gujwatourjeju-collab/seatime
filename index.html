@@ -405,7 +405,8 @@ async function loadTide(name) {
     } else {
       data = await callGAS(s.obs);
     }
-    if (!data || !data.length || data[0]?.error) { showError(data?.[0]?.error || '데이터 없음'); return; }
+    data = data.filter(d => d && (d.isCurrent || d.time));
+    if (!data || !data.length || data[0]?.error) { showError(data?.[0]?.error || "데이터 없음"); return; }
     renderTide(data, name);
     document.getElementById('update-time').textContent = `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
   } catch(e) { showError('오류: ' + e.message); }
@@ -472,7 +473,9 @@ function scaleTides(data, scale, timeCorr) {
 
 // ─── 유틸 ────────────────────────────────────────────────
 function toMins(item) {
+  if (!item) return 0;
   if (item.mins != null) return item.mins;
+  if (!item.time) return 0;
   const [h,m] = item.time.split(':').map(Number);
   return item.isNextDay ? h*60+m+1440 : h*60+m;
 }

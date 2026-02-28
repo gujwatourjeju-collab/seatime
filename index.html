@@ -135,28 +135,19 @@
 
   /* 물 채우기 — 차오를 때 */
   .wave-fill {
-    position: absolute; left: 0; right: 0;
+    position: absolute; bottom: 0; left: 0; right: 0;
     background: linear-gradient(180deg, rgba(0,196,167,0.25), rgba(0,196,167,0.6));
-    /* 차오를 때: bottom 기준, height로 제어 */
-    bottom: 0;
     height: 0%;
-    transition: height 2.2s cubic-bezier(0.4, 0, 0.2, 1),
-                top    2.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: height 2.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* 빠질 때: top 기준으로 전환 */
-  .wave-fill.falling {
-    bottom: auto;
-    top: 0;
-    height: 100%; /* 꽉 찬 상태에서 시작 → JS에서 줄임 */
-  }
 
   .wave-fill::before {
     content: ""; position: absolute; top: -18px; left: -50%; width: 200%; height: 36px;
     background: rgba(0,196,167,0.35); border-radius: 50%;
     animation: waveTop 4s ease-in-out infinite;
   }
-  .wave-fill.falling::before { top: auto; bottom: -18px; }
 
   @keyframes waveTop { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-8%)} }
 
@@ -421,8 +412,16 @@ async function loadTide(name) {
 }
 
 async function callGAS(obsCode) {
-  const res = await fetch(GAS_URL, { method:'POST', body: JSON.stringify({ obsCode }) });
-  return await res.json();
+  try {
+    const res = await fetch(GAS_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ obsCode }) });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("응답 형식 오류");
+    return data;
+  } catch(e) {
+    console.error("GAS 오류:", obsCode, e);
+    return [{ error: e.message }];
+  }
 }
 
 // ─── 가중평균 (김녕) ────────────────────────────────────
@@ -485,26 +484,23 @@ function minsToTime(mins) {
 // ─── 파도 애니메이션 (방향 구분) ─────────────────────────
 function animateWave(pct, isFalling) {
   const el = document.getElementById('wave-fill');
+  // 항상 bottom 기준, falling 클래스 제거
+  el.classList.remove('falling');
+  el.style.top = '';
 
   if (!isFalling) {
-    // 차오를 때: bottom 기준, height 늘어남
-    el.classList.remove('falling');
+    // 차오를 때: 0%에서 pct%로 올라옴
+    el.style.transition = 'none';
     el.style.height = '0%';
-    el.style.top = '';
-    void el.offsetWidth; // reflow
+    void el.offsetWidth;
+    el.style.transition = 'height 2.2s cubic-bezier(0.4, 0, 0.2, 1)';
     setTimeout(() => { el.style.height = pct + '%'; }, 80);
   } else {
-    // 빠질 때: top 기준, height 줄어듦 (꽉 찬 상태에서 줄임)
-    el.classList.add('falling');
-    el.style.height = '100%';
-    el.style.bottom = '';
-    void el.offsetWidth; // reflow
-    setTimeout(() => { el.style.height = (100 - pct) + '%'; }, 80);
-    // falling일 때 실제로 보이는 물의 양은 (100 - height)가 아니라
-    // top:0에서 height만큼 채운 것 → 반전 필요 없이 그냥 pct만큼 줄임
-    // 재계산: 꽉찬(100%)→ pct가 낮을수록 물이 적음 → height = pct
+    // 빠질 때: 100%에서 pct%로 줄어듦
+    el.style.transition = 'none';
     el.style.height = '100%';
     void el.offsetWidth;
+    el.style.transition = 'height 2.2s cubic-bezier(0.4, 0, 0.2, 1)';
     setTimeout(() => { el.style.height = pct + '%'; }, 80);
   }
 }

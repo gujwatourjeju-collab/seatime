@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>바당때</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="바당때">
+<meta name="theme-color" content="#0d1f2d">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;바당때&quot;,&quot;short_name&quot;:&quot;바당때&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;}],&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#0d1f2d&quot;,&quot;theme_color&quot;:&quot;#0d1f2d&quot;}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -132,7 +141,49 @@
   .wave-right{text-align:right;}
   .time-left-label{font-size:0.6rem;color:var(--muted);font-weight:700;margin-bottom:2px;}
   .time-left-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:#fff;}
+
   .station-name-display{font-size:0.65rem;color:var(--muted);font-weight:700;margin-top:8px;letter-spacing:0.5px;}
+
+  /* 수위 게이지 */
+  .tide-gauge{
+    position:absolute; right:20px; top:14px; bottom:14px;
+    width:28px; z-index:3;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .gauge-label-top{
+    font-size:0.52rem; font-weight:700; line-height:1.2; text-align:center;
+    color:rgba(255,255,255,0.7);
+  }
+  .gauge-label-top span{ display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--accent); }
+  .gauge-bar{
+    flex:1; width:4px; border-radius:2px;
+    background:rgba(255,255,255,0.1);
+    position:relative; margin:5px 0;
+  }
+  .gauge-bar-fill{
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(180deg, rgba(0,196,167,0.5), var(--accent));
+    border-radius:2px;
+    transition:height 2.2s cubic-bezier(0.4,0,0.2,1);
+    height:0%;
+  }
+  .gauge-tick{
+    position:absolute; left:-4px; right:-4px; height:1px;
+    background:rgba(255,255,255,0.3);
+  }
+  .gauge-dot{
+    position:absolute; left:50%; transform:translateX(-50%);
+    width:8px; height:8px; border-radius:50%;
+    background:var(--accent);
+    border:2px solid #0d1f2d;
+    transition:bottom 2.2s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:0 0 6px rgba(0,196,167,0.6);
+  }
+  .gauge-label-bot{
+    font-size:0.52rem; font-weight:700; line-height:1.2; text-align:center;
+    color:rgba(255,255,255,0.7);
+  }
+  .gauge-label-bot span{ display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:rgba(255,100,100,0.9); }
 
   /* 물때 리스트 */
   .tide-item{
@@ -307,7 +358,7 @@
 
     <div class="wave-card" id="wave-card" style="display:none;">
       <div class="wave-fill" id="wave-fill"></div>
-      <div class="wave-info">
+      <div class="wave-info" style="padding-right:56px;">
         <div>
           <div class="tide-name-badge" id="tide-name"></div>
           <div class="level-display"><span id="level-num">--</span><span class="level-unit">cm</span></div>
@@ -318,6 +369,16 @@
           <div class="time-left-val" id="time-left">--</div>
           <div class="station-name-display" id="station-display"></div>
         </div>
+      </div>
+      <!-- 수위 게이지 -->
+      <div class="tide-gauge">
+        <div class="gauge-label-top" id="gauge-top-label">--<span id="gauge-top-val">--</span></div>
+        <div class="gauge-bar">
+          <div class="gauge-bar-fill" id="gauge-fill"></div>
+          <div class="gauge-tick" style="top:50%;"></div>
+          <div class="gauge-dot" id="gauge-dot"></div>
+        </div>
+        <div class="gauge-label-bot" id="gauge-bot-label">--<span id="gauge-bot-val">--</span></div>
       </div>
     </div>
 
@@ -599,13 +660,48 @@ function minsToTime(mins){
 }
 
 // ─── 파도 애니메이션 ─────────────────────────────────────
-function animateWave(pct,isFalling){
+function animateWave(pct, isFalling){
   const el=document.getElementById('wave-fill');
   el.style.transition='none';
   el.style.height=isFalling?'100%':'0%';
   void el.offsetWidth;
   el.style.transition='height 2.2s cubic-bezier(0.4,0,0.2,1)';
   setTimeout(()=>{el.style.height=pct+'%';},80);
+}
+
+function updateGauge(data, current, pct) {
+  const nowMins  = toMins(current);
+  const tides    = data.filter(d => !d.isCurrent);
+  const isFalling = data.find(d=>!d.isCurrent&&toMins(d)>nowMins)?.type==='low';
+
+  let fromTide, toTide;
+  if (!isFalling) {
+    // 차오르는 중: 직전 간조 → 다음 만조
+    fromTide = [...tides].reverse().find(d => toMins(d) < nowMins && d.type==='low');
+    toTide   = tides.find(d => toMins(d) > nowMins && d.type==='high');
+  } else {
+    // 빠지는 중: 직전 만조 → 다음 간조
+    fromTide = [...tides].reverse().find(d => toMins(d) < nowMins && d.type==='high');
+    toTide   = tides.find(d => toMins(d) > nowMins && d.type==='low');
+  }
+
+  // 상단 = 높은 쪽(만조), 하단 = 낮은 쪽(간조)
+  const highTide = isFalling ? fromTide : toTide;
+  const lowTide  = isFalling ? toTide   : fromTide;
+
+  document.getElementById('gauge-top-label').childNodes[0].textContent = highTide ? '만조' : '--';
+  document.getElementById('gauge-top-val').textContent  = highTide ? highTide.level+'cm' : '--';
+  document.getElementById('gauge-bot-label').childNodes[0].textContent = lowTide ? '간조' : '--';
+  document.getElementById('gauge-bot-val').textContent  = lowTide ? lowTide.level+'cm' : '--';
+
+  // 게이지 fill & dot 위치: 간조~만조 범위 내 현재 위치
+  const lowL  = lowTide  ? lowTide.level  : Math.min(...data.map(d=>d.level));
+  const highL = highTide ? highTide.level : Math.max(...data.map(d=>d.level));
+  const gaugePct = highL > lowL ? ((current.level - lowL) / (highL - lowL)) * 100 : 50;
+  setTimeout(() => {
+    document.getElementById('gauge-fill').style.height = gaugePct + '%';
+    document.getElementById('gauge-dot').style.bottom  = 'calc('+gaugePct+'% - 4px)';
+  }, 80);
 }
 
 // ─── 렌더링 ──────────────────────────────────────────────
@@ -635,7 +731,8 @@ function renderTide(data,name){
   const levels=data.map(d=>d.level).filter(Boolean);
   const minL=Math.min(...levels),maxL=Math.max(...levels);
   const pct=maxL>minL?((current.level-minL)/(maxL-minL))*75+15:50;
-  animateWave(pct,isFalling);
+  animateWave(pct, isFalling);
+  updateGauge(data, current, pct);
 
   document.getElementById('tide-list').innerHTML=data.map(item=>{
     const isCur=item.isCurrent;
@@ -700,6 +797,11 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 setInterval(()=>{if(currentStation)refresh();},600000);
+
+// ─── PWA 서비스워커 등록 ────────────────────────────────
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
+}
 </script>
 </body>
 </html>

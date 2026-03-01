@@ -1360,57 +1360,5 @@ function renderTide(data, name, isToday) {
   color:#fff;min-width:200px;
 "></div>
 
-<script>
-async function runCollect() {
-  const btn = document.getElementById('collect-btn')
-  const status = document.getElementById('collect-status')
-  btn.disabled = true
-  status.style.display = 'block'
-
-  const total = 29
-
-  for (let obsIndex = 0; obsIndex < total; obsIndex++) {
-    status.innerHTML = `
-      🌊 데이터 수집 중...<br>
-      관측소 ${obsIndex + 1} / ${total}<br>
-      <div style="margin-top:6px;background:rgba(255,255,255,0.1);border-radius:4px;height:6px;">
-        <div style="background:var(--accent);height:6px;border-radius:4px;width:${Math.round((obsIndex/total)*100)}%;transition:width 0.3s;"></div>
-      </div>
-    `
-
-    try {
-      const response = await fetch(
-        'https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/collect-tide',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_KEY}`
-          },
-          body: JSON.stringify({ obsIndex })
-        }
-      )
-      const data = await response.json()
-
-      if (!response.ok) {
-        status.innerHTML = `❌ 오류 발생 (관측소 ${obsIndex})<br>${data.error || '알 수 없는 오류'}`
-        btn.disabled = false
-        return
-      }
-
-      await new Promise(r => setTimeout(r, 300))
-
-    } catch(e) {
-      status.innerHTML = `❌ 오류: ${e.message}`
-      btn.disabled = false
-      return
-    }
-  }
-
-  status.innerHTML = `✅ 수집 완료!<br>전체 관측소 ${total}개 × 31일치`
-  btn.disabled = false
-  btn.style.background = '#00c4a7'
-}
-</script>
   </body>
   </html>

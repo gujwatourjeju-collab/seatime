@@ -578,18 +578,25 @@ function getLunarDay(date)   { return getLunarInfo(date).day; }
 function getLunarMonth(date) { return getLunarInfo(date).month; }
 
 function getTideName(lunarDay, region) {
-  const map = region === 'west'
-    ? {1:'8물',2:'9물',3:'10물',4:'11물',5:'12물',6:'13물',
-       7:'14물',8:'조금',9:'무시',10:'1물',11:'2물',12:'3물',
-       13:'4물',14:'5물',15:'6물',16:'7물',17:'8물',18:'9물',
-       19:'10물',20:'11물',21:'12물',22:'13물',23:'조금',24:'무시',
-       25:'1물',26:'2물',27:'3물',28:'4물',29:'5물',30:'6물'}
-    : {1:'9물',2:'10물',3:'11물',4:'12물',5:'13물',6:'14물',
-       7:'조금',8:'무시',9:'1물',10:'2물',11:'3물',12:'4물',
-       13:'5물',14:'6물',15:'7물',16:'8물',17:'9물',18:'10물',
-       19:'11물',20:'12물',21:'13물',22:'14물',23:'조금',24:'무시',
-       25:'1물',26:'2물',27:'3물',28:'4물',29:'5물',30:'6물'};
-  return map[lunarDay]||'';
+  if (region === 'west') {
+    // 🌊 서해안 전용 7물때 (조금-무시-1물 순서 보정)
+    const westNames = {
+      1:'8물', 2:'9물', 3:'10물', 4:'11물', 5:'12물', 6:'13물', 7:'14물',
+      8:'조금', 9:'무시', 10:'1물', 11:'2물', 12:'3물', 13:'4물', 14:'5물', 15:'6물',
+      16:'7물(사리)', 17:'8물', 18:'9물', 19:'10물', 20:'11물', 21:'12물', 22:'13물',
+      23:'조금', 24:'무시', 25:'1물', 26:'2물', 27:'3물', 28:'4물', 29:'5물', 30:'6물'
+    };
+    return westNames[lunarDay] || '';
+  } else {
+    // 🏝️ 제주/남해/동해 전용 8물때
+    const eastSouthNames = {
+      1:'9물', 2:'10물', 3:'11물', 4:'12물', 5:'13물', 6:'14물', 7:'조금',
+      8:'무시', 9:'1물', 10:'2물', 11:'3물', 12:'4물', 13:'5물', 14:'6물', 15:'7물(사리)',
+      16:'8물', 17:'9물', 18:'10물', 19:'11물', 20:'12물', 21:'13물', 22:'14물',
+      23:'조금', 24:'무시', 25:'1물', 26:'2물', 27:'3물', 28:'4물', 29:'5물', 30:'6물'
+    };
+    return eastSouthNames[lunarDay] || '';
+  }
 }
 /* ── 날짜 유틸 ── */
 function getOffsetDate(offset) {
@@ -824,56 +831,67 @@ function updateGauge(data,current,isFalling){
 }
 
 /* ── 렌더링 ── */
-function renderTide(data,name,isToday){
+function renderTide(data, name, isToday) {
   // 오늘: 예상수위 카드 + 전체 리스트
   // 오늘 외: 카드 숨김, 만조/간조만 리스트
-  if(isToday){
-    const current=data.find(d=>d.isCurrent);
-    if(!current){showError('현재 데이터 없음');return;}
-    document.getElementById('wave-card').style.display='block';
-    document.getElementById('station-display').textContent=`📍 ${name}`;
+  if (isToday) {
+    const current = data.find(d => d.isCurrent);
+    if (!current) { showError('현재 데이터 없음'); return; }
+    document.getElementById('wave-card').style.display = 'block';
+    document.getElementById('station-display').textContent = `📍 ${name}`;
 
     // 물때 뱃지 + 설명
-    const selDate=getOffsetDate(selectedDateOffset);
-    const lDay=getLunarDay(selDate);
+    const selDate = getOffsetDate(selectedDateOffset);
+    const lDay = getLunarDay(selDate);
     const region = STATIONS[name]?.region;
-const tideName = current.tideName || getTideName(lDay, region)
-    const tideDesc=TIDE_DESC[tideName]||'';
-    const tnEl=document.getElementById('tide-name');
-    if(tideName){tnEl.textContent=tideName;tnEl.style.display='inline-block';}
-    else{tnEl.style.display='none';}
-    document.getElementById('tide-desc').textContent=tideDesc;
-    document.getElementById('level-num').textContent=current.level;
-
-    const nowMins=toMins(current);
-    const nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nowMins);
-    const isFalling=nextTide?.type==='low';
-    if(nextTide){
-      const diff=toMins(nextTide)-nowMins, h=Math.floor(diff/60), m=diff%60;
-      document.getElementById('tide-status').innerHTML=
-        `<span>${isFalling?'↓':'↑'}</span> 물이 ${isFalling?'빠지는 중':'차오르는 중'}`;
-      document.getElementById('time-left').textContent=
-        `${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
+    
+    // 🌟 픽스 포인트: API에서 주는 엉터리 값을 무시하고, 무조건 우리가 만든 완벽한 계산기(getTideName)만 믿고 간다!
+    const tideName = getTideName(lDay, region); 
+    const tideDesc = TIDE_DESC[tideName] || '';
+    
+    const tnEl = document.getElementById('tide-name');
+    if (tideName) { 
+      tnEl.textContent = tideName; 
+      tnEl.style.display = 'inline-block'; 
+    } else { 
+      tnEl.style.display = 'none'; 
     }
-    const levels=data.map(d=>d.level).filter(Boolean);
-    const minL=Math.min(...levels), maxL=Math.max(...levels);
-    const pct=maxL>minL?((current.level-minL)/(maxL-minL))*75+15:50;
-    animateWave(pct,isFalling);
-    updateGauge(data,current,isFalling);
+    
+    document.getElementById('tide-desc').textContent = tideDesc;
+    document.getElementById('level-num').textContent = current.level;
+
+    const nowMins = toMins(current);
+    const nextTide = data.find(d => !d.isCurrent && toMins(d) > nowMins);
+    const isFalling = nextTide?.type === 'low';
+    
+    if (nextTide) {
+      const diff = toMins(nextTide) - nowMins, h = Math.floor(diff / 60), m = diff % 60;
+      document.getElementById('tide-status').innerHTML =
+        `<span>${isFalling ? '↓' : '↑'}</span> 물이 ${isFalling ? '빠지는 중' : '차오르는 중'}`;
+      document.getElementById('time-left').textContent =
+        `${isFalling ? '간조' : '만조'} ${h > 0 ? h + '시간 ' : ''}${m}분 전`;
+    }
+    
+    const levels = data.map(d => d.level).filter(Boolean);
+    const minL = Math.min(...levels), maxL = Math.max(...levels);
+    const pct = maxL > minL ? ((current.level - minL) / (maxL - minL)) * 75 + 15 : 50;
+    
+    animateWave(pct, isFalling);
+    updateGauge(data, current, isFalling);
 
     // 리스트 (어제/내일 dim 포함 전체)
-    document.getElementById('tide-list').innerHTML=data.map(item=>{
-      const isCur=item.isCurrent, isDim=item.isYesterday||item.isNextDay;
-      const now=new Date();
-const displayTime=isCur
-  ? String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')
-  : item.time;
-      const icon=isCur?'📍':item.type==='high'?'▲':'▼';
-      const color=isCur?'#00c4a7':item.type==='high'?'#5ba4f5':'#ff6b6b';
-      const label=isCur?'현재 예상 수위':item.type==='high'?'만조':'간조';
-      const badge=item.isYesterday?'<span class="day-badge">어제</span>':
-                  item.isNextDay?'<span class="day-badge">내일</span>':'';
-      return `<div class="tide-item ${isCur?'current':''} ${isDim?'dim':''}">
+    document.getElementById('tide-list').innerHTML = data.map(item => {
+      const isCur = item.isCurrent, isDim = item.isYesterday || item.isNextDay;
+      const now = new Date();
+      const displayTime = isCur
+        ? String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0')
+        : item.time;
+      const icon = isCur ? '📍' : item.type === 'high' ? '▲' : '▼';
+      const color = isCur ? '#00c4a7' : item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
+      const label = isCur ? '현재 예상 수위' : item.type === 'high' ? '만조' : '간조';
+      const badge = item.isYesterday ? '<span class="day-badge">어제</span>' :
+                    item.isNextDay ? '<span class="day-badge">내일</span>' : '';
+      return `<div class="tide-item ${isCur ? 'current' : ''} ${isDim ? 'dim' : ''}">
         <div class="tide-item-left">
           <div class="tide-icon" style="color:${color}">${icon}</div>
           <div><div class="tide-level-text">${item.level}cm${badge}</div><div class="tide-label">${label}</div></div>
@@ -884,19 +902,25 @@ const displayTime=isCur
 
   } else {
     // 오늘 아닌 날: 카드 숨김, 만조/간조만
-    document.getElementById('wave-card').style.display='none';
-    const d=getOffsetDate(selectedDateOffset);
-    const label=`${d.getMonth()+1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]}) 물때`;
-    document.getElementById('tide-list').innerHTML=
-      `<div style="font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;padding:4px 4px 10px;">${label}</div>`+
-      data.map(item=>{
-        const isDim=item.isYesterday||item.isNextDay;
-        const icon=item.type==='high'?'▲':'▼';
-        const color=item.type==='high'?'#5ba4f5':'#ff6b6b';
-        const label2=item.type==='high'?'만조':'간조';
-        const badge=item.isYesterday?'<span class="day-badge">어제</span>':
-                    item.isNextDay?'<span class="day-badge">내일</span>':'';
-        return `<div class="tide-item ${isDim?'dim':''}">
+    document.getElementById('wave-card').style.display = 'none';
+    const d = getOffsetDate(selectedDateOffset);
+    const lDay = getLunarDay(d);
+    const region = STATIONS[name]?.region;
+    
+    // 🌟 보너스 픽스: 내일이나 모레를 눌렀을 때도 "O월 O일 물때 · 8물" 형식으로 정확하게 나오도록 수정!
+    const tideName = getTideName(lDay, region);
+    const label = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]}) 물때 ${tideName ? '· ' + tideName : ''}`;
+    
+    document.getElementById('tide-list').innerHTML =
+      `<div style="font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;padding:4px 4px 10px;">${label}</div>` +
+      data.map(item => {
+        const isDim = item.isYesterday || item.isNextDay;
+        const icon = item.type === 'high' ? '▲' : '▼';
+        const color = item.type === 'high' ? '#5ba4f5' : '#ff6b6b';
+        const label2 = item.type === 'high' ? '만조' : '간조';
+        const badge = item.isYesterday ? '<span class="day-badge">어제</span>' :
+                      item.isNextDay ? '<span class="day-badge">내일</span>' : '';
+        return `<div class="tide-item ${isDim ? 'dim' : ''}">
           <div class="tide-item-left">
             <div class="tide-icon" style="color:${color}">${icon}</div>
             <div><div class="tide-level-text">${item.level}cm${badge}</div><div class="tide-label">${label2}</div></div>
@@ -906,7 +930,6 @@ const displayTime=isCur
       }).join('');
   }
 }
-
 function showLoading(){
   document.getElementById('tide-list').innerHTML=
     `<div class="loading"><div class="loading-wave"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div><div class="loading-text">데이터 로딩 중</div></div>`;

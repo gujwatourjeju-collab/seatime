@@ -332,13 +332,14 @@
   <!-- ── 헤더: 로고 좌 | 시계+음력 우 ── -->
   <div class="header">
     <div class="header-left">
-      <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png"
-           style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
-      <div>
-        <div class="header-title">바당때</div>
-        <div class="header-sub">바다 앞에 서기 전, 바당때 먼저</div>
-      </div>
-    </div>
+  <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png"
+       style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
+  <div>
+    <div id="user-char-info" style="font-size:0.6rem; color:var(--accent); font-weight:700; margin-bottom:2px;"></div>
+    <div class="header-title">바당때</div>
+    <div class="header-sub">바다 앞에 서기 전, 바당때 먼저</div>
+  </div>
+</div>
     <div class="header-right">
       <div class="clock" id="clock">--:--:--</div>
       <div class="lunar-display" id="lunar-display">음력 --월 --일 (-)</div>
@@ -1182,7 +1183,7 @@ async function checkCharacter() {
     console.log("반가워요, " + savedName + "님!");
   }
 }
-
+// 1. 캐릭터 등록 팝업창 (디자인용)
 function showCharModal() {
   const modalHtml = `
     <div id="charModal" class="char-modal">
@@ -1197,27 +1198,46 @@ function showCharModal() {
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
+// 2. 이름을 Supabase에 저장하고 화면에 즉시 반영
 async function saveCharacter() {
   const name = document.getElementById('charInput').value.trim();
   if (!name) { alert("이름을 입력해주세요!"); return; }
 
-  // Supabase에 저장 시도
   const { data, error } = await supabaseClient
     .from('profiles')
     .insert([{ char_name: name, level: 1 }])
     .select();
 
   if (error) {
-    alert("저장 중 오류가 발생했어요: " + error.message);
+    alert("저장 오류: " + error.message);
   } else {
-    localStorage.setItem('characterName', name); // 폰에도 저장
-    document.getElementById('charModal').remove(); // 팝업 닫기
-    alert(name + "님, 환영합니다! 이제 바다로 가볼까요?");
+    localStorage.setItem('characterName', name);
+    
+    // 🌟 성공하자마자 헤더 자리에 이름 넣어주기
+    const infoEl = document.getElementById('user-char-info');
+    if (infoEl) infoEl.textContent = `Lv.1 ${name} 님`;
+    
+    document.getElementById('charModal').remove();
+    alert(name + "님, 환영합니다!");
   }
 }
 
-// 앱 시작 시 실행하도록 추가 (DOMContentLoaded 안에 넣으세요)
-checkCharacter();
+// 3. 🚀 앱 시작 시 이름이 있는지 확인하고 실행하는 핵심 엔진
+async function initApp() {
+  let savedName = localStorage.getItem('characterName');
+  const infoEl = document.getElementById('user-char-info');
+
+  if (!savedName) {
+    showCharModal(); // 이름 없으면 팝업 띄워!
+  } else {
+    if (infoEl) {
+      infoEl.textContent = `Lv.1 ${savedName} 님`; // 이름 있으면 상단에 표시해!
+    }
+  }
+}
+
+// 이 줄이 있어야 앱이 켜질 때 위 엔진이 돌아가요!
+initApp();
 </script>
 </body>
 </html>

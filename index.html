@@ -1367,10 +1367,9 @@ async function runCollect() {
   btn.disabled = true
   status.style.display = 'block'
 
-  let obsIndex = 0
   const total = 29
 
-  while (obsIndex < total) {
+  for (let obsIndex = 0; obsIndex < total; obsIndex++) {
     status.innerHTML = `
       🌊 데이터 수집 중...<br>
       관측소 ${obsIndex + 1} / ${total}<br>
@@ -1380,18 +1379,26 @@ async function runCollect() {
     `
 
     try {
-      const { data, error } = await supabaseClient.functions.invoke('collect-tide', {
-        body: { obsIndex }
-      })
+      const response = await fetch(
+        'https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/collect-tide',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_KEY}`
+          },
+          body: JSON.stringify({ obsIndex })
+        }
+      )
+      const data = await response.json()
 
-      if (error || !data?.success) {
-        status.innerHTML = `❌ 오류 발생 (관측소 ${obsIndex})<br>${error?.message || '알 수 없는 오류'}`
+      if (!response.ok) {
+        status.innerHTML = `❌ 오류 발생 (관측소 ${obsIndex})<br>${data.error || '알 수 없는 오류'}`
         btn.disabled = false
         return
       }
 
-      obsIndex++
-      await new Promise(r => setTimeout(r, 300)) // 잠깐 쉬기
+      await new Promise(r => setTimeout(r, 300))
 
     } catch(e) {
       status.innerHTML = `❌ 오류: ${e.message}`

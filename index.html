@@ -903,7 +903,80 @@ async function loadWeather(lat,lng){
     document.getElementById('weather-bar').classList.add('visible');
   }catch(e){}
 }
+/* ── 달력 ── */
+let calViewYear, calViewMonth;
 
+function openCalendar() {
+  const sel = getOffsetDate(selectedDateOffset);
+  calViewYear = sel.getFullYear();
+  calViewMonth = sel.getMonth();
+  renderCalendar();
+  document.getElementById('cal-overlay').classList.add('open');
+  document.getElementById('cal-sheet').classList.add('open');
+}
+function closeCalendar() {
+  document.getElementById('cal-overlay').classList.remove('open');
+  document.getElementById('cal-sheet').classList.remove('open');
+}
+function calShiftMonth(delta) {
+  calViewMonth += delta;
+  if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+  if (calViewMonth < 0)  { calViewMonth = 11; calViewYear--; }
+  renderCalendar();
+}
+function calGoToday() {
+  closeCalendar();
+  goToday();
+}
+function calSelectDate(year, month, day) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const picked = new Date(year, month, day);
+  selectedDateOffset = Math.round((picked - today) / 86400000);
+  updateLunarDisplay();
+  updateDateNav();
+  if (currentStation) loadTide(currentStation);
+  closeCalendar();
+}
+function renderCalendar() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const sel = getOffsetDate(selectedDateOffset);
+  sel.setHours(0,0,0,0);
+  document.getElementById('cal-month-label').textContent =
+    `${calViewYear}년 ${calViewMonth + 1}월`;
+  const firstDay = new Date(calViewYear, calViewMonth, 1).getDay();
+  const lastDate = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+  const days = ['일','월','화','수','목','금','토'];
+  let html = days.map((d,i) =>
+    `<div class="cal-day-label" style="${i===0?'color:#ff6b6b':i===6?'color:#5ba4f5':''}">${d}</div>`
+  ).join('');
+  // 이전 달 빈칸
+  const prevLast = new Date(calViewYear, calViewMonth, 0).getDate();
+  for (let i = 0; i < firstDay; i++) {
+    const d = prevLast - firstDay + 1 + i;
+    html += `<div class="cal-day other-month">${d}</div>`;
+  }
+  // 이번 달
+  for (let d = 1; d <= lastDate; d++) {
+    const thisDate = new Date(calViewYear, calViewMonth, d);
+    const isToday = thisDate.getTime() === today.getTime();
+    const isSel = thisDate.getTime() === sel.getTime();
+    const dow = thisDate.getDay();
+    const cls = [
+      'cal-day',
+      isToday && !isSel ? 'today' : '',
+      isSel ? 'selected' : '',
+      dow === 0 ? 'sunday' : dow === 6 ? 'saturday' : ''
+    ].filter(Boolean).join(' ');
+    html += `<div class="${cls}" onclick="calSelectDate(${calViewYear},${calViewMonth},${d})">${d}</div>`;
+  }
+  // 다음 달 빈칸
+  const total = firstDay + lastDate;
+  const remain = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let i = 1; i <= remain; i++) {
+    html += `<div class="cal-day other-month">${i}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+}
 /* ── 새로고침 ── */
 async function refresh(){
   if(!currentStation)return;

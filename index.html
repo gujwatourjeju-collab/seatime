@@ -452,10 +452,20 @@
   </svg>
 </button>
 
-<script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbx4YNUSBd41ky1T07NqfHLwEB8nthaDVs16iEFkPSVFVYmCznwPHVyyxrm2BeWGfPtfIA/exec';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-const STATIONS = {
+<script>
+  // 🌊 Supabase 연결 정보
+  const SUPABASE_URL = 'https://raykkfvchlfsjtlkbpji.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_HV81jL04Eq8m52cMm-LhSw_FX9pSikn';
+  
+  // 🌟 오타 수정: selectorsupabase -> supabase (이게 핵심!)
+  // 여기서 'supabase'라는 이름의 조종기를 만드는 거야.
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx4YNUSBd41ky1T07NqfHLwEB8nthaDVs16iEFkPSVFVYmCznwPHVyyxrm2BeWGfPtfIA/exec';
+
+  const STATIONS = {
   '김녕':    {type:'blend', obs1:'DT_0004',obs2:'DT_0022',w1:0.48,w2:0.52,timeCorr:+10,lat:33.558, lng:126.751,region:'jeju'},
   '제주':    {type:'single',obs:'DT_0004', lat:33.5275,lng:126.543, region:'jeju'},
   '성산포':  {type:'single',obs:'DT_0022', lat:33.4747,lng:126.927, region:'jeju'},
@@ -1137,6 +1147,25 @@ setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000);
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
 }
+// 기존 테스트 코드를 지우고 이 내용만 남기세요
+async function testSupabase() {
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .insert([{ id: Date.now() }]) // 현재 시간을 ID로 넣어 중복 방지
+    .select();
+
+  if (error) {
+    // 붉은색 에러가 뜨면 자물쇠(RLS) 설정이 덜 된 거예요
+    console.error('앗! 연결 실패 ㅠㅠ :', error.message);
+  } else {
+    // 이 메시지가 뜨면 성공입니다!
+    console.log('와! 데이터 들어갔어:', data);
+    alert('Supabase 연결 성공 마씸! 🎉');
+  }
+}
+
+// 🌟 딱 한 번 실행해서 확인하기
+testSupabase();
 </script>
 </body>
 </html>

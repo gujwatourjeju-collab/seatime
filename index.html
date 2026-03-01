@@ -839,6 +839,7 @@ function updateTideDisplay(tideData) {
 }
 /* ── 물때 로드 ── */
 /* ── [패치] 물때 로드 함수 ── */
+/* ── [수리 1] 어제/내일 데이터 포함 로딩 ── */
 async function loadTide(name) {
   showLoading();
   document.getElementById('wave-card').style.display = 'none';
@@ -848,36 +849,82 @@ async function loadTide(name) {
     const dateStr = dateToStr(targetDate);
     const isToday = selectedDateOffset === 0;
 
-    // 🌟 서버(Supabase) 호출
-    const { data: response, error } = await supabaseClient.functions.invoke('get-tide-data', {
-      body: { obsCode: s.obs || s.obs1, date: dateStr } // 단일/블렌드 대응
+    // 🌟 서버 호출 (전날/내일 데이터까지 넉넉히 가져옴)
+    const res = await supabaseClient.functions.invoke('get-tide-data', {
+      body: { obsCode: s.obs || s.obs1, date: dateStr }
     });
 
-    if (error || !response?.result?.data) {
-      showError('데이터를 가져올 수 없습니다.');
-      return;
+    if (res.error || !res.data?.result?.data) {
+      showError('데이터 수신 실패'); return;
     }
 
-    let tideData = response.result.data;
+    let tideData = res.data.result.data;
 
-    // 🌟 블렌딩/스케일 로직이 필요하다면 여기서 처리 (일단 기본 출력부터 확인)
+    // 🌟 [핵심] 김녕/만대항 보정 계산기 돌리기
     if (s.type === 'blend') {
-        // 블렌딩 로직은 복잡하므로, 일단 성산포(obs2) 데이터를 우선 보여주도록 임시 패치
-        // 나중에 블렌딩 엔진을 서버로 옮기는 것이 좋습니다.
+      const r2 = await getTideData(s.obs2, dateStr); // 성산포 추가 호출
+      tideData = blendTides(tideData, r2, s.w1, s.w2, s.timeCorr, isToday);
+    } else if (s.type === 'scale') {
+      tideData = scaleTides(tideData, s.scale, s.timeCorr, isToday);
     }
 
-    if (!tideData.length) { 
-      showError('해당 날짜에 데이터가 없습니다.'); 
-      return; 
+    // 🌟 [핵심] 물때 카드를 위해 '현재 수위' 가공 데이터 추가 (오늘인 경우만)
+    if (isToday) {
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      // 기존 만조/간조 데이터 사이에 현재 시점(📍) 데이터를 억지로 끼워넣음
+      const currentObj = { isCurrent: true, level: calculateLiveLevel(tideData), time: minsToTime(nowMins) };
+      tideData.push(currentObj);
+      tideData.sort((a, b) => toMins(a) - toMins(b));
     }
 
     renderTide(tideData, name, isToday);
     document.getElementById('update-time').textContent = `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
-  } catch(e) { 
-    showError('오류: ' + e.message); 
-  }
+  } catch(e) { showError('오류: ' + e.message); }
 }
 
+/* ── [수리 2] 어제/내일 디자인 + 카드 연동 렌더링 ── */
+/* ── [진짜 수리] 우리가 만든 계산기(blend/scale) 다시 연결 ── */
+async function loadTide(name) {
+  showLoading();
+  try {
+    const s = STATIONS[name];
+    const targetDate = getOffsetDate(selectedDateOffset);
+    const dateStr = dateToStr(targetDate);
+    const isToday = selectedDateOffset === 0;
+
+    let tideData = [];
+
+    // 1. 김녕(blend)인 경우: 우리가 짠 blendTides 식 그대로 호출
+    if (s.type === 'blend') {
+      const [r1, r2] = await Promise.all([
+        getTideData(s.obs1, dateStr),
+        getTideData(s.obs2, dateStr)
+      ]);
+      // 🌟 여기! 우리가 이미 밑에 만들어둔 그 식입니다.
+      tideData = blendTides(r1, r2, s.w1, s.w2, s.timeCorr, isToday);
+    } 
+    // 2. 만대항(scale)인 경우: 우리가 짠 scaleTides 식 그대로 호출
+    else if (s.type === 'scale') {
+      const r = await getTideData(s.obs, dateStr);
+      tideData = scaleTides(r, s.scale, s.timeCorr, isToday);
+    } 
+    // 3. 일반 관측소
+    else {
+      tideData = await getTideData(s.obs, dateStr);
+    }
+
+    // 🌟 [필터링] 날짜가 섞여서 나오는거 방지 (오늘/어제/내일 딱 맞게)
+    const cleaned = tideData.filter(d => d && (d.isCurrent || d.time));
+
+    // 4. 화면에 뿌리기
+    renderTide(cleaned, name, isToday);
+    
+    document.getElementById('update-time').textContent = `업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+  } catch(e) { 
+    showError('로직 연결 오류: ' + e.message); 
+  }
+}
 /* ── 블렌드 (김녕) ── */
 function blendTides(data1,data2,w1,w2,timeCorr,isToday){
   const tides1=data1.filter(d=>!d.isCurrent), tides2=data2.filter(d=>!d.isCurrent);

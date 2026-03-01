@@ -782,28 +782,27 @@ async function selectStation(name){
 // 🚀 구글(GAS) 대신 Supabase 엔진을 부르는 새 함수입니다!
 async function getTideData(obsCode, date) {
   try {
-    // 1. 우리가 만든 'get-tide-data' 엔진에게 일을 시킵니다.
+    // 🌟 supabaseClient에 저장된 키를 직접 꺼내서 인증 헤더에 넣습니다.
     const { data, error } = await supabaseClient.functions.invoke('get-tide-data', {
-      body: { 
-        obsCode: obsCode, 
-        date: date 
+      body: { obsCode, date },
+      headers: {
+        // Bearer 뒤에 한 칸 띄우는 것이 중요합니다!
+        Authorization: `Bearer ${supabaseClient.supabaseKey}`
       }
     });
 
     if (error) throw error;
     
-    // 2. 바다누리 API 형식이 result.data.pre 안에 배열로 들어있으므로 맞춰서 돌려줍니다.
+    // 데이터 알맹이(pre)가 있는지 확인하고 반환합니다.
     if (data && data.result && data.result.data) {
       return data.result.data;
     }
-    
-    return data; // 혹시 모르니 전체 데이터도 반환
+    return data;
   } catch (e) {
     console.error('엔진 호출 오류:', obsCode, e);
     return [{ error: e.message }];
   }
 }
-
 /* ── 물때 로드 ── */
 async function loadTide(name) {
   showLoading();

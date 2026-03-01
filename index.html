@@ -56,26 +56,69 @@
   .app{position:relative;z-index:1;width:100%;max-width:480px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
 
   /* ────── 헤더: 로고/타이틀 좌 | 시계+음력 우 ────── */
-  .header{
-    padding:48px 20px 10px;
-    display:flex;align-items:flex-start;justify-content:space-between;
-    flex-shrink:0;
-  }
-  .header-left{display:flex;align-items:center;gap:10px;}
-  .header-title{font-size:1.1rem;font-weight:900;letter-spacing:-0.5px;}
-  .header-sub{font-size:0.65rem;color:var(--muted);font-weight:600;}
-  /* 우측: 시계 + 음력 세로 정렬 */
-  .header-right{
-    display:flex;flex-direction:column;align-items:flex-end;gap:4px;
-  }
-  .clock{
-    font-family:'DM Mono',monospace;font-size:1.05rem;
-    font-weight:500;color:var(--accent);letter-spacing:1px;
-  }
-  .lunar-display{
-    font-size:0.62rem;font-weight:700;
-    color:var(--muted);letter-spacing:0.3px;
-  }
+/* 헤더 전체 레이아웃 */
+.header {
+  padding: 54px 20px 12px; /* 상단 여백을 살짝 늘려 안정감 부여 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* 왼쪽: 로고 + (이름/타이틀/서브) */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* 로고와 텍스트 사이 간격 최적화 */
+}
+
+/* 캐릭터 이름표 스타일 (Lv.1 이름 님) */
+#user-char-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; /* 시계보다 작고 깔끔하게 */
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.8px;
+  margin-bottom: 2px; /* 시계와의 간격 */
+  opacity: 0.9;
+}
+
+.header-title {
+  font-size: 1.25rem; /* 살짝 키워서 시원하게 */
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+}
+
+.header-sub {
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* 우측: 시계 + 음력 */
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 오른쪽 끝 정렬 */
+  gap: 2px; /* 간격을 좁혀서 하나로 묶인 느낌 부여 */
+  padding-top: 4px;
+}
+  .clock {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff; /* 시계는 깔끔하게 흰색으로 */
+  letter-spacing: 1px;
+  line-height: 1;
+}
+  .lunar-display {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 2px;
+}
 
   /* ────── 컨트롤 바: 관측소 | 날짜이동 (50:50) ────── */
   .control-bar{
@@ -331,20 +374,20 @@
 
   <!-- ── 헤더: 로고 좌 | 시계+음력 우 ── -->
   <div class="header">
-    <div class="header-left">
-  <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png"
-       style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
-  <div>
-    <div id="user-char-info" style="font-size:0.6rem; color:var(--accent); font-weight:700; margin-bottom:2px;"></div>
-    <div class="header-title">바당때</div>
-    <div class="header-sub">바다 앞에 서기 전, 바당때 먼저</div>
-  </div>
-</div>
-    <div class="header-right">
-      <div class="clock" id="clock">--:--:--</div>
-      <div class="lunar-display" id="lunar-display">음력 --월 --일 (-)</div>
+  <div class="header-left">
+    <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" 
+         style="width:38px; height:38px; border-radius:10px; object-fit:cover;">
+    <div>
+      <div class="header-title">바당때</div>
+      <div class="header-sub">바다 앞에 서기 전, 바당때 먼저</div>
     </div>
   </div>
+
+  <div class="header-right">
+    <div id="user-char-info"></div> <div class="clock" id="clock">--:--:--</div>
+    <div id="lunar-display" class="lunar-display">음력 --월 --일 (-)</div>
+  </div>
+</div>
 
   <!-- ── 컨트롤 바: 관측소 | 날짜이동 ── -->
   <div class="control-bar">
@@ -736,18 +779,28 @@ async function selectStation(name){
 }
 
 /* ── GAS 호출 (날짜 파라미터 포함) ── */
-async function callGAS(obsCode, dateStr) {
+// 🚀 구글(GAS) 대신 Supabase 엔진을 부르는 새 함수입니다!
+async function getTideData(obsCode, date) {
   try {
-    let url = GAS_URL + '?obsCode=' + encodeURIComponent(obsCode);
-    if (dateStr) url += '&date=' + encodeURIComponent(dateStr);
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const data = JSON.parse(await res.text());
-    if (!Array.isArray(data)) throw new Error('응답 형식 오류');
-    return data;
-  } catch(e) {
-    console.error('GAS 오류:',obsCode,e);
-    return [{error:e.message}];
+    // 1. 우리가 만든 'get-tide-data' 엔진에게 일을 시킵니다.
+    const { data, error } = await supabaseClient.functions.invoke('get-tide-data', {
+      body: { 
+        obsCode: obsCode, 
+        date: date 
+      }
+    });
+
+    if (error) throw error;
+    
+    // 2. 바다누리 API 형식이 result.data.pre 안에 배열로 들어있으므로 맞춰서 돌려줍니다.
+    if (data && data.result && data.result.data) {
+      return data.result.data;
+    }
+    
+    return data; // 혹시 모르니 전체 데이터도 반환
+  } catch (e) {
+    console.error('엔진 호출 오류:', obsCode, e);
+    return [{ error: e.message }];
   }
 }
 
@@ -763,12 +816,12 @@ async function loadTide(name) {
 
     let data;
     if (s.type==='blend') {
-      const [r1,r2] = await Promise.all([callGAS(s.obs1,dateStr),callGAS(s.obs2,dateStr)]);
+      const [r1,r2] = await Promise.all([getTideData(s.obs1,dateStr),getTideData(s.obs2,dateStr)]);
       data = blendTides(r1,r2,s.w1,s.w2,s.timeCorr,isToday);
     } else if (s.type==='scale') {
-      data = scaleTides(await callGAS(s.obs,dateStr),s.scale,s.timeCorr,isToday);
+      data = scaleTides(await getTideData(s.obs,dateStr),s.scale,s.timeCorr,isToday);
     } else {
-      data = await callGAS(s.obs,dateStr);
+      data = await getTideData(s.obs,dateStr);
     }
 
     // 오늘 아닌 날: isCurrent 항목 제거, 만조/간조만
@@ -1134,16 +1187,16 @@ window.addEventListener('DOMContentLoaded',async()=>{
     const dateStr=dateToStr(getOffsetDate(0));
     if(s.type==='blend'){
       setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      const [r1,r2]=await Promise.all([callGAS(s.obs1,dateStr),callGAS(s.obs2,dateStr)]);
+      const [r1,r2]=await Promise.all([getTideData(s.obs1,dateStr),getTideData(s.obs2,dateStr)]);
       setSplashProgress(75,'데이터 처리 중',1.5);
       tideData=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
     } else if(s.type==='scale'){
       setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      tideData=scaleTides(await callGAS(s.obs,dateStr),s.scale,s.timeCorr,true);
+      tideData=scaleTides(await getTideData(s.obs,dateStr),s.scale,s.timeCorr,true);
       setSplashProgress(75,'데이터 처리 중',1.5);
     } else {
       setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      tideData=await callGAS(s.obs,dateStr);
+      tideData=await getTideData(s.obs,dateStr);
       setSplashProgress(75,'데이터 처리 중',1.5);
     }
   }catch(e){tideData=null;}

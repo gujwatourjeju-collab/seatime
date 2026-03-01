@@ -577,15 +577,20 @@ function getLunarInfo(date) {
 function getLunarDay(date)   { return getLunarInfo(date).day; }
 function getLunarMonth(date) { return getLunarInfo(date).month; }
 
-function getTideName(lunarDay) {
-  const map = {1:'9물',2:'10물',3:'11물',4:'12물',5:'13물',6:'14물',
-    7:'조금',8:'무시',9:'1물',10:'2물',11:'3물',12:'4물',
-    13:'5물',14:'6물',15:'7물',16:'8물',17:'9물',18:'10물',
-    19:'11물',20:'12물',21:'13물',22:'14물',23:'조금',24:'무시',
-    25:'1물',26:'2물',27:'3물',28:'4물',29:'5물',30:'6물'};
+function getTideName(lunarDay, region) {
+  const map = region === 'west'
+    ? {1:'8물',2:'9물',3:'10물',4:'11물',5:'12물',6:'13물',
+       7:'14물',8:'조금',9:'무시',10:'1물',11:'2물',12:'3물',
+       13:'4물',14:'5물',15:'6물',16:'7물',17:'8물',18:'9물',
+       19:'10물',20:'11물',21:'12물',22:'13물',23:'조금',24:'무시',
+       25:'1물',26:'2물',27:'3물',28:'4물',29:'5물',30:'6물'}
+    : {1:'9물',2:'10물',3:'11물',4:'12물',5:'13물',6:'14물',
+       7:'조금',8:'무시',9:'1물',10:'2물',11:'3물',12:'4물',
+       13:'5물',14:'6물',15:'7물',16:'8물',17:'9물',18:'10물',
+       19:'11물',20:'12물',21:'13물',22:'14물',23:'조금',24:'무시',
+       25:'1물',26:'2물',27:'3물',28:'4물',29:'5물',30:'6물'};
   return map[lunarDay]||'';
 }
-
 /* ── 날짜 유틸 ── */
 function getOffsetDate(offset) {
   const d = new Date(); d.setHours(0,0,0,0);
@@ -831,7 +836,8 @@ function renderTide(data,name,isToday){
     // 물때 뱃지 + 설명
     const selDate=getOffsetDate(selectedDateOffset);
     const lDay=getLunarDay(selDate);
-    const tideName=current.tideName||getTideName(lDay);
+    const region = STATIONS[name]?.region;
+const tideName = current.tideName || getTideName(lDay, region)
     const tideDesc=TIDE_DESC[tideName]||'';
     const tnEl=document.getElementById('tide-name');
     if(tideName){tnEl.textContent=tideName;tnEl.style.display='inline-block';}

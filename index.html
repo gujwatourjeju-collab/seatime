@@ -846,7 +846,7 @@ function renderTide(data, name, isToday) {
     const lDay = getLunarDay(selDate);
     const region = STATIONS[name]?.region;
     
-    // 🌟 픽스 포인트: API에서 주는 엉터리 값을 무시하고, 무조건 우리가 만든 완벽한 계산기(getTideName)만 믿고 간다!
+    // API 엉터리 값 무시, 우리 로직(getTideName) 우선 적용
     const tideName = getTideName(lDay, region); 
     const tideDesc = TIDE_DESC[tideName] || '';
     
@@ -908,12 +908,20 @@ function renderTide(data, name, isToday) {
     const lDay = getLunarDay(d);
     const region = STATIONS[name]?.region;
     
-    // 🌟 보너스 픽스: 내일이나 모레를 눌렀을 때도 "O월 O일 물때 · 8물" 형식으로 정확하게 나오도록 수정!
     const tideName = getTideName(lDay, region);
-    const label = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]}) 물때 ${tideName ? '· ' + tideName : ''}`;
     
-    document.getElementById('tide-list').innerHTML =
-      `<div style="font-size:0.62rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;padding:4px 4px 10px;">${label}</div>` +
+    // 🌟 오늘이 아닌 날짜 리스트 상단 헤더 디자인 개선
+    // 물때 이름이 있으면 예쁜 민트색 뱃지로 붙여줌!
+    const dateText = `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]}) 물때`;
+    const tideBadgeHtml = tideName 
+      ? `<span style="margin-left:8px; background:var(--accent); color:#0d1f2d; font-size:0.6rem; font-weight:900; padding:2px 8px; border-radius:12px;">${tideName}</span>` 
+      : '';
+
+    const headerHtml = `<div style="display:flex; align-items:center; font-size:0.65rem; font-weight:700; color:var(--muted); letter-spacing:1px; padding:4px 4px 10px;">
+      ${dateText} ${tideBadgeHtml}
+    </div>`;
+    
+    document.getElementById('tide-list').innerHTML = headerHtml +
       data.map(item => {
         const isDim = item.isYesterday || item.isNextDay;
         const icon = item.type === 'high' ? '▲' : '▼';

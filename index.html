@@ -829,6 +829,10 @@ function renderTide(data,name,isToday){
     // 리스트 (어제/내일 dim 포함 전체)
     document.getElementById('tide-list').innerHTML=data.map(item=>{
       const isCur=item.isCurrent, isDim=item.isYesterday||item.isNextDay;
+      const now=new Date();
+const displayTime=isCur
+  ? String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')
+  : item.time;
       const icon=isCur?'📍':item.type==='high'?'▲':'▼';
       const color=isCur?'#00c4a7':item.type==='high'?'#5ba4f5':'#ff6b6b';
       const label=isCur?'현재 예상 수위':item.type==='high'?'만조':'간조';
@@ -839,7 +843,7 @@ function renderTide(data,name,isToday){
           <div class="tide-icon" style="color:${color}">${icon}</div>
           <div><div class="tide-level-text">${item.level}cm${badge}</div><div class="tide-label">${label}</div></div>
         </div>
-        <div class="tide-time">${item.time}</div>
+        <div class="tide-time">${displayTime}</div>
       </div>`;
     }).join('');
 

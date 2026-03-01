@@ -782,24 +782,28 @@ async function selectStation(name){
 // 🚀 구글(GAS) 대신 Supabase 엔진을 부르는 새 함수입니다!
 async function getTideData(obsCode, date) {
   try {
-    // 🌟 supabaseClient에 저장된 키를 직접 꺼내서 인증 헤더에 넣습니다.
     const { data, error } = await supabaseClient.functions.invoke('get-tide-data', {
       body: { obsCode, date },
       headers: {
-        // Bearer 뒤에 한 칸 띄우는 것이 중요합니다!
         Authorization: `Bearer ${supabaseClient.supabaseKey}`
       }
     });
 
-    if (error) throw error;
+    // 🌟 서버가 400 에러를 냈을 때 (우리가 심어둔 한국어 메시지가 나옵니다)
+    if (error) {
+      const errorDetail = await error.context.json();
+      const msg = errorDetail.error || "알 수 없는 서버 오류";
+      alert(msg); // 👈 화면에 팝업으로 바로 띄워줍니다.
+      console.error("서버 원인:", msg);
+      return [{ error: msg }];
+    }
     
-    // 데이터 알맹이(pre)가 있는지 확인하고 반환합니다.
     if (data && data.result && data.result.data) {
       return data.result.data;
     }
     return data;
   } catch (e) {
-    console.error('엔진 호출 오류:', obsCode, e);
+    console.error('호출 실패:', e);
     return [{ error: e.message }];
   }
 }

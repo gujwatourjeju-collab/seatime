@@ -261,6 +261,22 @@
   .station-item-emoji{font-size:1.1rem;}
   .station-item-name{font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.85);}
   .station-item.active .station-item-name{color:var(--accent);}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-month-label{font-size:0.95rem;font-weight:900;}
+.cal-nav-btn{background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.2rem;cursor:pointer;padding:4px 10px;}
+.cal-nav-btn:active{color:var(--accent);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;}
+.cal-day-label{font-size:0.6rem;font-weight:700;color:var(--muted);padding:4px 0;}
+.cal-day{padding:8px 4px;border-radius:10px;font-size:0.82rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.7);transition:all 0.15s;}
+.cal-day:active{transform:scale(0.93);}
+.cal-day.today{border:1px solid var(--accent);color:var(--accent);}
+.cal-day.selected{background:var(--accent);color:#0d1f2d;}
+.cal-day.other-month{opacity:0.25;}
+.cal-day.sunday{color:#ff6b6b;}
+.cal-day.saturday{color:#5ba4f5;}
+.cal-day.selected.sunday,.cal-day.selected.saturday{color:#0d1f2d;}
+.cal-today-btn{width:100%;margin-top:14px;padding:11px;border-radius:14px;background:rgba(0,196,167,0.15);border:1px solid rgba(0,196,167,0.4);color:var(--accent);font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;}
+.cal-today-btn:active{background:rgba(0,196,167,0.3);}
 </style>
 </head>
 <body>
@@ -317,7 +333,7 @@
     <!-- 날짜이동 (50%) -->
     <div class="date-nav">
       <button class="date-nav-btn" onclick="shiftDate(-1)">‹</button>
-      <div class="date-nav-center" onclick="goToday()">
+      <div class="date-nav-center" onclick="openCalendar()">
         <div class="date-nav-solar" id="date-nav-solar">--/--</div>
         <div class="date-nav-label" id="date-nav-label">오늘</div>
       </div>
@@ -415,7 +431,20 @@
     <div class="station-grid" id="station-grid"></div>
   </div>
 </div>
-
+<!-- 달력 시트 -->
+<div class="sheet-overlay" id="cal-overlay" onclick="closeCalendar()"></div>
+<div class="sheet" id="cal-sheet" onclick="event.stopPropagation()">
+  <div class="sheet-handle"></div>
+  <div class="sheet-step">
+    <div class="cal-header">
+      <button class="cal-nav-btn" onclick="calShiftMonth(-1)">‹</button>
+      <div class="cal-month-label" id="cal-month-label"></div>
+      <button class="cal-nav-btn" onclick="calShiftMonth(+1)">›</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <button class="cal-today-btn" onclick="calGoToday()">오늘로 돌아가기</button>
+  </div>
+</div>
 <button class="refresh-btn" id="refresh-btn" onclick="refresh()">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="23 4 23 10 17 10"></polyline>

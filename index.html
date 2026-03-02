@@ -1274,20 +1274,36 @@ window.addEventListener('DOMContentLoaded',async()=>{
   setSplashProgress(95,'화면 준비 중',1.0);
   await new Promise(r=>setTimeout(r,200));
 
-  if(tideData){
-    // ✅ 날짜+시간 기준 정렬 추가
-    tideData.sort((a,b)=>{
-      const da=(a.date||'')+(a.time||'');
-      const db=(b.date||'')+(b.time||'');
-      return da.localeCompare(db);
-    });
-    const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
-    if(cleaned.length&&!cleaned[0]?.error){
-      document.getElementById('wave-card').style.display='block';
-      renderTide(cleaned,last,true);
-      document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
-    }
+if(tideData){
+  tideData.sort((a,b)=>{
+    const da=(a.date||'')+(a.time||'');
+    const db=(b.date||'')+(b.time||'');
+    return da.localeCompare(db);
+  });
+
+  // ✅ 스플래시에서도 isCurrent 삽입
+  if(tideData.length > 0){
+    const now = new Date();
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+    const currentLevel = calculateLiveLevel(tideData);
+    const currentObj = {
+      isCurrent: true,
+      level: currentLevel,
+      time: minsToTime(nowMins),
+      type: 'current',
+      mins: nowMins
+    };
+    tideData.push(currentObj);
+    tideData.sort((a,b) => toMins(a) - toMins(b));
   }
+
+  const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
+  if(cleaned.length&&!cleaned[0]?.error){
+    document.getElementById('wave-card').style.display='block';
+    renderTide(cleaned,last,true);
+    document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+  }
+}
 
   setSplashProgress(100,'준비 완료 ✓',0.5);
   await new Promise(r=>setTimeout(r,380));

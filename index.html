@@ -149,11 +149,16 @@ body {
   height: 80px; overflow: hidden;
 }
 .wave-svg {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  position: absolute; 
+  top: 0; 
+  left: -10%; /* 왼쪽으로 10% 밀어서 숨겨진 여백을 만듦 */
+  width: 120%; /* 화면보다 20% 넓게 만들어서 우측에도 숨겨진 여백을 만듦 */
+  height: 100%;
 }
-.wave-path-1 { animation: waveDrift1 6s ease-in-out infinite; }
-.wave-path-2 { animation: waveDrift2 9s ease-in-out infinite; }
-.wave-path-3 { animation: waveDrift3 12s ease-in-out -4s infinite; }
+/* 시간(s)을 줄이면 파도가 훨씬 찰랑거리게 움직입니다 */
+.wave-path-1 { animation: waveDrift1 3.5s ease-in-out infinite; } /* 기존 6s -> 3.5s */
+.wave-path-2 { animation: waveDrift2 5s ease-in-out infinite; }   /* 기존 9s -> 5s */
+.wave-path-3 { animation: waveDrift3 7s ease-in-out -2s infinite; } /* 기존 12s -> 7s */
 @keyframes waveDrift1 { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-6%)} }
 @keyframes waveDrift2 { 0%,100%{transform:translateX(-4%)} 50%{transform:translateX(5%)} }
 @keyframes waveDrift3 { 0%,100%{transform:translateX(3%)} 50%{transform:translateX(-5%)} }
@@ -286,31 +291,39 @@ body {
 }
 /* 만조 라벨 - 게이지 트랙 상단에 붙임 */
 #gauge-high-label {
-  position: absolute; right: 22px;
-  top: calc(28% - 2px);
-  text-align: right; pointer-events: none;
-  transform: translateY(-100%);
+  position: absolute; 
+  right: 22px;
+  top: 28%; /* 원래의 황금 비율 유지 */
+  transform: translateY(-50%); /* 선 시작점에 중앙 맞춤 */
+  display: flex; /* 가로 배열 추가 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 6px; /* 숫자와 명칭 사이 간격 */
 }
 #gauge-high-val {
   font-family: 'DM Mono', monospace; font-size: .65rem;
   font-weight: 500; color: rgba(255,255,255,.55);
-  display: block; line-height: 1.2;
+  display: block; 
+  line-height: 1; /* 가로 정렬을 위해 1.2에서 1로 조정 */
 }
 #gauge-high-name {
   font-size: .46rem; font-weight: 700; color: rgba(255,255,255,.28);
   letter-spacing: 1px;
+  margin-top: 0; /* 세로 정렬 시 생길 수 있는 마진 제거 */
 }
 /* 간조 라벨 - 게이지 트랙 하단에 붙임 */
 #gauge-low-label {
   position: absolute; right: 22px;
-  bottom: calc(10% - 2px);
-  text-align: right; pointer-events: none;
-  transform: translateY(100%);
+  bottom: 10%; /* 원래의 황금 비율 유지 */
+  transform: translateY(50%); 
+  display: flex; 
+  align-items: center;
+  gap: 6px;
 }
 #gauge-low-val {
   font-family: 'DM Mono', monospace; font-size: .65rem;
   font-weight: 500; color: rgba(255,255,255,.38);
-  display: block; line-height: 1.2;
+  display: block; 
+  line-height: 1; /* 만조와 동일하게 1로 조정 */
 }
 #gauge-low-name {
   font-size: .46rem; font-weight: 700; color: rgba(255,255,255,.18);
@@ -451,10 +464,18 @@ body {
   font-size: .62rem; color: rgba(255,255,255,.55);
 }
 .station-pill {
-  font-size: .55rem; color: rgba(255,255,255,.25);
-  font-weight: 600; letter-spacing: .5px; margin-top: 4px;
+  font-size: .65rem; 
+  color: rgba(255, 255, 255, 0.9); 
+  font-weight: 700; 
+  letter-spacing: .5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); 
 }
-
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 뱃지와 이름 사이 간격 */
+  margin-bottom: 2px;
+}
 /* ── 조석 패널 (하단) ── */
 #tide-panel {
   flex-shrink: 0;
@@ -472,16 +493,25 @@ body {
 }
 
 .panel-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 30px; 
+  padding: 0 0 10px; flex-shrink: 0;
 }
+
+/* 2. '오늘 물때' 글씨 밝게 & 그림자 줘서 또렷하게 */
 .panel-title {
-  font-size: .58rem; font-weight: 700; color: rgba(255,255,255,.3);
+  font-size: .58rem; font-weight: 900; 
+  color: rgba(255,255,255,.85); /* 기존 .3에서 .85로 확 밝힘 */
   letter-spacing: 2px; text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6); 
 }
+
+/* 3. '오후 2:19' 시간 글씨 밝게 & 그림자 */
 .panel-upd {
   font-family: 'DM Mono', monospace;
-  font-size: .52rem; color: rgba(255,255,255,.18);
+  font-size: .55rem; 
+  color: rgba(255,255,255,.8); /* 기존 .18에서 .8로 확 밝힘 */
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
 .tide-scroll {
@@ -492,7 +522,9 @@ body {
 
 /* 조석 아이템 — 카드 박스 없이 */
 .tide-row {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; 
+  justify-content: center; /* 1. 수정: space-between을 center로 변경 */
+  gap: 30px; /* 2. 추가: 수위(왼쪽)와 시간(오른쪽) 사이의 간격 */
   padding: 8px 6px;
   border-bottom: 1px solid rgba(255,255,255,.05);
   transition: opacity .2s;
@@ -506,7 +538,10 @@ body {
 }
 .tide-row.is-dim { opacity: .3; }
 
-.tr-left { display: flex; align-items: center; gap: 10px; }
+.tr-left { 
+  display: flex; align-items: center; gap: 10px; 
+  width: 110px; /* 3. 추가: 이 폭을 고정해야 아이콘 라인이 들쑥날쑥하지 않고 일자로 딱 맞습니다 */
+}
 .tr-icon { font-size: .8rem; width: 14px; text-align: center; }
 .tr-level {
   font-family: 'DM Mono', monospace; font-size: .88rem;
@@ -516,6 +551,8 @@ body {
 .tr-time {
   font-family: 'DM Mono', monospace; font-size: .82rem;
   font-weight: 400; color: rgba(255,255,255,.45);
+  width: 50px; /* 4. 추가: 시간 부분도 고정해서 틀어짐 방지 */
+  text-align: left; /* 시간 텍스트 정렬 */
 }
 .day-tag {
   font-size: .5rem; background: rgba(255,255,255,.07);
@@ -738,16 +775,18 @@ body {
   </div>
 
   <!-- 중앙 수위 히어로 -->
-  <div id="hero">
+<div id="hero">
     <div id="hero-inner">
-      <span class="tide-badge" id="tide-badge" style="display:none;"></span>
+      <div class="hero-top-row">
+        <span class="tide-badge" id="tide-badge" style="display:none;"></span>
+        <div class="station-pill" id="station-pill"></div>
+      </div>
       <div class="tide-desc" id="tide-desc" style="display:none;"></div>
       <div id="level-big">--<span id="level-unit">cm</span></div>
       <div class="tide-status-row">
         <div class="status-pill" id="status-pill">--</div>
         <div class="timeleft-pill" id="timeleft-pill">--</div>
       </div>
-      <div class="station-pill" id="station-pill"></div>
     </div>
   </div>
 
@@ -1191,8 +1230,23 @@ function updateClock(){
 }
 setInterval(updateClock,1000);updateClock();
 
-function shiftDate(d){selectedDateOffset+=d;updateLunarDisplay();updateDateNav();if(currentStation)loadTide(currentStation);}
-function goToday(){if(selectedDateOffset===0)return;selectedDateOffset=0;updateLunarDisplay();updateDateNav();if(currentStation)loadTide(currentStation);}
+function shiftDate(d){
+  selectedDateOffset+=d; updateLunarDisplay(); updateDateNav();
+  if(currentStation){
+    loadTide(currentStation);
+    const s=STATIONS[currentStation];
+    loadWeather(s.lat, s.lng); /* <- 날씨도 다시 부르기 추가! */
+  }
+}
+function goToday(){
+  if(selectedDateOffset===0)return;
+  selectedDateOffset=0; updateLunarDisplay(); updateDateNav();
+  if(currentStation){
+    loadTide(currentStation);
+    const s=STATIONS[currentStation];
+    loadWeather(s.lat, s.lng); /* <- 여기도 추가! */
+  }
+}
 
 /* ── 시트 ── */
 function openSheet(){document.getElementById('sheet-overlay').classList.add('open');document.getElementById('sheet').classList.add('open');showRegionStep();}
@@ -1240,7 +1294,9 @@ async function loadTide(name){
     const cl=td.filter(d=>d&&(d.isCurrent||d.time));
     if(!cl.length){showError('데이터 없음');return;}
     renderTide(cl,name,isToday);
-    document.getElementById('panel-upd').textContent=new Date().toLocaleTimeString('ko-KR');
+/* 오늘이면 시간을 보여주고, 미래/과거면 아예 화면에서 안 보이게 숨김 처리 */
+document.getElementById('panel-upd').style.display = isToday ? 'block' : 'none';
+document.getElementById('panel-upd').textContent = isToday ? new Date().toLocaleTimeString('ko-KR') : '';
   }catch(e){showError('오류: '+e.message);console.error(e);}
 }
 
@@ -1289,24 +1345,35 @@ function renderTide(data,name,isToday){
   data.sort((a,b)=>toMins(a)-toMins(b));
   const sel=getOffsetDate(selectedDateOffset),ld=getLunarDay(sel),region=STATIONS[name]?.region,tn=getTideName(ld,region);
 
+  // 1. [변경] 오늘이든 미래든 가운데 메인 영역은 항상 켜둡니다.
+  document.getElementById('hero-inner').style.display='flex';
+  document.getElementById('hero-inner').style.flexDirection='column';
+  document.getElementById('hero-inner').style.gap='4px';
+
+  // 2. [변경] 뱃지(6물)와 관측소 이름은 미래 날짜에도 필요하므로 if문 밖으로 뺐습니다.
+  const badge=document.getElementById('tide-badge');
+  const descEl=document.getElementById('tide-desc');
+  if(tn){
+    badge.textContent=tn;
+    badge.style.display='inline-block';
+    if(descEl){ descEl.textContent=TIDE_DESC[tn]||''; descEl.style.display=TIDE_DESC[tn]?'block':'none'; }
+  } else {
+    badge.style.display='none';
+    if(descEl) descEl.style.display='none';
+  }
+  document.getElementById('station-pill').textContent=`📍 ${name}`;
+
+  // 3. [추가] 최고/최저 수위 미리 계산 (미래 날짜에 보여주기 위해)
+  const levels=data.filter(d=>!d.isCurrent && d.level !== undefined).map(d=>d.level);
+  const minL=levels.length ? Math.min(...levels) : 0;
+  const maxL=levels.length ? Math.max(...levels) : 0;
+
   if(isToday){
+    // --- [원본 유지] 오늘일 때의 로직은 원본 그대로입니다 ---
     const cur=data.find(d=>d.isCurrent);
     if(!cur){showError('현재 데이터 없음');return;}
-    document.getElementById('hero-inner').style.display='flex';
-    document.getElementById('hero-inner').style.flexDirection='column';
-    document.getElementById('hero-inner').style.gap='4px';
+    
     document.getElementById('level-big').innerHTML=cur.level+'<span id="level-unit">cm</span>';
-
-    const badge=document.getElementById('tide-badge');
-    const descEl=document.getElementById('tide-desc');
-    if(tn){
-      badge.textContent=tn;
-      badge.style.display='inline-block';
-      if(descEl){ descEl.textContent=TIDE_DESC[tn]||''; descEl.style.display=TIDE_DESC[tn]?'block':'none'; }
-    } else {
-      badge.style.display='none';
-      if(descEl) descEl.style.display='none';
-    }
 
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm);
     const isFalling=nextTide?.type==='low';
@@ -1315,20 +1382,41 @@ function renderTide(data,name,isToday){
       document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';
       document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;
     }
-    document.getElementById('station-pill').textContent=`📍 ${name}`;
+    
+    // [추가] 과거/미래에 갔다가 오늘로 돌아왔을 때 숨겨둔 요소들 다시 켜기
+    document.querySelector('.tide-status-row').style.display = 'flex';
+    document.getElementById('gauge-rail').style.display = 'flex';
+    document.getElementById('ocean-water').style.opacity = '1';
+    document.getElementById('horizon').style.opacity = '1';
 
-    // 수위 계산
-    const levels=data.filter(d=>!d.isCurrent).map(d=>d.level);
-    const minL=Math.min(...levels),maxL=Math.max(...levels);
+    // 수위 계산 애니메이션 (원본 유지)
     const pct=maxL>minL?((cur.level-minL)/(maxL-minL))*100:50;
     setOceanLevel(pct,isFalling,true);
     updateGaugeLabels(data,cur);
+
   } else {
-    document.getElementById('hero-inner').style.display='none';
-    setOceanLevel(40,false,true);
+    // --- [새로운 기능] 미래/과거 날짜일 때 (세련된 디자인 적용) ---
+    // 현재 수위 대신 최고/최저 수위 표시 (DM Mono 폰트 및 기존 그림자 효과 완벽 이식)
+    document.getElementById('level-big').innerHTML = 
+      `<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 5px;">
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <span style="color: #5ba4f5; font-size: 0.85rem; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.6);">▲ 최고</span>
+          <span style="font-family: 'DM Mono', monospace; font-size: 3.5rem; font-weight: 300; line-height: 1; letter-spacing: -3px; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,.7), 0 4px 40px rgba(0,0,0,.5);">${maxL}<span style="font-size: 1.2rem; opacity: .4; margin-left: 2px;">cm</span></span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 10px;">
+          <span style="color: #ff6b6b; font-size: 0.85rem; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.6);">▼ 최저</span>
+          <span style="font-family: 'DM Mono', monospace; font-size: 3.5rem; font-weight: 300; line-height: 1; letter-spacing: -3px; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,.7), 0 4px 40px rgba(0,0,0,.5);">${minL}<span style="font-size: 1.2rem; opacity: .4; margin-left: 2px;">cm</span></span>
+        </div>
+      </div>`;
+
+    // 필요 없는 실시간 상태, 게이지, 물 배경 숨기기
+    document.querySelector('.tide-status-row').style.display = 'none';
+    document.getElementById('gauge-rail').style.display = 'none';
+    document.getElementById('ocean-water').style.opacity = '0';
+    document.getElementById('horizon').style.opacity = '0';
   }
 
-  // 패널
+  // --- 패널 (원본 유지) ---
   const dateText=isToday?'오늘 물때':`${sel.getMonth()+1}월 ${sel.getDate()}일 (${WEEKDAYS[sel.getDay()]}) 물때`;
   const tnBadge=tn?`<span style="background:var(--accent);color:#040d18;font-size:.5rem;font-weight:900;padding:2px 8px;border-radius:10px;margin-left:6px;">${tn}</span>`:'';
   document.getElementById('panel-title').innerHTML=dateText+tnBadge;
@@ -1363,18 +1451,71 @@ function showError(msg){document.getElementById('tide-list').innerHTML=`<div cla
 /* ── 날씨 ── */
 async function loadWeather(lat,lng){
   try{
-    const c=(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`)).json()).current;
-    currentWeatherCode=c.weather_code;
-    if(currentStation)applyTheme(STATIONS[currentStation]?.region,c.weather_code);
-    updateSkyObjects(c.weather_code);
-    const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(c.wind_direction_10m/45)%8];
+    // 실시간(current) 데이터와 주간 예보(daily) 데이터를 한 번에 가져옵니다.
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const wxIcon = document.getElementById('wx-icon');
+    const wxText = document.getElementById('wx-text');
+    const wxWind = document.getElementById('wx-wind');
+
+    // Open-Meteo API는 기본적으로 오늘 포함 7일치(index 0~6)를 제공합니다.
+    const maxForecastDays = data.daily && data.daily.time ? data.daily.time.length : 0;
+
+    // 1. 과거이거나 제공되는 예보일(7일)을 초과한 아주 먼 미래인 경우
+    if (selectedDateOffset < 0 || selectedDateOffset >= maxForecastDays) {
+      wxIcon.style.display = 'none'; // 아이콘 숨김
+      wxWind.style.display = 'none'; // 바람 정보 숨김
+      
+      // 상황에 맞게 텍스트 분기 처리
+      wxText.textContent = selectedDateOffset < 0 ? '과거 날씨 조회 불가' : '예보 기간 초과 (데이터 없음)';
+
+      // 날씨 데이터가 없으므로 기본 맑은 바다 테마로 배경을 셋팅합니다.
+      currentWeatherCode = 0;
+      if(currentStation) applyTheme(STATIONS[currentStation]?.region, 0);
+      updateSkyObjects(0);
+
+      document.getElementById('weather').classList.add('show');
+      return;
+    }
+
+    // 2. 날씨 데이터가 있는 경우 (오늘 ~ 6일 후)
+    let wCode, wSpeed, wDir;
+    
+    if (selectedDateOffset === 0) {
+      // 오늘이면 실시간(current) 날씨 사용
+      wCode = data.current.weather_code;
+      wSpeed = data.current.wind_speed_10m;
+      wDir = data.current.wind_direction_10m;
+    } else {
+      // 내일 이상이면 주간 예보(daily) 중 해당 날짜의 최고/주 지표 사용
+      wCode = data.daily.weather_code[selectedDateOffset];
+      wSpeed = data.daily.wind_speed_10m_max[selectedDateOffset];
+      wDir = data.daily.wind_direction_10m_dominant[selectedDateOffset];
+    }
+
+    currentWeatherCode = wCode;
+    if(currentStation) applyTheme(STATIONS[currentStation]?.region, wCode);
+    updateSkyObjects(wCode);
+
+    const dirs=["북","북동","동","남동","남","남서","서","북서"];
+    const dir=dirs[Math.round(wDir/45)%8] || "북";
     const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
     const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
     const wl=v=>v<1.5?"잔잔":v<3.3?"약한":v<5.4?"산들":v<7.9?"건들":v<10.7?"흔들":"강풍";
-    document.getElementById('wx-icon').textContent=emo(c.weather_code);
-    document.getElementById('wx-text').textContent=`${wn(c.weather_code)} · ${dir}풍 ${wl(c.wind_speed_10m)} ${c.wind_speed_10m.toFixed(1)}m/s`;
+
+    // 데이터가 정상적으로 있으면 숨겨놨던 아이콘을 다시 켭니다.
+    wxIcon.style.display = 'inline';
+    wxWind.style.display = 'none'; // 원래 텍스트에 한 번에 붙이셨길래 헷갈리지 않게 숨김 처리
+    
+    wxIcon.textContent=emo(wCode);
+    wxText.textContent=`${wn(wCode)} · ${dir}풍 ${wl(wSpeed)} ${wSpeed.toFixed(1)}m/s`;
+
     document.getElementById('weather').classList.add('show');
-  }catch(e){}
+  } catch(e) {
+    console.error("날씨 로딩 실패:", e);
+  }
 }
 
 /* ── 달력 ── */
@@ -1383,7 +1524,39 @@ function openCalendar(){const s=getOffsetDate(selectedDateOffset);calY=s.getFull
 function closeCalendar(){document.getElementById('cal-overlay').classList.remove('open');document.getElementById('cal-sheet').classList.remove('open');}
 function calShiftMonth(d){calM+=d;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCal();}
 function calGoToday(){closeCalendar();goToday();}
-function calSelectDate(y,m,d){const t=new Date();t.setHours(0,0,0,0);selectedDateOffset=Math.round((new Date(y,m,d)-t)/86400000);updateLunarDisplay();updateDateNav();if(currentStation)loadTide(currentStation);closeCalendar();}
+/* 1. 화살표로 날짜 옮길 때 */
+function shiftDate(d){
+  selectedDateOffset+=d; updateLunarDisplay(); updateDateNav();
+  if(currentStation){
+    loadTide(currentStation);
+    const s=STATIONS[currentStation];
+    loadWeather(s.lat, s.lng); /* <- 날씨도 다시 부르기 추가! */
+  }
+}
+
+/* 2. 오늘로 돌아갈 때 */
+function goToday(){
+  if(selectedDateOffset===0)return;
+  selectedDateOffset=0; updateLunarDisplay(); updateDateNav();
+  if(currentStation){
+    loadTide(currentStation);
+    const s=STATIONS[currentStation];
+    loadWeather(s.lat, s.lng); /* <- 여기도 추가! */
+  }
+}
+
+/* 3. 달력에서 날짜 선택할 때 */
+function calSelectDate(y,m,d){
+  const t=new Date();t.setHours(0,0,0,0);
+  selectedDateOffset=Math.round((new Date(y,m,d)-t)/86400000);
+  updateLunarDisplay(); updateDateNav();
+  if(currentStation){
+    loadTide(currentStation);
+    const s=STATIONS[currentStation];
+    loadWeather(s.lat, s.lng); /* <- 여기도 추가! */
+  }
+  closeCalendar();
+}
 function renderCal(){
   const today=new Date();today.setHours(0,0,0,0);const sel=getOffsetDate(selectedDateOffset);sel.setHours(0,0,0,0);
   const max=new Date(today);max.setDate(max.getDate()+60);

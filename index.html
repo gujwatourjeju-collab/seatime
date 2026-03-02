@@ -869,11 +869,7 @@ async function loadTide(name) {
     }
 
     // ✅ 날짜+시간 기준 정렬 (어제/오늘/내일 섞임 방지)
-    tideData.sort((a, b) => {
-      const da = (a.date || '') + (a.time || '');
-      const db = (b.date || '') + (b.time || '');
-      return da.localeCompare(db);
-    });
+    tideData.sort((a, b) => toMins(a) - toMins(b));
 
     // 오늘이면 현재수위 객체 삽입
     if (isToday && tideData.length > 0) {
@@ -918,33 +914,67 @@ function calculateLiveLevel(data) {
 
 
   /* ── 블렌드 (김녕) ── */
-  function blendTides(data1,data2,w1,w2,timeCorr,isToday){
-    const tides1=data1.filter(d=>!d.isCurrent), tides2=data2.filter(d=>!d.isCurrent);
-    const current=data1.find(d=>d.isCurrent);
-    const used=new Set(), blended=[];
-    tides1.forEach(t1=>{
-      const matched=tides2.filter(t2=>t2.type===t1.type&&!used.has(t2.time))
-        .sort((a,b)=>Math.abs(toMins(a)-toMins(t1))-Math.abs(toMins(b)-toMins(t1)))[0];
-      if(!matched)return; used.add(matched.time);
-      const bMins=Math.round(toMins(t1)*w1+toMins(matched)*w2)+timeCorr;
-      blended.push({...t1,time:minsToTime(bMins),mins:bMins,level:Math.round(t1.level*w1+matched.level*w2)});
-    });
-    blended.sort((a,b)=>a.mins-b.mins);
-    if(isToday&&current){
-      const nowMins=toMins(current); let nowLevel=current.level;
-      for(let i=0;i<blended.length;i++){
-        if(nowMins<blended[i].mins){
-          if(i>0){const p=blended[i-1],n=blended[i];nowLevel=Math.round(p.level+(n.level-p.level)*(nowMins-p.mins)/(n.mins-p.mins));}
-          break;
-        }
-      }
-      const idx=blended.findIndex(t=>t.mins>nowMins);
-      const cur={...current,level:nowLevel};
-      if(idx===-1)blended.push(cur);else blended.splice(idx,0,cur);
+function blendTides(data1, data2, w1, w2, timeCorr, isToday) {
+  const tides1 = data1.filter(d => !d.isCurrent);
+  const tides2 = data2.filter(d => !d.isCurrent);
+  const current = data1.find(d => d.isCurrent);
+  const used = new Set(), blended = [];
+
+  const todayStr = dateToStr(getOffsetDate(selectedDateOffset));
+  const prevStr  = dateToStr(getOffsetDate(selectedDateOffset - 1));
+  const nextStr  = dateToStr(getOffsetDate(selectedDateOffset + 1));
+
+tides1.forEach(t1 => {
+  const matched = tides2.filter(t2 => 
+    t2.type === t1.type && 
+    !used.has(t2.time + t2.date) &&
+    t2.date === t1.date  // ✅ 같은 날짜끼리만 매칭
+  ).sort((a, b) => Math.abs(toMins(a) - toMins(t1)) - Math.abs(toMins(b) - toMins(t1)))[0];
+  if (!matched) return;
+  used.add(matched.time + matched.date);
+  const bMins = Math.round(toMins(t1) * w1 + toMins(matched) * w2) + timeCorr;
+    // ✅ bMins로 날짜 판별
+    let date, isYesterday = false, isNextDay = false;
+    if (bMins < 0) {
+      date = prevStr; isYesterday = true;
+    } else if (bMins >= 1440) {
+      date = nextStr; isNextDay = true;
+    } else {
+      date = todayStr;
     }
-    return blended;
+
+    blended.push({
+      ...t1,
+      time: minsToTime(bMins),
+      mins: bMins,
+      level: Math.round(t1.level * w1 + matched.level * w2),
+      date,
+      isYesterday,
+      isNextDay,
+    });
+  });
+
+  blended.sort((a, b) => a.mins - b.mins);
+
+  if (isToday && current) {
+    const nowMins = toMins(current);
+    let nowLevel = current.level;
+    for (let i = 0; i < blended.length; i++) {
+      if (nowMins < blended[i].mins) {
+        if (i > 0) {
+          const p = blended[i-1], n = blended[i];
+          nowLevel = Math.round(p.level + (n.level - p.level) * (nowMins - p.mins) / (n.mins - p.mins));
+        }
+        break;
+      }
+    }
+    const idx = blended.findIndex(t => t.mins > nowMins);
+    const cur = { ...current, level: nowLevel, date: todayStr };
+    if (idx === -1) blended.push(cur); else blended.splice(idx, 0, cur);
   }
 
+  return blended;
+}
   /* ── 스케일 (만대항) ── */
   function scaleTides(data,scale,timeCorr,isToday){
     return data.map(item=>{
@@ -956,10 +986,15 @@ function calculateLiveLevel(data) {
 
   /* ── 유틸 ── */
   function toMins(item){
-    if(!item)return 0; if(item.mins!=null)return item.mins; if(!item.time)return 0;
-    const[h,m]=item.time.split(':').map(Number);
-    return item.isNextDay?h*60+m+1440:h*60+m;
-  }
+  if(!item) return 0;
+  if(item.mins != null) return item.mins;
+  if(!item.time) return 0;
+  const [h,m] = item.time.split(':').map(Number);
+  const base = h*60+m;
+  if(item.isYesterday) return base - 1440;  // ✅ 추가
+  if(item.isNextDay) return base + 1440;
+  return base;
+}
   function minsToTime(mins){
     const abs=((mins%1440)+1440)%1440;
     return String(Math.floor(abs/60)).padStart(2,'0')+':'+String(abs%60).padStart(2,'0');
@@ -1003,12 +1038,21 @@ function calculateLiveLevel(data) {
   /* ── [패치] 렌더링 함수 ── */
 /* ── 렌더링 (최종 버전) ── */
 function renderTide(data, name, isToday) {
-  // ✅ 날짜+시간 기준 정렬 (어제/오늘/내일 섞임 방지)
+  // ✅ mins 기준 정렬 (blend/일반 둘 다 호환)
   data.sort((a, b) => {
-    if (a.isCurrent || b.isCurrent) return 0;
-    const da = (a.date || '') + (a.time || '');
-    const db = (b.date || '') + (b.time || '');
-    return da.localeCompare(db);
+    const getMins = (item) => {
+      if (item.mins != null) return item.mins;
+      const base = (item.date || '') + (item.time || '');
+      const todayStr = dateToStr(getOffsetDate(selectedDateOffset));
+      const prevStr = dateToStr(getOffsetDate(selectedDateOffset - 1));
+      const nextStr = dateToStr(getOffsetDate(selectedDateOffset + 1));
+      const [h, m] = (item.time || '00:00').split(':').map(Number);
+      const t = h * 60 + m;
+      if (item.date === prevStr || item.isYesterday) return t - 1440;
+      if (item.date === nextStr || item.isNextDay) return t + 1440;
+      return t;
+    };
+    return getMins(a) - getMins(b);
   });
 
   if (isToday) {
@@ -1310,11 +1354,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   await new Promise(r=>setTimeout(r,200));
 
   if(tideData && tideData.length > 0){
-    tideData.sort((a,b)=>{
-      const da=(a.date||'')+(a.time||'');
-      const db=(b.date||'')+(b.time||'');
-      return da.localeCompare(db);
-    });
+   tideData.sort((a, b) => toMins(a) - toMins(b));
 
     const now = new Date();
     const nowMins = now.getHours() * 60 + now.getMinutes();

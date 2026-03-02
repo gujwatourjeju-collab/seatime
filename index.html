@@ -384,7 +384,7 @@
     </div>
 
     <div class="header-right">
-      <div id="user-char-info"></div> <div class="clock" id="clock">--:--:--</div>
+      <div class="clock" id="clock">--:--:--</div>
       <div id="lunar-display" class="lunar-display">음력 --월 --일 (-)</div>
     </div>
   </div>
@@ -1386,73 +1386,7 @@ setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000);
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
 }
-  // 캐릭터 정보를 체크하고 등록하는 함수
-  async function checkCharacter() {
-    // 1. 이미 저장된 이름이 있는지 로컬스토리지(폰 메모리)에서 확인
-    let savedName = localStorage.getItem('characterName');
-    
-    if (!savedName) {
-      // 2. 이름이 없으면 화면에 입력창을 띄움
-      showCharModal();
-    } else {
-      console.log("반가워요, " + savedName + "님!");
-    }
-  }
-  // 1. 캐릭터 등록 팝업창 (디자인용)
-  function showCharModal() {
-    const modalHtml = `
-      <div id="charModal" class="char-modal">
-        <div class="char-modal-content">
-          <h3 style="margin-bottom:10px;">환영합니다!</h3>
-          <p style="font-size:0.8rem; color:var(--muted);">바다에서 불릴 이름을 정해주세요.</p>
-          <input type="text" id="charInput" class="char-input" placeholder="이름 입력 (최대 6자)" maxlength="6">
-          <button class="char-btn" onclick="saveCharacter()">시작하기</button>
-        </div>
-      </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-  }
 
-  // 2. 이름을 Supabase에 저장하고 화면에 즉시 반영
-  async function saveCharacter() {
-    const name = document.getElementById('charInput').value.trim();
-    if (!name) { alert("이름을 입력해주세요!"); return; }
-
-    const { data, error } = await supabaseClient
-      .from('profiles')
-      .insert([{ char_name: name, level: 1 }])
-      .select();
-
-    if (error) {
-      alert("저장 오류: " + error.message);
-    } else {
-      localStorage.setItem('characterName', name);
-      
-      // 🌟 성공하자마자 헤더 자리에 이름 넣어주기
-      const infoEl = document.getElementById('user-char-info');
-      if (infoEl) infoEl.textContent = `Lv.1 ${name} 님`;
-      
-      document.getElementById('charModal').remove();
-      alert(name + "님, 환영합니다!");
-    }
-  }
-
-  // 3. 🚀 앱 시작 시 이름이 있는지 확인하고 실행하는 핵심 엔진
-  async function initApp() {
-    let savedName = localStorage.getItem('characterName');
-    const infoEl = document.getElementById('user-char-info');
-
-    if (!savedName) {
-      showCharModal(); // 이름 없으면 팝업 띄워!
-    } else {
-      if (infoEl) {
-        infoEl.textContent = `Lv.1 ${savedName} 님`; // 이름 있으면 상단에 표시해!
-      }
-    }
-  }
-
-  // 이 줄이 있어야 앱이 켜질 때 위 엔진이 돌아가요!
-  initApp();
 
   
   </script>

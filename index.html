@@ -417,11 +417,18 @@ body {
 #hero {
   flex: 1;
   display: flex; flex-direction: column;
-  justify-content: center; align-items: flex-start;
+  justify-content: center; 
+  align-items: center; /* ✨ 수정: flex-start(좌측쏠림)를 center(중앙)로 변경 */
   padding: 0 24px;
   pointer-events: none;
 }
-#hero-inner { display: none; flex-direction: column; gap: 4px; }
+#hero-inner { 
+  display: none; 
+  flex-direction: column; 
+  align-items: center; /* ✨ 추가: 내부 요소들을 중앙 축으로 정렬 */
+  text-align: center;  /* ✨ 추가: 텍스트 중앙 정렬 */
+  gap: 4px; 
+}
 .tide-badge {
   display: inline-block;
   background: rgba(0,229,195,.15);
@@ -429,7 +436,7 @@ body {
   backdrop-filter: blur(8px);
   color: var(--accent); font-size: .62rem; font-weight: 900;
   padding: 3px 10px; border-radius: 20px; letter-spacing: .5px;
-  align-self: flex-start;
+  align-self: center; /* ✨ 수정: flex-start(좌측 고정)를 center로 변경 */
 }
 .tide-desc {
   font-size: .6rem; color: rgba(255,255,255,.42); font-weight: 500;
@@ -448,7 +455,9 @@ body {
 }
 #level-unit { font-size: 1.5rem; opacity: .4; margin-left: 2px; vertical-align: bottom; }
 .tide-status-row {
-  display: flex; align-items: center; gap: 8px; margin-top: 2px;
+  display: flex; align-items: center; 
+  justify-content: center; /* ✨ 추가: 하단 뱃지 2개(빠지는 중 등)를 가로 중앙으로 모음 */
+  gap: 8px; margin-top: 2px;
 }
 .status-pill {
   background: rgba(0,0,0,.25); backdrop-filter: blur(8px);
@@ -473,14 +482,21 @@ body {
 .hero-top-row {
   display: flex;
   align-items: center;
+  justify-content: center; /* ✨ 추가: 뱃지와 이름을 가로 중앙으로 모음 */
   gap: 8px; /* 뱃지와 이름 사이 간격 */
   margin-bottom: 2px;
 }
 /* ── 조석 패널 (하단) ── */
 #tide-panel {
+  /* 기존 코드 완벽 유지 */
   flex-shrink: 0;
   max-height: 44dvh;
   display: flex; flex-direction: column;
+  
+  /* 추가된 부분: 위로 살짝 끌어올려서 여백 줄이기 */
+  margin-top: -25px; /* 더 올리고 싶으면 -30px, -40px 등으로 변경 */
+  position: relative;
+  z-index: 10;
 }
 
 /* 상단 페이드 마스크 */
@@ -672,10 +688,45 @@ body {
 .cal-day.selected.sunday,.cal-day.selected.saturday{color:#040d18;}
 .cal-today-btn{width:100%;margin-top:14px;padding:10px;border-radius:14px;background:rgba(0,229,195,.08);border:1px solid rgba(0,229,195,.25);color:var(--accent);font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
 .cal-today-btn:active{background:rgba(0,229,195,.2);}
+/* 돋보기 버튼 디자인 (유리 질감으로 기존 테마와 어울리게) */
+.text-toggle-btn {
+  position: absolute;
+  top: 100px; /* 아까 맞추신 높이 그대로 유지 (필요시 조절) */
+  right: 16px;
+  z-index: 999;
+  
+  /* 테두리와 배경을 완전히 투명하게 날림 */
+  background: transparent;
+  border: none;
+  
+  /* 아이콘 크기와 가시성 세팅 */
+  font-size: 1.5rem; /* 아이콘을 큼직하게 키움 */
+  color: #fff;
+  padding: 8px; /* 터치하기 편하게 투명한 여백 확보 */
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6); /* 배경이 투명해도 잘 보이게 그림자 추가 */
+  
+  cursor: pointer;
+  transition: transform 0.2s; /* 누를 때 효과를 위해 추가 */
+}
+.text-toggle-btn:active {
+  transform: scale(0.85); 
+}
+
+/* --- 큰 글씨 모드 활성화 시 --- */
+/* 최상위 html의 기본 폰트 크기를 키워서 rem을 쓰는 모든 글씨 일괄 확대 */
+html.large-text {
+  font-size: 115%; /* 숫자를 120%, 125%로 키울수록 글씨가 더 커집니다 */
+}
+
+/* 글씨가 커졌을 때 리스트 간격이 깨지지 않도록 좌우 영역을 살짝 넓혀줌 */
+html.large-text .tr-left { width: 130px; }
+html.large-text .tr-time { width: 60px; }
 </style>
 </head>
 <body>
-
+<button id="text-size-btn" class="text-toggle-btn" onclick="toggleTextSize()">
+  🔍
+</button>
 <!-- ══ SPLASH ══ -->
 <div id="splash">
   <div class="splash-stars" id="splash-stars"></div>
@@ -1520,17 +1571,58 @@ async function loadWeather(lat,lng){
 
 /* ── 달력 ── */
 let calY,calM;
-function openCalendar(){const s=getOffsetDate(selectedDateOffset);calY=s.getFullYear();calM=s.getMonth();renderCal();document.getElementById('cal-overlay').classList.add('open');document.getElementById('cal-sheet').classList.add('open');}
-function closeCalendar(){document.getElementById('cal-overlay').classList.remove('open');document.getElementById('cal-sheet').classList.remove('open');}
-function calShiftMonth(d){calM+=d;if(calM>11){calM=0;calY++;}if(calM<0){calM=11;calY--;}renderCal();}
-function calGoToday(){closeCalendar();goToday();}
-/* 1. 화살표로 날짜 옮길 때 */
+
+function openCalendar(){
+  const s=getOffsetDate(selectedDateOffset);
+  calY=s.getFullYear();
+  calM=s.getMonth();
+  renderCal();
+  document.getElementById('cal-overlay').classList.add('open');
+  document.getElementById('cal-sheet').classList.add('open');
+}
+
+function closeCalendar(){
+  document.getElementById('cal-overlay').classList.remove('open');
+  document.getElementById('cal-sheet').classList.remove('open');
+}
+
+/* 달력 이전/다음 달 넘길 때 (과거 달력 차단 추가) */
+function calShiftMonth(d){
+  let newM = calM + d;
+  let newY = calY;
+  
+  if(newM > 11){ newM = 0; newY++; }
+  if(newM < 0){ newM = 11; newY--; }
+
+  // '어제'가 속한 달력을 계산
+  const today = new Date(); today.setHours(0,0,0,0);
+  const minDate = new Date(today); minDate.setDate(minDate.getDate() - 1);
+  const minY = minDate.getFullYear();
+  const minM = minDate.getMonth();
+
+  // 넘어갈 달력이 '어제'가 속한 달력보다 과거면 이동을 막음
+  if(newY < minY || (newY === minY && newM < minM)) return;
+
+  calM = newM; 
+  calY = newY;
+  renderCal();
+}
+
+function calGoToday(){
+  closeCalendar();
+  goToday();
+}
+
+/* 1. 화살표로 날짜 옮길 때 (과거 차단 추가) */
 function shiftDate(d){
+  // 현재 날짜 + d 가 -1(어제)보다 작아지면 함수를 여기서 끝내서 이동을 막음
+  if(selectedDateOffset + d < -1) return;
+
   selectedDateOffset+=d; updateLunarDisplay(); updateDateNav();
   if(currentStation){
     loadTide(currentStation);
     const s=STATIONS[currentStation];
-    loadWeather(s.lat, s.lng); /* <- 날씨도 다시 부르기 추가! */
+    loadWeather(s.lat, s.lng); 
   }
 }
 
@@ -1541,7 +1633,7 @@ function goToday(){
   if(currentStation){
     loadTide(currentStation);
     const s=STATIONS[currentStation];
-    loadWeather(s.lat, s.lng); /* <- 여기도 추가! */
+    loadWeather(s.lat, s.lng); 
   }
 }
 
@@ -1553,30 +1645,52 @@ function calSelectDate(y,m,d){
   if(currentStation){
     loadTide(currentStation);
     const s=STATIONS[currentStation];
-    loadWeather(s.lat, s.lng); /* <- 여기도 추가! */
+    loadWeather(s.lat, s.lng); 
   }
   closeCalendar();
 }
+
+/* 4. 달력 그리기 (과거 날짜 비활성화 추가) */
 function renderCal(){
-  const today=new Date();today.setHours(0,0,0,0);const sel=getOffsetDate(selectedDateOffset);sel.setHours(0,0,0,0);
+  const today=new Date();today.setHours(0,0,0,0);
+  const sel=getOffsetDate(selectedDateOffset);sel.setHours(0,0,0,0);
   const max=new Date(today);max.setDate(max.getDate()+60);
+  
+  // '어제' 날짜 계산
+  const min=new Date(today);min.setDate(min.getDate()-1);
+
   document.getElementById('cal-month-label').textContent=`${calY}년 ${calM+1}월`;
   const fd=new Date(calY,calM,1).getDay(),ld=new Date(calY,calM+1,0).getDate();
   const days=['일','월','화','수','목','금','토'];
   let h=days.map((d,i)=>`<div class="cal-day-lbl" style="${i===0?'color:#ff6b6b':i===6?'color:#5ba4f5':''}">${d}</div>`).join('');
+  
   const pl=new Date(calY,calM,0).getDate();
   for(let i=0;i<fd;i++)h+=`<div class="cal-day other-month">${pl-fd+1+i}</div>`;
+  
   for(let d=1;d<=ld;d++){
     const td=new Date(calY,calM,d);td.setHours(0,0,0,0);
-    const iT=td.getTime()===today.getTime(),iS=td.getTime()===sel.getTime(),iF=td>max,dw=td.getDay();
-    const cls=['cal-day',iT&&!iS?'today':'',iS?'selected':'',dw===0?'sunday':dw===6?'saturday':'',iF?'other-month':''].filter(Boolean).join(' ');
-    h+=`<div class="${cls}" ${iF?'':'onclick="calSelectDate('+calY+','+calM+','+d+')"'}>${d}</div>`;
+    
+    // iF(미래 초과 여부), iP(어제 이전 여부) 체크
+    const iT=td.getTime()===today.getTime();
+    const iS=td.getTime()===sel.getTime();
+    const iF=td>max; 
+    const iP=td<min; 
+    const dw=td.getDay();
+    
+    // 범위 밖(미래거나 과거)이면 isOut은 true
+    const isOut = iF || iP; 
+    
+    // isOut일 경우 other-month 클래스를 붙여서 흐리게 만듦
+    const cls=['cal-day',iT&&!iS?'today':'',iS?'selected':'',dw===0?'sunday':dw===6?'saturday':'',isOut?'other-month':''].filter(Boolean).join(' ');
+    
+    // isOut(과거 혹은 먼 미래)이면 onclick 이벤트 자체를 뺌
+    h+=`<div class="${cls}" ${isOut?'':'onclick="calSelectDate('+calY+','+calM+','+d+')"'}>${d}</div>`;
   }
+  
   const rem=((fd+ld)%7===0?0:7-((fd+ld)%7));
   for(let i=1;i<=rem;i++)h+=`<div class="cal-day other-month">${i}</div>`;
   document.getElementById('cal-grid').innerHTML=h;
 }
-
 /* ── 새로고침 ── */
 async function refresh(){
   if(!currentStation)return;
@@ -1655,6 +1769,35 @@ window.addEventListener('DOMContentLoaded',async()=>{
 
 setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/seatime/sw.js').catch(()=>{});
+/* 큰 글씨 모드 켜고 끄는 함수 */
+function toggleTextSize() {
+  const htmlEl = document.documentElement; // <html> 태그 선택
+  const btn = document.getElementById('text-size-btn');
+  
+  // 이미 큰 글씨 모드라면 -> 기본 모드로 변경
+  if (htmlEl.classList.contains('large-text')) {
+    htmlEl.classList.remove('large-text');
+    localStorage.setItem('textSize', 'normal'); // 설정 저장
+    if(btn) btn.textContent = '🔍';
+  } 
+  // 기본 모드라면 -> 큰 글씨 모드로 변경
+  else {
+    htmlEl.classList.add('large-text');
+    localStorage.setItem('textSize', 'large'); // 설정 저장
+    if(btn) btn.textContent = '➖';
+  }
+}
+
+/* 앱 처음 켤 때 저장된 설정 불러오기 */
+function initTextSize() {
+  const savedSize = localStorage.getItem('textSize');
+  const btn = document.getElementById('text-size-btn');
+  
+  if (savedSize === 'large') {
+    document.documentElement.classList.add('large-text');
+    if(btn) btn.textContent = '➖';
+  }
+}
 </script>
 
 </body>

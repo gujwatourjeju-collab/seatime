@@ -184,25 +184,97 @@ body {
   pointer-events: none;
 }
 
+/* ════ 날씨 스카이 오브젝트 ════ */
+#sky-objects {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+
+/* 해 */
+#sky-sun {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,245,180,1) 30%, rgba(255,220,80,.6) 60%, transparent 100%);
+  box-shadow: 0 0 40px rgba(255,230,100,.5), 0 0 80px rgba(255,200,60,.25);
+  transition: opacity 2s ease;
+}
+.sun-rays {
+  position: absolute; inset: -50%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,230,120,.15) 40%, transparent 70%);
+  animation: sunPulse 4s ease-in-out infinite;
+}
+@keyframes sunPulse { 0%,100%{transform:scale(1);opacity:.8} 50%{transform:scale(1.12);opacity:1} }
+
+/* 구름들 */
+.sky-cloud {
+  position: absolute;
+  background: radial-gradient(ellipse at 50% 60%, rgba(255,255,255,.18) 0%, rgba(255,255,255,.06) 60%, transparent 100%);
+  border-radius: 50%;
+  animation: cloudDrift var(--cd, 30s) linear var(--cdelay, 0s) infinite;
+  transition: opacity 2s ease;
+}
+@keyframes cloudDrift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(var(--cx, 10%)); }
+}
+/* 구름 모양 — 여러 동그라미 겹치기 */
+.cloud-shape {
+  position: relative;
+}
+.cloud-shape::before, .cloud-shape::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+/* 비 */
+#rain-container {
+  position: absolute; inset: 0; overflow: hidden;
+  opacity: 0; transition: opacity 2s ease; pointer-events: none;
+}
+.raindrop {
+  position: absolute; top: -20px;
+  width: 1.5px; border-radius: 2px;
+  background: linear-gradient(180deg, transparent, rgba(180,220,255,.5));
+  animation: rainFall var(--rd,.8s) linear var(--rdelay,0s) infinite;
+}
+@keyframes rainFall {
+  0%  { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: .6; }
+  100%{ transform: translateY(110vh) translateX(-30px); opacity: 0; }
+}
+/* 빗방울 튐 */
+.rain-splash {
+  position: absolute; bottom: 0;
+  width: 4px; height: 1px;
+  background: rgba(180,220,255,.3);
+  border-radius: 50%;
+  animation: splash var(--sd,.6s) ease-out var(--sdelay,0s) infinite;
+}
+@keyframes splash {
+  0%{transform:scale(0);opacity:.8}
+  100%{transform:scale(3);opacity:0}
+}
+
 /* ════════════════════════════════
    수위 게이지 — 우측 세로 바
 ════════════════════════════════ */
 #gauge-rail {
-  position: fixed; right: 18px; top: 0; bottom: 0;
+  position: fixed; right: 14px; top: 0; bottom: 0;
   width: 2px; z-index: 20;
   display: flex; flex-direction: column; align-items: center;
   pointer-events: none;
 }
+/* 게이지 트랙: 화면 28%~88% 사이 (상단은 날씨/컨트롤 공간 확보) */
 #gauge-track {
-  position: absolute; top: 80px; bottom: 80px;
+  position: absolute; top: 28%; bottom: 10%;
   width: 2px; background: rgba(255,255,255,.08);
   border-radius: 1px;
 }
 #gauge-fill-bar {
   position: absolute; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(180deg, rgba(0,229,195,.4), rgba(0,180,216,.6));
+  background: linear-gradient(180deg, rgba(0,229,195,.35), rgba(0,180,216,.55));
   border-radius: 1px;
-  transition: height 5s cubic-bezier(0.25,0.46,0.45,0.94);
   height: 40%;
 }
 #gauge-dot {
@@ -210,35 +282,38 @@ body {
   width: 8px; height: 8px; border-radius: 50%;
   background: var(--accent);
   border: 2px solid #071320;
-  box-shadow: 0 0 8px rgba(0,229,195,.7);
-  transition: bottom 5s cubic-bezier(0.25,0.46,0.45,0.94);
+  box-shadow: 0 0 10px rgba(0,229,195,.9), 0 0 20px rgba(0,229,195,.4);
 }
-/* 만조 라벨 - 상단 */
+/* 만조 라벨 - 게이지 트랙 상단에 붙임 */
 #gauge-high-label {
-  position: absolute; right: 26px; top: 72px;
+  position: absolute; right: 22px;
+  top: calc(28% - 2px);
   text-align: right; pointer-events: none;
+  transform: translateY(-100%);
 }
 #gauge-high-val {
-  font-family: 'DM Mono', monospace; font-size: .7rem;
-  font-weight: 500; color: rgba(255,255,255,.6);
-  display: block;
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  font-weight: 500; color: rgba(255,255,255,.55);
+  display: block; line-height: 1.2;
 }
 #gauge-high-name {
-  font-size: .5rem; font-weight: 700; color: rgba(255,255,255,.3);
+  font-size: .46rem; font-weight: 700; color: rgba(255,255,255,.28);
   letter-spacing: 1px;
 }
-/* 간조 라벨 - 하단 */
+/* 간조 라벨 - 게이지 트랙 하단에 붙임 */
 #gauge-low-label {
-  position: absolute; right: 26px; bottom: 72px;
+  position: absolute; right: 22px;
+  bottom: calc(10% - 2px);
   text-align: right; pointer-events: none;
+  transform: translateY(100%);
 }
 #gauge-low-val {
-  font-family: 'DM Mono', monospace; font-size: .7rem;
-  font-weight: 500; color: rgba(255,255,255,.4);
-  display: block;
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  font-weight: 500; color: rgba(255,255,255,.38);
+  display: block; line-height: 1.2;
 }
 #gauge-low-name {
-  font-size: .5rem; font-weight: 700; color: rgba(255,255,255,.2);
+  font-size: .46rem; font-weight: 700; color: rgba(255,255,255,.18);
   letter-spacing: 1px;
 }
 
@@ -347,12 +422,16 @@ body {
   font-size: .6rem; color: rgba(255,255,255,.42); font-weight: 500;
   margin-top: 2px; margin-bottom: 6px;
 }
+/* 간조 시에도 모든 텍스트 가시성 확보 */
+#app * {
+  text-shadow: 0 1px 6px rgba(0,0,0,.5);
+}
 #level-big {
   font-family: 'DM Mono', monospace;
   font-size: 5rem; font-weight: 300; line-height: 1;
   letter-spacing: -4px;
   color: #fff;
-  text-shadow: 0 0 60px rgba(0,229,195,.4), 0 2px 40px rgba(0,0,0,.4);
+  text-shadow: 0 0 60px rgba(0,229,195,.4), 0 2px 20px rgba(0,0,0,.7), 0 4px 40px rgba(0,0,0,.5);
 }
 #level-unit { font-size: 1.5rem; opacity: .4; margin-left: 2px; vertical-align: bottom; }
 .tide-status-row {
@@ -581,6 +660,11 @@ body {
 <!-- ══ 전체화면 바다 ══ -->
 <div id="ocean">
   <div id="ocean-sky"></div>
+  <!-- 날씨 오브젝트 (하늘 영역) -->
+  <div id="sky-objects">
+    <div id="sky-sun"><div class="sun-rays"></div></div>
+    <div id="rain-container"></div>
+  </div>
   <div id="ocean-water">
     <div id="water-body"></div>
     <!-- 파도 SVG -->
@@ -817,16 +901,46 @@ function buildShimmers(color) {
 let _lastPct = 40;
 let _isFalling = false;
 
+/* ════ 게이지 트랙 좌표 계산 ════
+   트랙: top=28%dvh ~ bottom=10%dvh
+   물높이 = 트랙 포인트의 화면 하단부터 높이 → 정확히 일치
+*/
+function getGaugeCoords() {
+  const vh = window.innerHeight;
+  const trackTop = vh * 0.28;      // gauge-track top
+  const trackBottom = vh * 0.90;   // gauge-track bottom (100%-10%)
+  const trackH = trackBottom - trackTop;
+  return { trackTop, trackBottom, trackH, vh };
+}
+
+function pctToScreenBottom(pct) {
+  // pct 0=간조(트랙하단) 100=만조(트랙상단)
+  // 반환값: 화면 하단부터의 px (= ocean-water height)
+  const { trackTop, trackBottom, trackH, vh } = getGaugeCoords();
+  // 트랙 내 위치 (bottom 기준)
+  const trackY = trackBottom - (pct / 100) * trackH; // screen Y (px from top)
+  return vh - trackY; // px from bottom
+}
+
 function setOceanLevel(pct, isFalling, animate = true) {
   _lastPct = pct;
   _isFalling = isFalling;
 
-  const minH = 12, maxH = 78;
-  const h = minH + (pct / 100) * (maxH - minH);
+  const waterPx = pctToScreenBottom(pct);
+  const waterPct = (waterPx / window.innerHeight * 100);
+  const horizonTopPct = 100 - waterPct;
+
   const water = document.getElementById('ocean-water');
   const horizon = document.getElementById('horizon');
   const fillBar = document.getElementById('gauge-fill-bar');
   const dot = document.getElementById('gauge-dot');
+
+  const applyValues = () => {
+    water.style.height = waterPct + '%';
+    horizon.style.top = horizonTopPct + '%';
+    fillBar.style.height = pct + '%';
+    dot.style.bottom = `calc(${pct}% - 4px)`;
+  };
 
   if (!animate) {
     water.style.transition = 'none';
@@ -834,10 +948,7 @@ function setOceanLevel(pct, isFalling, animate = true) {
     fillBar.style.transition = 'none';
     dot.style.transition = 'none';
     void water.offsetWidth;
-    water.style.height = h + '%';
-    horizon.style.top = (100 - h) + '%';
-    fillBar.style.height = pct + '%';
-    dot.style.bottom = `calc(${pct}% - 4px)`;
+    applyValues();
     setTimeout(() => {
       water.style.transition = '';
       horizon.style.transition = '';
@@ -848,52 +959,137 @@ function setOceanLevel(pct, isFalling, animate = true) {
   }
 
   if (isFalling) {
-    // 간조로 향할 때: 먼저 현재 수위보다 높게 순간 세팅 후 → 쫙 빠짐
-    const highH = Math.max(h + 25, 70); // 일단 높게
+    // 간조로: 일단 가득 찬 상태(100%) → 쫙 빠짐
+    const fullWaterPx = pctToScreenBottom(100);
+    const fullPct = (fullWaterPx / window.innerHeight * 100);
     water.style.transition = 'none';
     horizon.style.transition = 'none';
     fillBar.style.transition = 'none';
     dot.style.transition = 'none';
     void water.offsetWidth;
-    water.style.height = highH + '%';
-    horizon.style.top = (100 - highH) + '%';
-    fillBar.style.height = Math.min((highH - minH) / (maxH - minH) * 100, 100) + '%';
-    void water.offsetWidth; // force reflow
-    // 잠깐 후 빠르게 내려감
+    water.style.height = fullPct + '%';
+    horizon.style.top = (100 - fullPct) + '%';
+    fillBar.style.height = '100%';
+    dot.style.bottom = 'calc(100% - 4px)';
+    void water.offsetWidth;
     setTimeout(() => {
-      const ease = 'cubic-bezier(0.6, 0, 0.8, 0.5)'; // 빠른 시작, 느린 마무리
-      water.style.transition = `height 4.5s ${ease}`;
-      horizon.style.transition = `top 4.5s ${ease}`;
-      fillBar.style.transition = `height 4.5s ${ease}`;
-      dot.style.transition = `bottom 4.5s ${ease}`;
-      water.style.height = h + '%';
-      horizon.style.top = (100 - h) + '%';
-      fillBar.style.height = pct + '%';
-      dot.style.bottom = `calc(${pct}% - 4px)`;
-    }, 80);
+      const ease = 'cubic-bezier(0.55, 0.05, 0.7, 0.4)';
+      const dur = '5s';
+      water.style.transition = `height ${dur} ${ease}`;
+      horizon.style.transition = `top ${dur} ${ease}`;
+      fillBar.style.transition = `height ${dur} ${ease}`;
+      dot.style.transition = `bottom ${dur} ${ease}`;
+      applyValues();
+    }, 100);
   } else {
-    // 만조로 향할 때: 먼저 현재 수위보다 낮게 순간 세팅 후 → 천천히 차오름
-    const lowH = Math.min(h - 25, 20); // 일단 낮게
+    // 만조로: 일단 빈 상태(0%) → 차오름
+    const emptyWaterPx = pctToScreenBottom(0);
+    const emptyPct = (emptyWaterPx / window.innerHeight * 100);
     water.style.transition = 'none';
     horizon.style.transition = 'none';
     fillBar.style.transition = 'none';
     dot.style.transition = 'none';
     void water.offsetWidth;
-    water.style.height = Math.max(lowH, minH) + '%';
-    horizon.style.top = (100 - Math.max(lowH, minH)) + '%';
-    fillBar.style.height = Math.max(0, (Math.max(lowH, minH) - minH) / (maxH - minH) * 100) + '%';
+    water.style.height = emptyPct + '%';
+    horizon.style.top = (100 - emptyPct) + '%';
+    fillBar.style.height = '0%';
+    dot.style.bottom = 'calc(0% - 4px)';
     void water.offsetWidth;
     setTimeout(() => {
-      const ease = 'cubic-bezier(0.2, 0.5, 0.4, 1)'; // 느린 시작, 자연스러운 차오름
-      water.style.transition = `height 5s ${ease}`;
-      horizon.style.transition = `top 5s ${ease}`;
-      fillBar.style.transition = `height 5s ${ease}`;
-      dot.style.transition = `bottom 5s ${ease}`;
-      water.style.height = h + '%';
-      horizon.style.top = (100 - h) + '%';
-      fillBar.style.height = pct + '%';
-      dot.style.bottom = `calc(${pct}% - 4px)`;
-    }, 80);
+      const ease = 'cubic-bezier(0.2, 0.6, 0.35, 1)';
+      const dur = '5s';
+      water.style.transition = `height ${dur} ${ease}`;
+      horizon.style.transition = `top ${dur} ${ease}`;
+      fillBar.style.transition = `height ${dur} ${ease}`;
+      dot.style.transition = `bottom ${dur} ${ease}`;
+      applyValues();
+    }, 100);
+  }
+}
+
+/* ════ 날씨 스카이 오브젝트 ════ */
+function updateSkyObjects(weatherCode) {
+  const sun = document.getElementById('sky-sun');
+  const rainContainer = document.getElementById('rain-container');
+  const skyObj = document.getElementById('sky-objects');
+
+  // 기존 구름 제거
+  skyObj.querySelectorAll('.sky-cloud').forEach(c => c.remove());
+  rainContainer.innerHTML = '';
+
+  const isClear    = weatherCode <= 1;
+  const isPartly   = weatherCode === 2;
+  const isCloudy   = weatherCode === 3 || (weatherCode >= 45 && weatherCode <= 48);
+  const isDrizzle  = weatherCode >= 51 && weatherCode <= 55;
+  const isRain     = weatherCode >= 61 && weatherCode <= 65;
+  const isHeavy    = weatherCode >= 80 && weatherCode <= 82;
+  const isStorm    = weatherCode >= 95;
+
+  // ── 해 ──
+  if (isClear) {
+    sun.style.opacity = '1';
+    sun.style.width = '90px'; sun.style.height = '90px';
+    sun.style.left = '60%'; sun.style.top = '8%';
+  } else if (isPartly) {
+    sun.style.opacity = '.6';
+    sun.style.width = '70px'; sun.style.height = '70px';
+    sun.style.left = '62%'; sun.style.top = '9%';
+  } else if (isCloudy) {
+    sun.style.opacity = '.15';
+    sun.style.width = '60px'; sun.style.height = '60px';
+    sun.style.left = '62%'; sun.style.top = '10%';
+  } else if (isDrizzle || isRain) {
+    sun.style.opacity = '0';
+  } else if (isHeavy || isStorm) {
+    sun.style.opacity = '0';
+  } else {
+    sun.style.opacity = '.5';
+    sun.style.width = '70px'; sun.style.height = '70px';
+    sun.style.left = '62%'; sun.style.top = '9%';
+  }
+
+  // ── 구름 ──
+  const cloudDefs = [];
+  if (isPartly) {
+    cloudDefs.push(
+      { w:120, h:40, top:'12%', left:'30%', op:.5, speed:'40s', delay:'-10s', dx:'5%' },
+      { w:80,  h:28, top:'18%', left:'10%', op:.3, speed:'55s', delay:'-25s', dx:'8%' },
+    );
+  } else if (isCloudy) {
+    cloudDefs.push(
+      { w:160, h:52, top:'8%',  left:'5%',  op:.55, speed:'35s', delay:'0s',   dx:'6%' },
+      { w:130, h:44, top:'14%', left:'40%', op:.45, speed:'50s', delay:'-15s', dx:'4%' },
+      { w:100, h:34, top:'20%', left:'20%', op:.35, speed:'45s', delay:'-30s', dx:'7%' },
+    );
+  } else if (isDrizzle || isRain || isHeavy || isStorm) {
+    cloudDefs.push(
+      { w:200, h:65, top:'4%',  left:'-5%', op:.6,  speed:'30s', delay:'0s',   dx:'5%' },
+      { w:180, h:58, top:'10%', left:'30%', op:.55, speed:'40s', delay:'-8s',  dx:'4%' },
+      { w:150, h:50, top:'6%',  left:'60%', op:.5,  speed:'35s', delay:'-20s', dx:'3%' },
+    );
+  }
+
+  cloudDefs.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'sky-cloud';
+    el.style.cssText = `width:${c.w}px;height:${c.h}px;top:${c.top};left:${c.left};opacity:${c.op};--cd:${c.speed};--cdelay:${c.delay};--cx:${c.dx};border-radius:${c.h}px;`;
+    // 구름 안에 추가 볼륨 (pseudo는 JS로 안되니 child div로)
+    el.innerHTML = `
+      <div style="position:absolute;width:55%;height:180%;background:radial-gradient(ellipse,rgba(255,255,255,.22) 0%,transparent 70%);border-radius:50%;top:-40%;left:15%;"></div>
+      <div style="position:absolute;width:40%;height:150%;background:radial-gradient(ellipse,rgba(255,255,255,.18) 0%,transparent 70%);border-radius:50%;top:-30%;left:45%;"></div>
+    `;
+    skyObj.insertBefore(el, rainContainer);
+  });
+
+  // ── 비 ──
+  const rainCount = isStorm ? 100 : isHeavy ? 75 : isRain ? 55 : isDrizzle ? 28 : 0;
+  rainContainer.style.opacity = rainCount > 0 ? '1' : '0';
+  for (let i = 0; i < rainCount; i++) {
+    const drop = document.createElement('div');
+    const h = 10 + Math.random() * 18;
+    drop.className = 'raindrop';
+    drop.style.cssText = `left:${Math.random()*105}%;height:${h}px;--rd:${0.5+Math.random()*.5}s;--rdelay:${-Math.random()*2}s;opacity:${0.4+Math.random()*.4};`;
+    rainContainer.appendChild(drop);
   }
 }
 
@@ -1170,6 +1366,7 @@ async function loadWeather(lat,lng){
     const c=(await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&wind_speed_unit=ms&timezone=Asia/Seoul`)).json()).current;
     currentWeatherCode=c.weather_code;
     if(currentStation)applyTheme(STATIONS[currentStation]?.region,c.weather_code);
+    updateSkyObjects(c.weather_code);
     const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(c.wind_direction_10m/45)%8];
     const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
     const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";

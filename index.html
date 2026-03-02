@@ -781,11 +781,10 @@
   /* ── GAS 호출 (날짜 파라미터 포함) ── */
   // 🚀 구글(GAS) 대신 Supabase 엔진을 부르는 새 함수입니다!
   // 1. 데이터 가져오는 함수 (서버 응답 구조에 맞춤)
-async function getTideData(obsCode, date) {
+async function getTideData(obsCode, date, isToday = false) {
   try {
-    const isToday = (date === dateToStr(getOffsetDate(0))) // ✅ 오늘인지 판별
     const { data, error } = await supabaseClient.functions.invoke('get-tide-data', {
-      body: { obsCode, date, isToday }, // ✅ isToday 추가
+      body: { obsCode, date, isToday },
       headers: { 'Content-Type': 'application/json' }
     });
     if (error) { console.error("서버 에러:", error); return []; }
@@ -846,16 +845,29 @@ async function loadTide(name) {
     let tideData = [];
 
     if (s.type === 'blend') {
-      const [r1, r2] = await Promise.all([getTideData(s.obs1, dateStr), getTideData(s.obs2, dateStr)]);
+      // ✅ isToday 추가
+      const [r1, r2] = await Promise.all([
+        getTideData(s.obs1, dateStr, isToday),
+        getTideData(s.obs2, dateStr, isToday)
+      ]);
       tideData = blendTides(r1, r2, s.w1, s.w2, s.timeCorr, isToday);
     } else if (s.type === 'scale') {
-      const r = await getTideData(s.obs, dateStr);
+      // ✅ isToday 추가
+      const r = await getTideData(s.obs, dateStr, isToday);
       tideData = scaleTides(r, s.scale, s.timeCorr, isToday);
     } else {
-      tideData = await getTideData(s.obs, dateStr);
+      // ✅ isToday 추가
+      tideData = await getTideData(s.obs, dateStr, isToday);
     }
 
-    // 🌟 핵심: 오늘이면 현재수위 객체 직접 계산해서 삽입
+    // ✅ 날짜+시간 기준 정렬 (어제/오늘/내일 섞임 방지)
+    tideData.sort((a, b) => {
+      const da = (a.date || '') + (a.time || '');
+      const db = (b.date || '') + (b.time || '');
+      return da.localeCompare(db);
+    });
+
+    // 오늘이면 현재수위 객체 삽입
     if (isToday && tideData.length > 0) {
       const now = new Date();
       const nowMins = now.getHours() * 60 + now.getMinutes();
@@ -881,26 +893,19 @@ async function loadTide(name) {
     console.error(e);
   }
 }
-// 1. 누락된 실시간 수위 계산기 추가 (코드 하단 유틸 부분에 추가)
+
 function calculateLiveLevel(data) {
-    if (!data || data.length < 2) return 0;
-    const now = new Date();
-    const nowMins = now.getHours() * 60 + now.getMinutes();
-    
-    // 현재 시간 기준 직전(past)과 직후(future) 물때 찾기
-    const past = [...data].reverse().find(d => !d.isCurrent && toMins(d) <= nowMins);
-    const future = data.find(d => !d.isCurrent && toMins(d) > nowMins);
-
-    // 앞뒤 데이터가 없으면 첫 번째 데이터 수위 반환
-    if (!past || !future) return data[0]?.level || 0; 
-
-    const timeDiff = toMins(future) - toMins(past);
-    const levelDiff = future.level - past.level;
-    const progress = (nowMins - toMins(past)) / timeDiff;
-
-    // 조석 곡선(S자) 구현을 위한 코사인 보간
-    const cosineProgress = (1 - Math.cos(progress * Math.PI)) / 2;
-    return Math.round(past.level + (levelDiff * cosineProgress));
+  if (!data || data.length < 2) return 0;
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const past = [...data].reverse().find(d => !d.isCurrent && toMins(d) <= nowMins);
+  const future = data.find(d => !d.isCurrent && toMins(d) > nowMins);
+  if (!past || !future) return data[0]?.level || 0;
+  const timeDiff = toMins(future) - toMins(past);
+  const levelDiff = future.level - past.level;
+  const progress = (nowMins - toMins(past)) / timeDiff;
+  const cosineProgress = (1 - Math.cos(progress * Math.PI)) / 2;
+  return Math.round(past.level + (levelDiff * cosineProgress));
 }
 
 
@@ -1196,87 +1201,96 @@ function renderTide(data, name, isToday) {
   }
 
   /* ── 스플래시 ── */
-  function makeSplashStars(){
-    const container=document.getElementById('splash-stars');
-    for(let i=0;i<60;i++){
-      const s=document.createElement('div'); s.className='splash-star';
-      s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*55}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.3+Math.random()*0.7};width:${Math.random()<0.2?3:2}px;height:${Math.random()<0.2?3:2}px;`;
-      container.appendChild(s);
+function makeSplashStars(){
+  const container=document.getElementById('splash-stars');
+  for(let i=0;i<60;i++){
+    const s=document.createElement('div'); s.className='splash-star';
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*55}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.3+Math.random()*0.7};width:${Math.random()<0.2?3:2}px;height:${Math.random()<0.2?3:2}px;`;
+    container.appendChild(s);
+  }
+}
+function setSplashProgress(pct,text,duration){
+  const waterEl=document.getElementById('splash-water'),dur=duration??1.1;
+  waterEl.style.transition=pct===0?'none':`height ${dur}s cubic-bezier(0.2,0.8,0.3,1)`;
+  waterEl.style.height=(pct*0.55)+'%';
+  if(text)document.getElementById('splash-status-text').textContent=text;
+}
+function hideSplash(){
+  const el=document.getElementById('splash'); el.classList.add('hide');
+  setTimeout(()=>{el.style.display='none';},650);
+}
+
+/* ── 시작 ── */
+window.addEventListener('DOMContentLoaded',async()=>{
+  makeSplashStars();
+  updateLunarDisplay();
+  updateDateNav();
+
+  const last=localStorage.getItem('lastStation');
+  if(!last||!STATIONS[last]){
+    setTimeout(()=>setSplashProgress(60,'',1.4),100);
+    setTimeout(hideSplash,1400); return;
+  }
+
+  const region=STATIONS[last].region, rInfo=REGION_INFO[region];
+  document.getElementById('loc-icon').textContent=EMOJI[last]||'📍';
+  document.getElementById('loc-text').textContent=`${rInfo.label} · ${last}`;
+  currentStation=last;
+
+  setSplashProgress(10,'관측소 확인 중',0.8);
+  const s=STATIONS[last];
+  const weatherPromise=loadWeather(s.lat,s.lng).catch(()=>{});
+  let tideData=null;
+  try{
+    const dateStr=dateToStr(getOffsetDate(0));
+    if(s.type==='blend'){
+      setSplashProgress(35,'조석 데이터 수신 중',1.2);
+      // ✅ isToday=true 추가
+      const [r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true),getTideData(s.obs2,dateStr,true)]);
+      setSplashProgress(75,'데이터 처리 중',1.5);
+      tideData=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
+    } else if(s.type==='scale'){
+      setSplashProgress(35,'조석 데이터 수신 중',1.2);
+      // ✅ isToday=true 추가
+      tideData=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true);
+      setSplashProgress(75,'데이터 처리 중',1.5);
+    } else {
+      setSplashProgress(35,'조석 데이터 수신 중',1.2);
+      // ✅ isToday=true 추가
+      tideData=await getTideData(s.obs,dateStr,true);
+      setSplashProgress(75,'데이터 처리 중',1.5);
+    }
+  }catch(e){tideData=null;}
+
+  await weatherPromise;
+  setSplashProgress(95,'화면 준비 중',1.0);
+  await new Promise(r=>setTimeout(r,200));
+
+  if(tideData){
+    // ✅ 날짜+시간 기준 정렬 추가
+    tideData.sort((a,b)=>{
+      const da=(a.date||'')+(a.time||'');
+      const db=(b.date||'')+(b.time||'');
+      return da.localeCompare(db);
+    });
+    const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
+    if(cleaned.length&&!cleaned[0]?.error){
+      document.getElementById('wave-card').style.display='block';
+      renderTide(cleaned,last,true);
+      document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
     }
   }
-  function setSplashProgress(pct,text,duration){
-    const waterEl=document.getElementById('splash-water'),dur=duration??1.1;
-    waterEl.style.transition=pct===0?'none':`height ${dur}s cubic-bezier(0.2,0.8,0.3,1)`;
-    waterEl.style.height=(pct*0.55)+'%';
-    if(text)document.getElementById('splash-status-text').textContent=text;
-  }
-  function hideSplash(){
-    const el=document.getElementById('splash'); el.classList.add('hide');
-    setTimeout(()=>{el.style.display='none';},650);
-  }
 
-  /* ── 시작 ── */
-  window.addEventListener('DOMContentLoaded',async()=>{
-    makeSplashStars();
-    updateLunarDisplay();
-    updateDateNav();
+  setSplashProgress(100,'준비 완료 ✓',0.5);
+  await new Promise(r=>setTimeout(r,380));
+  hideSplash();
+});
 
-    const last=localStorage.getItem('lastStation');
-    if(!last||!STATIONS[last]){
-      setTimeout(()=>setSplashProgress(60,'',1.4),100);
-      setTimeout(hideSplash,1400); return;
-    }
+setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000);
 
-    const region=STATIONS[last].region, rInfo=REGION_INFO[region];
-    document.getElementById('loc-icon').textContent=EMOJI[last]||'📍';
-    document.getElementById('loc-text').textContent=`${rInfo.label} · ${last}`;
-    currentStation=last;
-
-    setSplashProgress(10,'관측소 확인 중',0.8);
-    const s=STATIONS[last];
-    const weatherPromise=loadWeather(s.lat,s.lng).catch(()=>{});
-    let tideData=null;
-    try{
-      const dateStr=dateToStr(getOffsetDate(0));
-      if(s.type==='blend'){
-        setSplashProgress(35,'조석 데이터 수신 중',1.2);
-        const [r1,r2]=await Promise.all([getTideData(s.obs1,dateStr),getTideData(s.obs2,dateStr)]);
-        setSplashProgress(75,'데이터 처리 중',1.5);
-        tideData=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
-      } else if(s.type==='scale'){
-        setSplashProgress(35,'조석 데이터 수신 중',1.2);
-        tideData=scaleTides(await getTideData(s.obs,dateStr),s.scale,s.timeCorr,true);
-        setSplashProgress(75,'데이터 처리 중',1.5);
-      } else {
-        setSplashProgress(35,'조석 데이터 수신 중',1.2);
-        tideData=await getTideData(s.obs,dateStr);
-        setSplashProgress(75,'데이터 처리 중',1.5);
-      }
-    }catch(e){tideData=null;}
-
-    await weatherPromise;
-    setSplashProgress(95,'화면 준비 중',1.0);
-    await new Promise(r=>setTimeout(r,200));
-
-    if(tideData){
-      const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
-      if(cleaned.length&&!cleaned[0]?.error){
-        document.getElementById('wave-card').style.display='block';
-        renderTide(cleaned,last,true);
-        document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
-      }
-    }
-
-    setSplashProgress(100,'준비 완료 ✓',0.5);
-    await new Promise(r=>setTimeout(r,380));
-    hideSplash();
-  });
-
-  setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000);
-
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
-  }
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/seatime/sw.js").catch(()=>{});
+}
   // 캐릭터 정보를 체크하고 등록하는 함수
   async function checkCharacter() {
     // 1. 이미 저장된 이름이 있는지 로컬스토리지(폰 메모리)에서 확인

@@ -1234,6 +1234,15 @@ window.addEventListener('DOMContentLoaded',async()=>{
   updateLunarDisplay();
   updateDateNav();
 
+  // ✅ 함수 미리 깨우기
+  fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
+    body: JSON.stringify({ obsCode: 'DT_0004', date: dateToStr(getOffsetDate(0)), isToday: true })
+  }).catch(()=>{});
+
+  await new Promise(r => setTimeout(r, 500)); // 깨어날 때까지 대기
+
   const last=localStorage.getItem('lastStation');
   if(!last||!STATIONS[last]){
     setTimeout(()=>setSplashProgress(60,'',1.4),100);
@@ -1249,61 +1258,63 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const s=STATIONS[last];
   const weatherPromise=loadWeather(s.lat,s.lng).catch(()=>{});
   let tideData=null;
-  try{
-    const dateStr=dateToStr(getOffsetDate(0));
-    if(s.type==='blend'){
-      setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      // ✅ isToday=true 추가
-      const [r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true),getTideData(s.obs2,dateStr,true)]);
-      setSplashProgress(75,'데이터 처리 중',1.5);
-      tideData=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
-    } else if(s.type==='scale'){
-      setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      // ✅ isToday=true 추가
-      tideData=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true);
-      setSplashProgress(75,'데이터 처리 중',1.5);
-    } else {
-      setSplashProgress(35,'조석 데이터 수신 중',1.2);
-      // ✅ isToday=true 추가
-      tideData=await getTideData(s.obs,dateStr,true);
-      setSplashProgress(75,'데이터 처리 중',1.5);
+
+  // ✅ 실패시 1회 재시도
+  for(let attempt=0; attempt<2; attempt++){
+    try{
+      const dateStr=dateToStr(getOffsetDate(0));
+      if(s.type==='blend'){
+        setSplashProgress(35,'조석 데이터 수신 중',1.2);
+        const [r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true),getTideData(s.obs2,dateStr,true)]);
+        setSplashProgress(75,'데이터 처리 중',1.5);
+        tideData=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
+      } else if(s.type==='scale'){
+        setSplashProgress(35,'조석 데이터 수신 중',1.2);
+        tideData=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true);
+        setSplashProgress(75,'데이터 처리 중',1.5);
+      } else {
+        setSplashProgress(35,'조석 데이터 수신 중',1.2);
+        tideData=await getTideData(s.obs,dateStr,true);
+        setSplashProgress(75,'데이터 처리 중',1.5);
+      }
+      if(tideData && tideData.length > 0) break; // 성공하면 루프 탈출
+      await new Promise(r=>setTimeout(r,500)); // 실패시 500ms 후 재시도
+    }catch(e){
+      tideData=null;
+      await new Promise(r=>setTimeout(r,500));
     }
-  }catch(e){tideData=null;}
+  }
 
   await weatherPromise;
   setSplashProgress(95,'화면 준비 중',1.0);
   await new Promise(r=>setTimeout(r,200));
 
-if(tideData){
-  tideData.sort((a,b)=>{
-    const da=(a.date||'')+(a.time||'');
-    const db=(b.date||'')+(b.time||'');
-    return da.localeCompare(db);
-  });
+  if(tideData && tideData.length > 0){
+    tideData.sort((a,b)=>{
+      const da=(a.date||'')+(a.time||'');
+      const db=(b.date||'')+(b.time||'');
+      return da.localeCompare(db);
+    });
 
-  // ✅ 스플래시에서도 isCurrent 삽입
-  if(tideData.length > 0){
     const now = new Date();
     const nowMins = now.getHours() * 60 + now.getMinutes();
     const currentLevel = calculateLiveLevel(tideData);
-    const currentObj = {
+    tideData.push({
       isCurrent: true,
       level: currentLevel,
       time: minsToTime(nowMins),
       type: 'current',
       mins: nowMins
-    };
-    tideData.push(currentObj);
+    });
     tideData.sort((a,b) => toMins(a) - toMins(b));
-  }
 
-  const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
-  if(cleaned.length&&!cleaned[0]?.error){
-    document.getElementById('wave-card').style.display='block';
-    renderTide(cleaned,last,true);
-    document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+    const cleaned=tideData.filter(d=>d&&(d.isCurrent||d.time));
+    if(cleaned.length){
+      document.getElementById('wave-card').style.display='block';
+      renderTide(cleaned,last,true);
+      document.getElementById('update-time').textContent=`업데이트: ${new Date().toLocaleTimeString('ko-KR')}`;
+    }
   }
-}
 
   setSplashProgress(100,'준비 완료 ✓',0.5);
   await new Promise(r=>setTimeout(r,380));

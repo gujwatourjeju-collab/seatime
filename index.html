@@ -248,10 +248,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .date-label{font-size:.46rem;font-weight:700;color:var(--accent);margin-top:1px;letter-spacing:.5px}
 
 /* 날씨 */
-#weather{display:none;align-items:center;gap:6px;padding:5px 18px 0;flex-shrink:0}
+#weather{display:none;align-items:center;gap:6px;padding:6px 18px 0;flex-shrink:0}
 #weather.show{display:flex}
-.wx-icon{font-size:.8rem;flex-shrink:0;opacity:.7}
-.wx-text{flex:1;font-size:.58rem;font-weight:400;color:rgba(255,255,255,.38);letter-spacing:.2px}
+.wx-icon{font-size:.82rem;flex-shrink:0;opacity:.85}
+.wx-text{flex:1;font-size:.6rem;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.2px}
 
 /* ══════════════════════════════════
    히어로 — 핵심 정보 영역
@@ -343,6 +343,20 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .future-lbl-low{color:rgba(255,160,120,.9)}
 .future-val{font-family:'Bebas Neue',sans-serif;font-size:4.4rem;line-height:.9;letter-spacing:2px;color:#fff}
 .future-unit{font-family:'DM Mono',monospace;font-size:1.1rem;opacity:.3;margin-left:3px;font-weight:300}
+
+
+/* 즐겨찾기 별 */
+#fav-star{
+  font-size:.85rem;cursor:pointer;line-height:1;
+  transition:transform .2s,opacity .2s;
+  filter:drop-shadow(0 0 4px rgba(255,210,0,.4));
+  opacity:.4;
+  user-select:none;
+  display:inline-flex;align-items:center;
+}
+#fav-star.active{opacity:1;filter:drop-shadow(0 0 6px rgba(255,210,0,.8));}
+#fav-star:active{transform:scale(1.35);}
+#level-wrap{display:inline-flex;align-items:center}
 
 /* 구분선 */
 .ci-divider{height:1px;background:rgba(255,255,255,.05);margin:0 -2px}
@@ -532,14 +546,14 @@ html.large-text .future-val{font-size:3.6rem}
 .cal-today-btn{width:100%;margin-top:12px;padding:10px;border-radius:12px;background:rgba(0,229,195,.07);border:1px solid rgba(0,229,195,.2);color:var(--accent);font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
 .cal-today-btn:active{background:rgba(0,229,195,.18)}
 /* 달력 물때 배지 */
-.cal-day{padding:5px 2px 4px;border-radius:9px;font-size:.75rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:42px;justify-content:center}
-.cal-tide-badge{font-size:.38rem;font-weight:700;letter-spacing:.3px;padding:1px 4px;border-radius:4px;line-height:1.4;opacity:.85}
+.cal-day{padding:4px 2px 5px;border-radius:9px;font-size:.72rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center}
+.cal-tide-badge{font-size:.48rem;font-weight:700;letter-spacing:.2px;padding:2px 5px;border-radius:5px;line-height:1.3;opacity:.9}
 /* 물때 색상 클래스 */
 .tide-calm .cal-tide-badge{background:rgba(0,229,195,.18);color:#00e5c3}
 .tide-mid .cal-tide-badge{background:rgba(91,164,245,.18);color:#5ba4f5}
 .tide-strong .cal-tide-badge{background:rgba(61,126,245,.22);color:#7ab3f0}
 .tide-peak .cal-tide-badge{background:rgba(34,85,204,.25);color:#88aaff}
-.tide-jogeun .cal-tide-badge{background:rgba(0,229,195,.22);color:#00e5c3;font-size:.42rem}
+.tide-jogeun .cal-tide-badge{background:rgba(0,229,195,.22);color:#00e5c3;font-size:.48rem}
 .cal-day.tide-calm{background:rgba(0,229,195,.04)}
 .cal-day.tide-mid{background:rgba(91,164,245,.04)}
 .cal-day.tide-strong{background:rgba(61,126,245,.05)}
@@ -593,6 +607,94 @@ html.large-text .future-val{font-size:3.6rem}
 /* 프로필 버튼 */
 
 
+/* ═══ 출조 기록 ═══ */
+/* 수위 클릭 힌트 */
+#level-big{cursor:pointer;transition:opacity .15s}
+#level-big:active{opacity:.6}
+
+/* 기록 입력 시트 */
+#log-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#log-overlay.open{opacity:1;pointer-events:auto}
+#log-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  background:linear-gradient(180deg,#0d1e38,#060f1e);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+#log-sheet.open{transform:translateY(0)}
+.log-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+.log-body{padding:18px 20px 24px;display:flex;flex-direction:column;gap:12px}
+.log-snapshot{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+}
+.log-snap-title{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px}
+.log-snap-row{display:flex;justify-content:space-between;align-items:center}
+.log-snap-main{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#fff;letter-spacing:2px;line-height:1}
+.log-snap-unit{font-size:.65rem;color:rgba(255,255,255,.3);margin-left:2px}
+.log-snap-meta{font-size:.56rem;color:rgba(255,255,255,.45);line-height:1.6}
+.log-snap-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.log-snap-tag{font-size:.46rem;padding:2px 7px;border-radius:20px;background:rgba(0,229,195,.12);color:var(--accent);font-weight:700;border:1px solid rgba(0,229,195,.2)}
+.log-memo-label{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px}
+#log-memo{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:11px 14px;
+  font-size:.75rem;color:#fff;font-family:'Noto Sans KR',sans-serif;
+  outline:none;resize:none;height:72px;line-height:1.5;
+  transition:border-color .2s;
+}
+#log-memo:focus{border-color:rgba(0,229,195,.4)}
+#log-memo::placeholder{color:rgba(255,255,255,.18)}
+.log-save-btn{
+  width:100%;padding:13px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));
+  border:1px solid rgba(0,229,195,.3);color:var(--accent);
+  font-size:.78rem;font-weight:700;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;transition:all .2s;
+}
+.log-save-btn:active{transform:scale(.97)}
+
+/* 기록 목록 시트 */
+#loglist-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#loglist-overlay.open{opacity:1;pointer-events:auto}
+#loglist-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  background:linear-gradient(180deg,#0d1e38,#060f1e);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  max-height:80vh;display:flex;flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+#loglist-sheet.open{transform:translateY(0)}
+.loglist-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.loglist-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:#fff}
+.loglist-close{background:none;border:none;color:rgba(255,255,255,.3);font-size:1.1rem;cursor:pointer;padding:4px}
+#loglist-body{overflow-y:auto;flex:1;padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.log-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:12px 14px;cursor:pointer;transition:background .15s;
+}
+.log-card:active{background:rgba(255,255,255,.07)}
+.log-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.log-card-level{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#fff;letter-spacing:2px;line-height:1}
+.log-card-level span{font-size:.65rem;color:rgba(255,255,255,.3);margin-left:2px}
+.log-card-info{text-align:right;font-size:.52rem;color:rgba(255,255,255,.4);line-height:1.7}
+.log-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.log-card-tag{font-size:.44rem;padding:2px 6px;border-radius:20px;background:rgba(0,229,195,.1);color:var(--accent);font-weight:700}
+.log-card-memo{margin-top:7px;font-size:.6rem;color:rgba(255,255,255,.45);line-height:1.5;border-top:1px solid rgba(255,255,255,.05);padding-top:7px}
+.log-card-del{font-size:.5rem;color:rgba(255,80,80,.4);cursor:pointer;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,80,80,.15);transition:all .2s;white-space:nowrap}
+.log-card-del:active{background:rgba(255,80,80,.15)}
+.log-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.2);font-size:.65rem;line-height:2}
+
+/* 기록 버튼 (footer) */
+#log-list-btn{
+  background:none;border:none;color:rgba(255,255,255,.25);
+  font-size:.55rem;font-weight:600;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;
+  letter-spacing:.3px;transition:color .2s;padding:2px 0;
+}
+#log-list-btn:active{opacity:.5}
 </style>
 </head>
 <body>
@@ -736,10 +838,10 @@ html.large-text .future-val{font-size:3.6rem}
     <div id="hero-inner">
       <div class="hero-top-row">
         <span class="tide-badge" id="tide-badge" style="display:none"></span>
-        <div class="station-pill" id="station-pill"></div>
+        <div class="station-pill" id="station-pill"></div><span id="fav-star" onclick="toggleFav()">☆</span>
       </div>
       <div class="tide-desc" id="tide-desc" style="display:none"></div>
-      <div id="level-big">--<span id="level-unit">cm</span></div>
+      <div id="level-wrap"><div id="level-big" onclick="openLogSheet()">--<span id="level-unit">cm</span></div></div>
       <div class="tide-status-row">
         <div class="status-pill" id="status-pill">--</div>
         <div class="timeleft-pill" id="timeleft-pill">--</div>
@@ -786,7 +888,8 @@ html.large-text .future-val{font-size:3.6rem}
       <div class="panel-upd" id="panel-upd"></div>
     </div>
     <div class="tide-scroll" id="tide-list"></div>
-    <div id="footer">
+    <div id="footer" style="display:flex;align-items:center;justify-content:space-between">
+      <button id="log-list-btn" onclick="openLogList()">📒 출조 기록</button>
       <div class="credit">
         조석 데이터 · <a href="https://www.khoa.go.kr" target="_blank">국립해양조사원 KHOA</a> · Made by Boungje Min
       </div>
@@ -798,6 +901,12 @@ html.large-text .future-val{font-size:3.6rem}
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
+  <!-- 즐겨찾기 섹션 -->
+  <div class="sheet-step" id="step-favorites" style="display:none">
+    <div class="sheet-title" style="font-size:.7rem;opacity:.5;margin-bottom:8px">⭐ 즐겨찾기</div>
+    <div class="station-grid" id="fav-grid"></div>
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:14px 0"></div>
+  </div>
   <div class="sheet-step" id="step-region">
     <div class="sheet-title">지역 선택</div>
     <div class="region-grid">
@@ -830,6 +939,38 @@ html.large-text .future-val{font-size:3.6rem}
 </div>
 
 
+<!-- 출조 기록 입력 시트 -->
+<div id="log-overlay" onclick="closeLogSheet()"></div>
+<div id="log-sheet" onclick="event.stopPropagation()">
+  <div class="log-handle"></div>
+  <div class="log-body">
+    <div class="log-snapshot" id="log-snapshot">
+      <div class="log-snap-title">📋 지금 이 순간</div>
+      <div class="log-snap-row">
+        <div><span class="log-snap-main" id="log-snap-level">--</span><span class="log-snap-unit">cm</span></div>
+        <div class="log-snap-meta" id="log-snap-meta">--</div>
+      </div>
+      <div class="log-snap-tags" id="log-snap-tags"></div>
+    </div>
+    <div>
+      <div class="log-memo-label">메모</div>
+      <textarea id="log-memo" placeholder="오늘 바다 상태, 낚시 결과, 특이사항..."></textarea>
+    </div>
+    <button class="log-save-btn" onclick="saveLog()">기록 저장</button>
+  </div>
+</div>
+
+<!-- 출조 기록 목록 시트 -->
+<div id="loglist-overlay" onclick="closeLogList()"></div>
+<div id="loglist-sheet" onclick="event.stopPropagation()">
+  <div class="log-handle" style="margin-bottom:0"></div>
+  <div class="loglist-header">
+    <div class="loglist-title">출조 기록</div>
+    <button class="loglist-close" onclick="closeLogList()">✕</button>
+  </div>
+  <div id="loglist-body"></div>
+</div>
+
 <!-- 로그인/회원가입 시트 -->
 <div id="auth-overlay" onclick="closeAuth()"></div>
 <div id="auth-sheet" onclick="event.stopPropagation()">
@@ -852,6 +993,14 @@ html.large-text .future-val{font-size:3.6rem}
     <div class="auth-field" id="auth-pw2-wrap" style="display:none">
       <div class="auth-label">비밀번호 확인</div>
       <input class="auth-input" id="auth-pw2" type="password" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div class="auth-field" id="auth-name-wrap" style="display:none">
+      <div class="auth-label">이름</div>
+      <input class="auth-input" id="auth-name" type="text" placeholder="홍길동" autocomplete="name">
+    </div>
+    <div class="auth-field" id="auth-phone-wrap" style="display:none">
+      <div class="auth-label">휴대폰 번호</div>
+      <input class="auth-input" id="auth-phone" type="tel" placeholder="010-0000-0000" autocomplete="tel">
     </div>
     <div class="auth-err" id="auth-err"></div>
     <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
@@ -881,7 +1030,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'수영해도 이동이 생겨요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },
@@ -1329,13 +1478,15 @@ function updateClock(){const n=new Date();document.getElementById('clock').textC
 setInterval(updateClock,1000);updateClock();
 
 /* 시트 */
-function openSheet(){document.getElementById('sheet-overlay').classList.add('open');document.getElementById('sheet').classList.add('open');showRegionStep();}
+function openSheet(){document.getElementById('sheet-overlay').classList.add('open');document.getElementById('sheet').classList.add('open');renderFavGrid();showRegionStep();}
 function closeSheet(){document.getElementById('sheet-overlay').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
 function showRegionStep(){document.getElementById('step-region').style.display='block';document.getElementById('step-station').style.display='none';document.querySelectorAll('.region-item').forEach(el=>{const r=el.getAttribute('onclick').match(/'(\w+)'/)?.[1];el.classList.toggle('active',currentStation&&STATIONS[currentStation]?.region===r);});}
 function backToRegion(){showRegionStep();}
 function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.emoji} ${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-emoji">${EMOJI[n]||'📍'}</span><span class="station-item-name">${n}</span></div>`).join('');}
 function pickStation(n){closeSheet();selectStation(n);}
 async function selectStation(name){
+  document.getElementById('weather').classList.remove('show');
+  setTimeout(updateFavStar,100);
   currentStation=name;localStorage.setItem('lastStation',name);
   const region=STATIONS[name].region,ri=RI[region];
   document.getElementById('loc-icon').textContent=EMOJI[name]||'📍';
@@ -1520,7 +1671,13 @@ async function loadWeather(lat,lng){
     wi.style.display='inline';wi.textContent=emo(wCode);
     wx.textContent=`${wn(wCode)} · ${dir}풍 ${wl(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`;
     document.getElementById('weather').classList.add('show');
-  }catch(e){console.error(e);}
+  }catch(e){
+    console.error('날씨 오류:',e);
+    const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
+    if(wx){wi.style.display='none';wx.textContent='날씨 정보 없음';}
+    document.getElementById('weather').classList.add('show');
+    if(currentStation)applyTheme(STATIONS[currentStation]?.region,0,0);
+  }
 }
 
 /* 달력 */
@@ -1681,6 +1838,206 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('/seatime/sw.js
 function toggleTextSize(){const h=document.documentElement,b=document.getElementById('text-size-btn');if(h.classList.contains('large-text')){h.classList.remove('large-text');localStorage.setItem('textSize','normal');if(b)b.textContent='𝌆';}else{h.classList.add('large-text');localStorage.setItem('textSize','large');if(b)b.textContent='－';}}
 (()=>{const s=localStorage.getItem('textSize'),b=document.getElementById('text-size-btn');if(s==='large'){document.documentElement.classList.add('large-text');if(b)b.textContent='－';}})();
 
+
+
+
+
+
+/* ═══ 출조 기록 ═══ */
+let logSnapshot=null;
+
+function openLogSheet(){
+  if(!currentUser){openAuth();showLoginNudge();return;}
+  if(!currentStation)return;
+  // 스냅샷 수집
+  const levelEl=document.getElementById('level-big');
+  const level=levelEl?levelEl.textContent.replace('cm','').trim():'--';
+  const now=new Date();
+  const timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const dateStr=`${now.getMonth()+1}월 ${now.getDate()}일`;
+  const ld=getLunarDay(now);
+  const region=STATIONS[currentStation]?.region||'jeju';
+  const tn=getTideName(ld,region);
+  const statusEl=document.getElementById('status-pill');
+  const timeleftEl=document.getElementById('timeleft-pill');
+  const ciDesc=document.getElementById('ci-current-desc');
+  const wxText=document.getElementById('wx-text');
+
+  logSnapshot={
+    station:currentStation,
+    level,
+    time:timeStr,
+    date:dateStr,
+    tideName:tn||'',
+    status:statusEl?statusEl.textContent:'',
+    timeleft:timeleftEl?timeleftEl.textContent:'',
+    current:ciDesc?ciDesc.textContent:'',
+    weather:wxText?wxText.textContent:'',
+    savedAt:now.toISOString(),
+  };
+
+  // 스냅샷 UI 채우기
+  document.getElementById('log-snap-level').textContent=level;
+  document.getElementById('log-snap-meta').innerHTML=
+    `${currentStation} · ${dateStr} ${timeStr}<br>${logSnapshot.weather}`;
+  const tags=[tn,logSnapshot.status,logSnapshot.current].filter(Boolean);
+  document.getElementById('log-snap-tags').innerHTML=
+    tags.map(t=>`<span class="log-snap-tag">${t}</span>`).join('');
+  document.getElementById('log-memo').value='';
+
+  document.getElementById('log-overlay').classList.add('open');
+  document.getElementById('log-sheet').classList.add('open');
+  setTimeout(()=>document.getElementById('log-memo').focus(),400);
+}
+
+function closeLogSheet(){
+  document.getElementById('log-overlay').classList.remove('open');
+  document.getElementById('log-sheet').classList.remove('open');
+}
+
+async function saveLog(){
+  if(!logSnapshot||!currentUser)return;
+  const memo=document.getElementById('log-memo').value.trim();
+  const entry={...logSnapshot,memo,user_id:currentUser.id};
+  const btn=document.querySelector('.log-save-btn');
+  btn.textContent='저장 중...';btn.disabled=true;
+  try{
+    await supabaseClient.from('tide_logs').insert(entry);
+    btn.textContent='✓ 저장됐어요';
+    setTimeout(()=>{closeLogSheet();btn.textContent='기록 저장';btn.disabled=false;},800);
+  }catch(e){
+    // fallback: localStorage
+    const key='tidelog_'+currentUser.id;
+    const logs=JSON.parse(localStorage.getItem(key)||'[]');
+    logs.unshift(entry);
+    localStorage.setItem(key,JSON.stringify(logs.slice(0,200)));
+    btn.textContent='✓ 저장됐어요';
+    setTimeout(()=>{closeLogSheet();btn.textContent='기록 저장';btn.disabled=false;},800);
+  }
+}
+
+async function openLogList(){
+  if(!currentUser){openAuth();showLoginNudge();return;}
+  document.getElementById('loglist-overlay').classList.add('open');
+  document.getElementById('loglist-sheet').classList.add('open');
+  await renderLogList();
+}
+
+function closeLogList(){
+  document.getElementById('loglist-overlay').classList.remove('open');
+  document.getElementById('loglist-sheet').classList.remove('open');
+}
+
+async function renderLogList(){
+  const body=document.getElementById('loglist-body');
+  body.innerHTML='<div class="log-empty">불러오는 중...</div>';
+  let logs=[];
+  try{
+    const {data}=await supabaseClient.from('tide_logs')
+      .select('*').eq('user_id',currentUser.id)
+      .order('saved_at',{ascending:false}).limit(100);
+    logs=data||[];
+  }catch(e){
+    const key='tidelog_'+currentUser.id;
+    logs=JSON.parse(localStorage.getItem(key)||'[]');
+  }
+  if(!logs.length){body.innerHTML='<div class="log-empty">아직 기록이 없어요 🌊<br>수위 숫자를 눌러 첫 기록을 남겨보세요</div>';return;}
+  body.innerHTML=logs.map((l,i)=>{
+    const tags=[l.tideName,l.status,l.current].filter(Boolean);
+    return `<div class="log-card">
+      <div class="log-card-top">
+        <div>
+          <div class="log-card-level">${l.level||'--'}<span>cm</span></div>
+          <div class="log-card-tags">${tags.map(t=>`<span class="log-card-tag">${t}</span>`).join('')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <div class="log-card-info">${l.station||''}<br>${l.date||''} ${l.time||''}</div>
+          <button class="log-card-del" onclick="deleteLog(${i},event)">삭제</button>
+        </div>
+      </div>
+      ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
+      ${l.memo?`<div class="log-card-memo">${l.memo}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function deleteLog(idx,e){
+  e.stopPropagation();
+  if(!confirm('이 기록을 삭제할까요?'))return;
+  try{
+    const {data}=await supabaseClient.from('tide_logs')
+      .select('id').eq('user_id',currentUser.id)
+      .order('saved_at',{ascending:false}).limit(100);
+    if(data&&data[idx])
+      await supabaseClient.from('tide_logs').delete().eq('id',data[idx].id);
+  }catch(e2){
+    const key='tidelog_'+currentUser.id;
+    const logs=JSON.parse(localStorage.getItem(key)||'[]');
+    logs.splice(idx,1);
+    localStorage.setItem(key,JSON.stringify(logs));
+  }
+  await renderLogList();
+}
+
+/* ═══ 즐겨찾기 ═══ */
+let favorites=[];
+
+async function loadFavorites(){
+  if(!currentUser)return;
+  try{
+    const {data}=await supabaseClient.from('favorites').select('station').eq('user_id',currentUser.id);
+    favorites=(data||[]).map(r=>r.station);
+  }catch(e){
+    // 테이블 없으면 로컬스토리지 fallback
+    try{favorites=JSON.parse(localStorage.getItem('fav_'+currentUser.id)||'[]');}catch(e2){favorites=[];}
+  }
+  updateFavStar();
+  renderFavGrid();
+}
+
+async function toggleFav(){
+  if(!currentUser){openAuth();showLoginNudge();return;}
+  if(!currentStation)return;
+  const isFav=favorites.includes(currentStation);
+  if(isFav){
+    favorites=favorites.filter(f=>f!==currentStation);
+    try{await supabaseClient.from('favorites').delete().eq('user_id',currentUser.id).eq('station',currentStation);}
+    catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}
+  }else{
+    favorites.push(currentStation);
+    try{await supabaseClient.from('favorites').insert({user_id:currentUser.id,station:currentStation});}
+    catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}
+  }
+  updateFavStar();
+  renderFavGrid();
+}
+
+function updateFavStar(){
+  const star=document.getElementById('fav-star');
+  if(!star)return;
+  const isFav=currentStation&&favorites.includes(currentStation);
+  star.textContent=isFav?'★':'☆';
+  star.classList.toggle('active',!!isFav);
+}
+
+function renderFavGrid(){
+  const grid=document.getElementById('fav-grid');
+  const sec=document.getElementById('step-favorites');
+  if(!grid||!sec)return;
+  if(!currentUser||favorites.length===0){sec.style.display='none';return;}
+  sec.style.display='block';
+  grid.innerHTML=favorites.map(name=>{
+    const s=STATIONS[name];if(!s)return'';
+    const em=EMOJI[name]||'📍';
+    const isActive=name===currentStation;
+    return `<div class="station-item${isActive?' active':''}" onclick="selectStation('${name}');closeSheet()">
+      <span class="st-icon">${em}</span>
+      <div class="st-name">${name}</div>
+      <span style="font-size:.55rem;opacity:.4">${RI[s.region]?.label||''}</span>
+    </div>`;
+  }).join('');
+}
+
 /* ═══ 인증 ═══ */
 let currentUser=null;
 let authTab='login';
@@ -1699,6 +2056,8 @@ function switchAuthTab(tab){
   document.getElementById('tab-login').classList.toggle('active',tab==='login');
   document.getElementById('tab-signup').classList.toggle('active',tab==='signup');
   document.getElementById('auth-pw2-wrap').style.display=tab==='signup'?'flex':'none';
+  document.getElementById('auth-name-wrap').style.display=tab==='signup'?'flex':'none';
+  document.getElementById('auth-phone-wrap').style.display=tab==='signup'?'flex':'none';
   document.getElementById('auth-submit-btn').textContent=tab==='login'?'로그인':'회원가입';
     const sw=document.getElementById('auth-switch-text');
   if(tab==='login'){
@@ -1725,7 +2084,10 @@ async function submitAuth(){
     if(authTab==='login'){
       result=await supabaseClient.auth.signInWithPassword({email,password:pw});
     }else{
-      result=await supabaseClient.auth.signUp({email,password:pw});
+      const name=document.getElementById('auth-name').value.trim();
+    const phone=document.getElementById('auth-phone').value.trim();
+    if(!name){err.textContent='이름을 입력해주세요';btn.textContent='회원가입';btn.disabled=false;return;}
+    result=await supabaseClient.auth.signUp({email,password:pw,options:{emailRedirectTo:'https://gujwatourjeju-collab.github.io/seatime/',data:{name,phone}}});
     }
     if(result.error)throw result.error;
     if(authTab==='signup'&&!result.data?.session){
@@ -1745,9 +2107,10 @@ async function submitAuth(){
 function onAuthSuccess(user){
   currentUser=user;
   closeAuth();
-  const nick=user.email.split('@')[0];
+  const name=user.user_metadata?.name||user.email.split('@')[0];
   const sub=document.getElementById('hdr-sub');
-  if(sub)sub.textContent=nick+'님 환영해요';
+  if(sub)sub.textContent=name+'님 환영해요';
+  loadFavorites();
   // 브랜드 클릭 → 로그아웃
   const brand=document.querySelector('.hdr-brand');
   if(brand)brand.onclick=()=>{

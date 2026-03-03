@@ -69,20 +69,30 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   position:absolute;top:-80px;left:0;right:0;bottom:0;
   background:linear-gradient(180deg,rgba(0,180,216,0) 0%,rgba(0,150,200,.2) 20%,rgba(0,100,160,.5) 50%,rgba(2,50,120,.92) 100%);
 }
+
+#sp-waves{position:absolute;top:-60px;left:0;right:0;height:90px;overflow:hidden}
+.sp-wave-svg{position:absolute;top:0;left:-10%;width:120%;height:100%}
+.sp-wave-path-1{animation:spwd1 3.5s ease-in-out infinite}
+.sp-wave-path-2{animation:spwd2 5s ease-in-out infinite}
+.sp-wave-path-3{animation:spwd3 7s ease-in-out -2s infinite}
+@keyframes spwd1{0%,100%{transform:translateX(0)}50%{transform:translateX(-4%)}}
+@keyframes spwd2{0%,100%{transform:translateX(0)}50%{transform:translateX(5%)}}
+@keyframes spwd3{0%,100%{transform:translateX(0)}50%{transform:translateX(-3%)}}
+
 .sp-wave{position:absolute;top:0;left:-60%;width:220%;height:70px;border-radius:50%;background:rgba(0,229,195,.25);animation:spWave 3.5s ease-in-out infinite}
 .sp-wave2{position:absolute;top:18px;left:-40%;width:180%;height:45px;border-radius:50%;background:rgba(0,180,216,.15);animation:spWave 5.5s ease-in-out -2s infinite}
 @keyframes spWave{0%,100%{transform:translateX(0)}50%{transform:translateX(-9%)}}
 
 .sp-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .sp-logo{
-  width:68px;height:68px;border-radius:20px;object-fit:cover;margin-bottom:24px;
-  box-shadow:0 0 0 1px rgba(0,229,195,.2),0 0 40px rgba(0,229,195,.3),0 20px 60px rgba(0,0,0,.6);
+  width:52px;height:52px;border-radius:16px;object-fit:cover;margin-bottom:20px;
+  box-shadow:0 0 0 1px rgba(0,229,195,.15),0 0 30px rgba(0,229,195,.2),0 12px 40px rgba(0,0,0,.5);
   animation:spFloat 3s ease-in-out infinite;
 }
 @keyframes spFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.sp-eyebrow{font-size:.6rem;font-weight:400;letter-spacing:8px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:4px}
-.sp-title{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:4px;background:linear-gradient(135deg,#fff 20%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
-.sp-sub{font-size:.58rem;font-weight:400;color:rgba(255,255,255,.28);letter-spacing:1.5px;margin-top:10px}
+.sp-eyebrow{font-size:.48rem;font-weight:300;letter-spacing:5px;color:rgba(255,255,255,.2);text-transform:none;margin-bottom:14px}
+.sp-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:10px;background:linear-gradient(135deg,rgba(255,255,255,.9) 30%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.sp-sub{font-size:.5rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:2px;margin-top:12px}
 #splash-status{
   margin-top:32px;font-family:'DM Mono',monospace;font-size:.55rem;font-weight:300;
   letter-spacing:3px;color:rgba(0,229,195,.4);min-height:1em;
@@ -162,7 +172,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* ══ 돛단배 ══ */
 #sailboat{
-  position:fixed;z-index:9998;
+  position:fixed;z-index:15;
   pointer-events:auto;
   cursor:pointer;
   transform:translate(-50%,-52%);
@@ -383,8 +393,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   padding:0 54px 8px;flex-shrink:0;
 }
 .panel-title{
-  font-size:.6rem;font-weight:900;color:rgba(255,255,255,.9);
-  letter-spacing:1.5px;text-transform:uppercase;
+  font-size:.6rem;font-weight:700;color:rgba(255,255,255,.7);
+  letter-spacing:.5px;
   display:flex;align-items:center;gap:7px;
 }
 .panel-title-badge{
@@ -933,7 +943,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 #fish-school{
   position:fixed;
   inset:0;
-  z-index:9997;
+  z-index:14;
   pointer-events:none;
 }
 .fish{
@@ -947,7 +957,23 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 }
 @keyframes fishMove{
   0%  {right:-60px}
-  100%{right:115vw;margin-top:var(--drift,0px)}
+  100%{right:120vw}
+}
+@keyframes fishWiggle{
+  0%,100%{transform:scaleX(-1) translateY(0px)}
+  25%    {transform:scaleX(-1) translateY(var(--wig,12px))}
+  75%    {transform:scaleX(-1) translateY(calc(var(--wig,12px)*-1))}
+}
+
+
+/* 배 글로우 */
+#sailboat.ready .boat-wrap{
+  filter:drop-shadow(0 0 8px rgba(0,229,195,.9)) drop-shadow(0 0 20px rgba(0,229,195,.5));
+  transition:filter 1s ease;
+}
+#sailboat.active .boat-wrap{
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.2));
+  transition:filter .4s ease;
 }
 
 </style>
@@ -961,10 +987,20 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   <div class="sp-grid"></div>
   <div class="sp-ring" style="width:200px;height:200px;--rd:3s;--rdelay:0s;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
   <div class="sp-ring" style="width:200px;height:200px;--rd:3s;--rdelay:1.5s;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div id="splash-water"><div class="sp-water-body"><div class="sp-wave"></div><div class="sp-wave2"></div></div></div>
+  <div id="splash-water">
+    <div class="sp-water-body">
+      <div id="sp-waves">
+        <svg class="sp-wave-svg" viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="sp-wave-path-1" d="M0,45 C240,90 480,0 720,45 C960,90 1200,0 1440,45 L1440,0 L0,0 Z" fill="rgba(0,229,195,.22)"/>
+          <path class="sp-wave-path-2" d="M0,30 C200,62 400,8 600,34 C800,58 1040,4 1240,32 C1320,44 1390,18 1440,30 L1440,0 L0,0 Z" fill="rgba(0,180,216,.14)"/>
+          <path class="sp-wave-path-3" d="M0,18 C280,52 560,2 840,22 C1080,40 1260,8 1440,18 L1440,0 L0,0 Z" fill="rgba(255,255,255,.07)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
   <div class="sp-content">
+    <div class="sp-eyebrow">바다를 읽는 시간</div>
     <img class="sp-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
-    <div class="sp-eyebrow">tide forecast</div>
     <div class="sp-title">바당때</div>
     <div class="sp-sub">바다 앞에 서기 전, 바당때 먼저</div>
     <div id="splash-status">INITIALIZING</div>
@@ -2148,7 +2184,7 @@ function renderTide(data,name,isToday){
     document.getElementById('gauge-low-label').style.display='flex';
     document.getElementById('ocean-water').style.opacity='1';
     document.getElementById('horizon').style.opacity='1';
-    document.getElementById('sailboat').style.display='block';
+    const _sb=document.getElementById('sailboat');_sb.style.display='block';setTimeout(()=>_sb.classList.add('ready'),500);
     const pct=maxL>minL?((cur.level-minL)/(maxL-minL))*100:50;
     setOceanLevel(pct,isFalling,true);
     updateGaugeLabels(data,cur);
@@ -2614,8 +2650,8 @@ function toggleZenMode(){
     let jumping=false;
     boat.addEventListener('click',function(e){
       e.stopPropagation();
+      if(jumping||fishActive)return;
       if(navigator.vibrate)navigator.vibrate(18);
-      if(jumping)return;
       setTimeout(spawnFishSchool, 200);
       jumping=true;
       boat.classList.add('jumping');
@@ -2692,55 +2728,61 @@ function closeTerms(){document.getElementById('terms-overlay').classList.remove(
 
 
 /* 물고기 떼 */
+let fishActive=false;
 function spawnFishSchool(){
   const school=document.getElementById('fish-school');
   if(!school)return;
 
-  // 실제 수면 Y좌표
+  // 수면 Y좌표
   const horizon=document.getElementById('horizon');
   const vh=window.innerHeight;
   let surfaceY=vh*0.58;
-  if(horizon && horizon.style.top){
-    surfaceY=(parseFloat(horizon.style.top)/100)*vh;
-  }
+  if(horizon&&horizon.style.top) surfaceY=(parseFloat(horizon.style.top)/100)*vh;
   const waterTop=surfaceY+12;
-  const waterBot=Math.min(surfaceY+110, vh-10);
+  const waterBot=Math.min(surfaceY+110,vh-10);
   if(waterBot<=waterTop)return;
 
+  fishActive=true;
+  const boat=document.getElementById('sailboat');
+  if(boat){boat.classList.remove('ready');boat.classList.add('active');}
+
+  // 수면 아래만 보이도록 clip
+  school.style.clipPath=`inset(${Math.round(surfaceY+35)}px 0 0 0)`;
   school.innerHTML='';
   const count=10+Math.floor(Math.random()*8);
   const emojis=['🐟','🐠','🐡'];
-  const maxDur=2.5;
+  let latestEnd=0;
 
   for(let i=0;i<count;i++){
     const f=document.createElement('div');
     f.className='fish';
     f.textContent=emojis[i%3];
     const y=waterTop+Math.random()*(waterBot-waterTop);
-    const drift=(Math.random()-0.5)*20;
-    const delay=Math.random()*0.7;
-    const dur=1.8+Math.random()*0.8;
+    const delay=Math.random()*0.6;
+    const dur=3.6+Math.random()*1.8;
     const sz=0.5+Math.random()*0.4;
-    // 오른쪽에서 왼쪽으로 — right 음수값 → 큰 양수값
+    const wig=8+Math.random()*10;
+    const wigDur=0.5+Math.random()*0.4;
+    if(delay+dur>latestEnd) latestEnd=delay+dur;
     f.style.cssText=[
+      `position:fixed`,
       `top:${y}px`,
       `right:-60px`,
       `font-size:${sz}rem`,
       `opacity:${0.2+Math.random()*0.2}`,
       `filter:blur(.5px) brightness(.65) saturate(.8)`,
-      `transform:scaleX(-1)`,
-      `animation-name:fishMove`,
-      `animation-duration:${dur}s`,
-      `animation-delay:${delay}s`,
-      `animation-timing-function:linear`,
-      `animation-fill-mode:forwards`,
-      `--drift:${drift}px`,
+      `animation:fishMove ${dur}s linear ${delay}s forwards, fishWiggle ${wigDur}s ease-in-out ${delay}s infinite`,
+      `--wig:${wig}px`,
     ].join(';');
     school.appendChild(f);
   }
 
-  // 끝나면 정리
-  setTimeout(()=>{school.innerHTML='';}, (maxDur+1.5)*1000);
+  setTimeout(()=>{
+    school.innerHTML='';
+    fishActive=false;
+    const b=document.getElementById('sailboat');
+    if(b){b.classList.remove('active');b.classList.add('ready');}
+  },(latestEnd+0.5)*1000);
 }
 
 /* ═══ 드로어 ═══ */

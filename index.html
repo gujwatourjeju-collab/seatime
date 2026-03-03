@@ -125,7 +125,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* 날씨 오브젝트 */
 #sky-objects{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-#sky-sun{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,245,180,1) 30%,rgba(255,220,80,.6) 60%,transparent 100%);box-shadow:0 0 40px rgba(255,230,100,.5),0 0 80px rgba(255,200,60,.2);transition:opacity 2s ease}
+#sky-sun{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,245,180,1) 30%,rgba(255,220,80,.6) 60%,transparent 100%);box-shadow:0 0 40px rgba(255,230,100,.5),0 0 80px rgba(255,200,60,.2);transition:opacity 2s ease, left 60s linear, top 60s ease, width .5s, height .5s}
 .sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite}
 @keyframes sunP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
 .sky-cloud{position:absolute;background:radial-gradient(ellipse at 50% 60%,rgba(255,255,255,.15) 0%,rgba(255,255,255,.05) 60%,transparent 100%);border-radius:50%;animation:cDrift var(--cd,30s) linear var(--cdelay,0s) infinite;transition:opacity 2s ease}
@@ -162,8 +162,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* ══ 돛단배 ══ */
 #sailboat{
-  position:fixed;z-index:15;
-  pointer-events:none;
+  position:fixed;z-index:9998;
+  pointer-events:auto;
+  cursor:pointer;
   transform:translate(-50%,-52%);
   transition:top 5s cubic-bezier(.25,.46,.45,.94),opacity 1.5s ease;
   opacity:0;
@@ -272,6 +273,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .tide-desc{
   font-size:.6rem;color:rgba(255,255,255,.38);font-weight:400;
   margin-bottom:8px;letter-spacing:.2px;
+  display:none!important;
 }
 
 /* 수위 숫자 */
@@ -313,8 +315,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* 조류 세기 바 */
 .ci-row{display:flex;align-items:center;gap:10px}
 .ci-label{
-  font-size:.5rem;font-weight:700;color:rgba(255,255,255,.3);
-  letter-spacing:1.5px;text-transform:uppercase;
+  font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45);
+  letter-spacing:.5px;
   width:38px;flex-shrink:0;
 }
 .ci-bars{display:flex;gap:3px;flex-shrink:0}
@@ -834,16 +836,28 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 }
 
 
-#zen-tap-overlay{
-  position:fixed;inset:0;z-index:50;
-  background:transparent;cursor:pointer;
-  pointer-events:none;
-  display:none;
+
+
+/* 배 클릭 애니메이션 */
+
+@keyframes boatJump{
+  0%  {margin-top:0;    rotate:0deg;   scale:1}
+  12% {margin-top:-18px;rotate:20deg;  scale:1.08}
+  28% {margin-top:-38px;rotate:-15deg; scale:1.12}
+  45% {margin-top:-52px;rotate:360deg; scale:1.15}
+  60% {margin-top:-30px;rotate:380deg; scale:1.1}
+  72% {margin-top:-10px;rotate:355deg; scale:1.05}
+  82% {margin-top:-18px;rotate:362deg; scale:1.07}
+  90% {margin-top:-5px; rotate:358deg; scale:1.02}
+  96% {margin-top:-8px; rotate:361deg; scale:1.03}
+  100%{margin-top:0;    rotate:360deg; scale:1}
 }
-body.zen-mode #zen-tap-overlay{
-  display:block;
-  z-index:9999;
+#sailboat.jumping{
+  animation:boatJump .95s cubic-bezier(.36,.07,.19,.97) forwards,
+            boatSail var(--sail-dur,28s) ease-in-out infinite;
+  transform-origin:center bottom;
 }
+
 </style>
 </head>
 <body>
@@ -871,7 +885,6 @@ body.zen-mode #zen-tap-overlay{
     <div id="sky-moon"></div>
   </div>
 <div id="zen-hint">바다를 탭하면 관상 모드</div>
-<div id="zen-tap-overlay" onclick="toggleZenMode()"></div>
   <div id="sky-objects">
     <div id="sky-sun"><div class="sun-rays"></div></div>
     <div id="rain-container"></div>
@@ -1557,6 +1570,90 @@ function buildShimmers(color){
 }
 
 /* ═══ 날씨 오브젝트 ═══ */
+
+/* 태양 위치 계산 */
+let sunAnimFrame=null;
+
+function getSunPosition(){
+  const now=new Date();
+  const h=now.getHours()+(now.getMinutes()/60)+(now.getSeconds()/3600);
+  const {rise,set}=getSunTimes();
+
+  // 일출 전/후 진입 여유 (화면 밖에서 시작)
+  const riseStart=rise-0.3; // 일출 18분 전부터 화면 오른쪽 밖에서 진입
+  const setEnd=set+0.3;     // 일몰 18분 후 화면 왼쪽 밖으로 사라짐
+
+  if(h<riseStart||h>setEnd) return null; // 화면 밖
+
+  // 0~1 진행도 (일출~일몰)
+  const progress=(h-riseStart)/(setEnd-riseStart);
+
+  // X: 오른쪽(110%)에서 왼쪽(-10%)으로
+  const x=110-progress*120; // 110% → -10%
+
+  // Y: 포물선 — 낮에 높고, 일출/일몰엔 낮게
+  // progress 0~1, 꼭짓점은 0.5(정오)
+  const arc=Math.sin(progress*Math.PI); // 0→1→0
+  const yMin=4;   // 최고점 (하늘 위쪽)
+  const yMax=52;  // 지평선 근처
+  const y=yMax-(arc*(yMax-yMin));
+
+  // 크기: 정오엔 크고 일출/몰엔 작게
+  const sizeMin=56, sizeMax=92;
+  const size=sizeMin+arc*(sizeMax-sizeMin);
+
+  // 색: 일출/몰엔 주황/붉은빛, 정오엔 밝은 노랑
+  const r1=Math.round(255);
+  const g1=Math.round(140+arc*105); // 140→245→140
+  const b1=Math.round(20+arc*140);  // 20→160→20
+  const glow1=`rgba(${r1},${g1},${b1},.6)`;
+  const glow2=`rgba(${r1},${g1},${b1},.2)`;
+  const core1=`rgba(255,${g1},${b1},1)`;
+  const core2=`rgba(255,${Math.round(g1*.88)},${Math.round(b1*.5)},.65)`;
+
+  return{x,y,size,core1,core2,glow1,glow2,arc};
+}
+
+function animateSun(wc){
+  if(sunAnimFrame)cancelAnimationFrame(sunAnimFrame);
+  const sun=document.getElementById('sky-sun');
+  if(!sun)return;
+
+  const isClear=wc<=1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48);
+  const visible=wc<=3||(wc>=45&&wc<=48);
+  const opBase=isClear?1:isPartly?.55:isCloudy?.12:0;
+
+  function frame(){
+    const pos=getSunPosition();
+    const tod=getTimeOfDay();
+    const isDay=tod!=='night'&&tod!=='evening';
+
+    if(!pos||!visible||!isDay){
+      sun.style.opacity='0';
+      sunAnimFrame=requestAnimationFrame(frame);
+      return;
+    }
+
+    const {x,y,size,core1,core2,glow1,glow2}=pos;
+    sun.style.cssText=`
+      position:absolute;
+      border-radius:50%;
+      left:${x}%;
+      top:${y}%;
+      width:${size}px;
+      height:${size}px;
+      transform:translate(-50%,-50%);
+      background:radial-gradient(circle,${core1} 28%,${core2} 58%,transparent 100%);
+      box-shadow:0 0 ${size*.45}px ${glow1},0 0 ${size*.9}px ${glow2};
+      opacity:${opBase};
+      transition:opacity 2s ease;
+    `;
+    // 매 30초마다 위치 갱신 (부드럽게)
+    sunAnimFrame=setTimeout(()=>{sunAnimFrame=requestAnimationFrame(frame);},30000);
+  }
+  frame();
+}
+
 function updateSkyObjects(wc){
   const sun=document.getElementById('sky-sun');
   const rain=document.getElementById('rain-container');
@@ -1564,10 +1661,7 @@ function updateSkyObjects(wc){
   sky.querySelectorAll('.sky-cloud').forEach(c=>c.remove());
   rain.innerHTML='';
   const isClear=wc<=1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48),isDrizzle=wc>=51&&wc<=55,isRain=wc>=61&&wc<=65,isHeavy=wc>=80&&wc<=82,isStorm=wc>=95;
-  if(isClear){sun.style.cssText='opacity:1;width:88px;height:88px;left:60%;top:8%'}
-  else if(isPartly){sun.style.cssText='opacity:.55;width:68px;height:68px;left:62%;top:9%'}
-  else if(isCloudy){sun.style.cssText='opacity:.12;width:58px;height:58px;left:62%;top:10%'}
-  else{sun.style.opacity='0'}
+  animateSun(wc);
   const clouds=[];
   if(isPartly)clouds.push({w:110,h:36,top:'12%',left:'28%',op:.45,s:'42s',d:'-8s',x:'5%'},{w:75,h:26,top:'18%',left:'8%',op:.28,s:'58s',d:'-28s',x:'7%'});
   else if(isCloudy)clouds.push({w:150,h:48,top:'7%',left:'4%',op:.5,s:'36s',d:'0s',x:'6%'},{w:120,h:40,top:'13%',left:'38%',op:.42,s:'52s',d:'-14s',x:'4%'},{w:90,h:30,top:'20%',left:'18%',op:.32,s:'46s',d:'-28s',x:'7%'});
@@ -1970,14 +2064,17 @@ async function loadWeather(lat,lng){
     let data=wxCache[cacheKey];
     if(!data){
       const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
-      let res;
       // 실패시 최대 2회 재시도
+      let res=null;
       for(let attempt=0;attempt<3;attempt++){
-        try{res=await fetch(url);if(res.ok)break;}catch(e){
-          if(attempt<2){await new Promise(r=>setTimeout(r,1500*(attempt+1)));}
+        try{
+          const r=await fetch(url);
+          if(r.ok){res=r;break;}
+        }catch(e){
+          if(attempt<2)await new Promise(r=>setTimeout(r,1200*(attempt+1)));
         }
       }
-      if(!res||!res.ok)throw new Error('날씨 서버 응답 없음');
+      if(!res)throw new Error('날씨 서버 응답 없음');
       data=await res.json();
       wxCache[cacheKey]=data;
     }
@@ -2331,6 +2428,58 @@ function toggleZenMode(){
   zenMode=!zenMode;
   document.body.classList.toggle('zen-mode',zenMode);
 }
+
+// hero 빈 영역 탭 → 관상모드
+// app이 pointer-events:none이라 hero에 직접 이벤트 붙임
+(function setupZenTap(){
+  // DOM 준비 후 실행
+  function attach(){
+    const hero=document.getElementById('hero');
+    if(!hero){setTimeout(attach,300);return;}
+    hero.addEventListener('click',function(e){
+      // 클릭된 요소가 hero 자신이거나 hero-inner, tide-panel의 빈 배경인지 확인
+      const t=e.target;
+      const interactive=['BUTTON','INPUT','SELECT','TEXTAREA','A'];
+      if(interactive.includes(t.tagName))return;
+      // 인터랙티브 요소의 자식인지 확인
+      if(t.closest('button,input,select,textarea,a,[onclick]'))return;
+      // tide-panel 스크롤 영역이나 tr-row 클릭은 무시
+      if(t.closest('.tr-row,.tide-row,.tr-level,.tr-time,.tr-badge'))return;
+      // hero-inner 숫자/배지/버튼 무시
+      if(t.closest('#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#current-info'))return;
+      // 나머지 빈 영역 탭 → 관상모드
+      toggleZenMode();
+    });
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',attach);
+  }else{
+    attach();
+  }
+})();
+
+
+/* 배 클릭 — 용수철 점프 */
+(function(){
+  function attach(){
+    const boat=document.getElementById('sailboat');
+    if(!boat){setTimeout(attach,300);return;}
+    let jumping=false;
+    boat.addEventListener('click',function(e){
+      e.stopPropagation(); // zen모드 트리거 방지
+      if(jumping)return;
+      jumping=true;
+      boat.classList.add('jumping');
+      setTimeout(()=>{
+        boat.classList.remove('jumping');
+        jumping=false;
+      },980);
+    });
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',attach);
+  }else{attach();}
+})();
 
 /* ═══ 드로어 ═══ */
 function openDrawer(){

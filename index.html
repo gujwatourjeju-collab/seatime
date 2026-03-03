@@ -1325,6 +1325,36 @@ function renderCurrentInfo(tn){
 
 /* ═══ 시간대 × 날씨 × 지역 테마 ═══ */
 
+// 일출/일몰 계산
+function calcSunTimes(lat,lng,date){
+  const rad=Math.PI/180;
+  const JD=(date.getTime()/86400000)+2440587.5;
+  const n=Math.round(JD-2451545.0-0.0009-(lng/360));
+  const Jstar=2451545.0+0.0009+(lng/360)+n;
+  const M=(357.5291+0.98560028*(Jstar-2451545))*rad;
+  const lam=((280.4665+360.98560028*(Jstar-2451545)+1.9148/rad*Math.sin(M)+0.02/rad*Math.sin(2*M)+0.0003/rad*Math.sin(3*M)-2.4657)*rad);
+  const dec=Math.asin(Math.sin(23.45*rad)*Math.sin(lam));
+  const cosH=(-Math.sin(-0.8333*rad)-Math.sin(lat*rad)*Math.sin(dec))/(Math.cos(lat*rad)*Math.cos(dec));
+  if(cosH>1||cosH<-1)return{rise:6,set:18};
+  const H=Math.acos(cosH)/rad;
+  const transit=Jstar+0.0053*Math.sin(M)-0.0069*Math.sin(2*lam);
+  const riseJD=transit-H/360;
+  const setJD=transit+H/360;
+  const toLocalH=jd=>{const utcH=((jd-Math.floor(jd))*24+12)%24;return(utcH+9)%24;};
+  return{rise:toLocalH(riseJD),set:toLocalH(setJD)};
+}
+
+let cachedSunTimes=null,cachedSunDate='';
+function getSunTimes(){
+  const s=currentStation?STATIONS[currentStation]:null;
+  const lat=s?s.lat:33.5,lng=s?s.lng:126.5;
+  const today=new Date(),dateKey=today.toDateString();
+  if(cachedSunTimes&&cachedSunDate===dateKey)return cachedSunTimes;
+  cachedSunTimes=calcSunTimes(lat,lng,today);
+  cachedSunDate=dateKey;
+  return cachedSunTimes;
+}
+
 function getTimeOfDay(){
   const h=new Date().getHours();
   if(h>=5&&h<7)return 'dawn';

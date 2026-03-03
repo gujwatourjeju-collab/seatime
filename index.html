@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="바당때">
 <meta name="theme-color" content="#060f1e" id="theme-color-meta">
 <link rel="manifest" href="manifest.json">
@@ -205,14 +205,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
   position:relative;
-}
-/* safe-area 위 영역 채우기 */
-#header::before{
-  content:'';
-  position:fixed;top:0;left:0;right:0;
-  height:env(safe-area-inset-top,44px);
-  background:inherit;
-  z-index:-1;
 }
 .hdr-left{display:flex;align-items:center;gap:8px}
 .hdr-logo{width:32px;height:32px;border-radius:8px;object-fit:cover;opacity:.85}
@@ -1209,7 +1201,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'물살이 쎈편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },

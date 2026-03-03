@@ -234,19 +234,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .date-label{font-size:.46rem;font-weight:700;color:var(--accent);margin-top:1px;letter-spacing:.5px}
 
 /* 날씨 */
-#weather{
-  display:none;align-items:center;gap:8px;
-  margin:6px 14px 0;
-  padding:8px 12px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  flex-shrink:0;
-}
+#weather{display:none;align-items:center;gap:6px;padding:5px 18px 0;flex-shrink:0}
 #weather.show{display:flex}
-.wx-icon{font-size:.88rem;flex-shrink:0}
-.wx-text{flex:1;font-size:.6rem;font-weight:500;color:rgba(255,255,255,.55)}
+.wx-icon{font-size:.8rem;flex-shrink:0;opacity:.7}
+.wx-text{flex:1;font-size:.58rem;font-weight:400;color:rgba(255,255,255,.38);letter-spacing:.2px}
 
 /* ══════════════════════════════════
    히어로 — 핵심 정보 영역
@@ -453,7 +444,7 @@ html.large-text{font-size:125%}
 html.large-text .tr-level{font-size:1.05rem}
 html.large-text .tr-time{font-size:.92rem}
 html.large-text .tr-label{font-size:.6rem}
-html.large-text #level-big{font-size:6.8rem}
+html.large-text #level-big{font-size:5.8rem}
 html.large-text .tide-badge{font-size:.7rem}
 html.large-text .tide-desc{font-size:.68rem}
 html.large-text .status-pill{font-size:.72rem}
@@ -461,6 +452,12 @@ html.large-text .timeleft-pill{font-size:.68rem}
 html.large-text .ci-desc{font-size:.65rem}
 html.large-text .ci-act-desc{font-size:.62rem}
 html.large-text .panel-title{font-size:.72rem}
+html.large-text #hero{margin-top:-25px}
+html.large-text #tide-panel{margin-top:-45px}
+html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
+html.large-text #current-info{padding:8px 12px;gap:6px}
+html.large-text .ci-bar{width:15px;height:3px}
+html.large-text .future-val{font-size:3.6rem}
 
 /* ══════════════════════════════════
    바텀 시트
@@ -771,7 +768,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'수영해도 이동이 생겨요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },

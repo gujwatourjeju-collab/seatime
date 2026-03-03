@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,9 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
-:root{
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}:root{
 –accent:#00e5c3;
 –accent-dim:rgba(0,229,195,.15);
 –accent-border:rgba(0,229,195,.25);
@@ -30,9 +26,7 @@
 –danger:#ff5e7a;
 –safe:#00e5c3;
 }
-
 html,body{height:100dvh;overflow:hidden;background:var(–sky);color:#fff;font-family:‘Noto Sans KR’,sans-serif}
-
 /* ══════════════════════════════════
 SPLASH — 고급 잠수함 컨셉
 ══════════════════════════════════ */
@@ -44,7 +38,6 @@ overflow:hidden;
 transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
 }
 #splash.hide{opacity:0;transform:scale(1.06);pointer-events:none}
-
 .sp-grid{
 position:absolute;inset:0;
 background-image:
@@ -55,13 +48,11 @@ mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 40%,transparent 100%)
 animation:gridPulse 4s ease-in-out infinite;
 }
 @keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
-
 .sp-ring{
 position:absolute;border-radius:50%;border:1px solid rgba(0,229,195,.1);
 animation:ringExpand var(–rd,4s) ease-out var(–rdelay,0s) infinite;
 }
 @keyframes ringExpand{0%{transform:scale(0);opacity:.8}100%{transform:scale(4);opacity:0}}
-
 #splash-water{
 position:absolute;bottom:0;left:0;right:0;height:0%;
 transition:height 0s;pointer-events:none;
@@ -70,7 +61,6 @@ transition:height 0s;pointer-events:none;
 position:absolute;top:-80px;left:0;right:0;bottom:0;
 background:linear-gradient(180deg,rgba(0,180,216,0) 0%,rgba(0,150,200,.2) 20%,rgba(0,100,160,.5) 50%,rgba(2,50,120,.92) 100%);
 }
-
 #sp-waves{position:absolute;top:-60px;left:0;right:0;height:90px;overflow:hidden}
 .sp-wave-svg{position:absolute;top:0;left:-10%;width:120%;height:100%}
 .sp-wave-path-1{animation:spwd1 3.5s ease-in-out infinite}
@@ -79,11 +69,9 @@ background:linear-gradient(180deg,rgba(0,180,216,0) 0%,rgba(0,150,200,.2) 20%,rg
 @keyframes spwd1{0%,100%{transform:translateX(0)}50%{transform:translateX(-4%)}}
 @keyframes spwd2{0%,100%{transform:translateX(0)}50%{transform:translateX(5%)}}
 @keyframes spwd3{0%,100%{transform:translateX(0)}50%{transform:translateX(-3%)}}
-
 .sp-wave{position:absolute;top:0;left:-60%;width:220%;height:70px;border-radius:50%;background:rgba(0,229,195,.25);animation:spWave 3.5s ease-in-out infinite}
 .sp-wave2{position:absolute;top:18px;left:-40%;width:180%;height:45px;border-radius:50%;background:rgba(0,180,216,.15);animation:spWave 5.5s ease-in-out -2s infinite}
 @keyframes spWave{0%,100%{transform:translateX(0)}50%{transform:translateX(-9%)}}
-
 .sp-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .sp-logo{
 width:52px;height:52px;border-radius:16px;object-fit:cover;margin-bottom:20px;
@@ -98,7 +86,6 @@ animation:spFloat 3s ease-in-out infinite;
 margin-top:32px;font-family:‘DM Mono’,monospace;font-size:.55rem;font-weight:300;
 letter-spacing:3px;color:rgba(0,229,195,.4);min-height:1em;
 }
-
 /* ══════════════════════════════════
 OCEAN BG
 ══════════════════════════════════ */
@@ -133,7 +120,6 @@ background:linear-gradient(90deg,transparent 0%,rgba(0,229,195,.3) 20%,rgba(0,20
 box-shadow:0 0 12px rgba(0,229,195,.2),0 0 40px rgba(0,180,216,.1);
 transition:top 5s cubic-bezier(.25,.46,.45,.94);pointer-events:none;
 }
-
 /* 날씨 오브젝트 */
 #sky-objects{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 #sky-sun{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,245,180,1) 30%,rgba(255,220,80,.6) 60%,transparent 100%);box-shadow:0 0 40px rgba(255,230,100,.5),0 0 80px rgba(255,200,60,.2);transition:opacity 2s ease, left 60s linear, top 60s ease, width .5s, height .5s}
@@ -144,10 +130,9 @@ transition:top 5s cubic-bezier(.25,.46,.45,.94);pointer-events:none;
 #rain-container{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .raindrop{position:absolute;top:-20px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(180,220,255,.45));animation:rFall var(–rd,.8s) linear var(–rdelay,0s) infinite}
 @keyframes rFall{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(110vh) translateX(-30px);opacity:0}}
-
 /* ══════════════════════════════════
 게이지 — 우측 슬림 바
-══════════════════════════════════ */
+══════════════════════════════════ /
 #gauge-rail{position:fixed;right:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
 #gauge-track{position:absolute;top:28%;bottom:14%;width:2px;background:rgba(80,140,200,.1);border-radius:1px}
 #gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(100,180,255,.15),rgba(40,120,220,.5));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
@@ -161,7 +146,7 @@ filter:drop-shadow(0 0 6px rgba(0,229,195,.9)) drop-shadow(0 0 14px rgba(0,180,2
 z-index:21;
 }
 #gauge-dot svg{width:16px;height:16px;transition:transform .4s ease}
-/* 게이지 트랙 푸른톤 */
+/ 게이지 트랙 푸른톤 */
 #gauge-high-label,#gauge-low-label{
 position:fixed;right:26px;
 display:flex;flex-direction:column;align-items:flex-end;gap:1px;
@@ -170,8 +155,7 @@ display:flex;flex-direction:column;align-items:flex-end;gap:1px;
 #gauge-low-label{bottom:14%;transform:translateY(50%)}
 .g-val{font-family:‘DM Mono’,monospace;font-size:.6rem;font-weight:400;color:rgba(255,255,255,.45);line-height:1}
 .g-name{font-size:.42rem;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:1px}
-
-/* ══ 돛단배 ══ */
+/* ══ 돛단배 ══ /
 #sailboat{
 position:fixed;z-index:15;
 pointer-events:auto;
@@ -192,26 +176,24 @@ position:relative;
 animation:boatBob var(–bob-dur,4s) ease-in-out infinite;
 transform-origin:center bottom;
 }
-#boat-drift{ /* drift는 이제 boatSail이 대체 — 래퍼는 유지 */ }
+#boat-drift{ / drift는 이제 boatSail이 대체 — 래퍼는 유지 */ }
 @keyframes boatBob{
 0%,100%{transform:translateY(0) rotate(var(–bob-tilt,0deg))}
 25%{transform:translateY(-3px) rotate(calc(var(–bob-tilt,0deg) + var(–tilt-extra,1deg)))}
 75%{transform:translateY(2px) rotate(calc(var(–bob-tilt,0deg) - var(–tilt-extra,1deg)))}
 }
 @keyframes boatDrift{}
-
 /* ══════════════════════════════════
 앱 레이아웃
-══════════════════════════════════ */
+══════════════════════════════════ /
 #app{
 position:fixed;inset:0;z-index:10;
 width:100%;max-width:480px;margin:0 auto;
 display:flex;flex-direction:column;
 pointer-events:none;
 }
-#app>*{pointer-events:auto}
-
-/* 헤더 */
+#app>{pointer-events:auto}
+/* 헤더 /
 #header{
 padding:calc(env(safe-area-inset-top,44px) + 6px) 18px 8px;
 display:flex;align-items:center;justify-content:space-between;
@@ -225,8 +207,7 @@ position:relative;
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 #clock{font-family:‘DM Mono’,monospace;font-size:.88rem;font-weight:300;color:rgba(255,255,255,.65);letter-spacing:1px;line-height:1}
 #lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px}
-/* 헤더 로그인 버튼 */
-
+/ 헤더 로그인 버튼 */
 /* 컨트롤 */
 #controls{padding:8px 14px 0;display:flex;gap:7px;flex-shrink:0}
 .loc-btn,.date-nav{
@@ -248,16 +229,14 @@ transition:all .2s;min-width:0;
 .date-nav-ctr{flex:1;text-align:center;padding:7px 2px;cursor:pointer;min-width:0}
 .date-solar{font-family:‘DM Mono’,monospace;font-size:.65rem;color:#fff}
 .date-label{font-size:.46rem;font-weight:700;color:var(–accent);margin-top:1px;letter-spacing:.5px}
-
 /* 날씨 */
 #weather{display:none;align-items:center;gap:6px;padding:6px 18px 0;flex-shrink:0}
 #weather.show{display:flex}
 .wx-icon{font-size:.82rem;flex-shrink:0;opacity:.85}
 .wx-text{flex:1;font-size:.6rem;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.2px}
-
 /* ══════════════════════════════════
 히어로 — 핵심 정보 영역
-══════════════════════════════════ */
+══════════════════════════════════ /
 #hero{
 flex:1;display:flex;flex-direction:column;
 justify-content:center;align-items:center;
@@ -265,9 +244,8 @@ padding:0 20px;
 margin-top:-15px;
 pointer-events:none;
 }
-#hero>*{pointer-events:auto}
+#hero>{pointer-events:auto}
 #hero-inner{display:none;flex-direction:column;align-items:center;text-align:center;gap:0}
-
 /* 상단 배지 row */
 .hero-top-row{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:4px}
 .tide-badge{
@@ -279,14 +257,12 @@ color:var(–accent);font-size:.6rem;font-weight:900;
 padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
 .station-pill{font-size:.62rem;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:.3px}
-
 /* 조류 설명 한 줄 */
 .tide-desc{
 font-size:.6rem;color:rgba(255,255,255,.38);font-weight:400;
 margin-bottom:8px;letter-spacing:.2px;
 display:none!important;
 }
-
 /* 수위 숫자 */
 #level-big{
 font-family:‘Bebas Neue’,sans-serif;
@@ -294,7 +270,6 @@ font-size:5.8rem;line-height:.9;letter-spacing:2px;color:#fff;
 text-shadow:0 0 80px rgba(0,229,195,.35),0 4px 30px rgba(0,0,0,.8);
 }
 #level-unit{font-family:‘DM Mono’,monospace;font-size:1.4rem;opacity:.35;margin-left:3px;letter-spacing:0;align-self:flex-end;padding-bottom:6px}
-
 /* 상태 row */
 .tide-status-row{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;margin-bottom:10px}
 .status-pill{
@@ -307,7 +282,6 @@ background:var(–glass);border:1px solid var(–glass-border);backdrop-filter:b
 padding:4px 11px;border-radius:20px;
 font-family:‘DM Mono’,monospace;font-size:.58rem;color:rgba(255,255,255,.45);
 }
-
 /* ══════════════════════════════════
 조류 인포 카드 — 핵심 신규 UI
 ══════════════════════════════════ */
@@ -322,7 +296,6 @@ display:none;flex-direction:column;gap:8px;
 margin-top:2px;
 }
 #current-info.show{display:flex}
-
 /* 조류 세기 바 */
 .ci-row{display:flex;align-items:center;gap:10px}
 .ci-label{
@@ -338,7 +311,6 @@ transition:background .4s ease,box-shadow .4s ease;
 }
 .ci-bar.on{background:var(–bar-color,var(–accent));box-shadow:0 0 8px rgba(var(–bar-color-rgb,0,229,195),.35)}
 .ci-desc{font-size:.58rem;color:rgba(255,255,255,.55);font-weight:400;flex:1;text-align:right;line-height:1.3}
-
 /* 미래 날짜 HIGH/LOW */
 .future-levels{display:flex;flex-direction:column;gap:6px;margin-top:4px;align-items:center}
 .future-level-row{display:flex;align-items:baseline;gap:10px}
@@ -347,7 +319,6 @@ transition:background .4s ease,box-shadow .4s ease;
 .future-lbl-low{color:rgba(255,160,120,.9)}
 .future-val{font-family:‘Bebas Neue’,sans-serif;font-size:4.4rem;line-height:.9;letter-spacing:2px;color:#fff}
 .future-unit{font-family:‘DM Mono’,monospace;font-size:1.1rem;opacity:.3;margin-left:3px;font-weight:300}
-
 /* 즐겨찾기 별 */
 #fav-star{
 font-size:.85rem;cursor:pointer;line-height:1;
@@ -360,10 +331,8 @@ display:inline-flex;align-items:center;
 #fav-star.active{opacity:1;filter:drop-shadow(0 0 6px rgba(255,210,0,.8));}
 #fav-star:active{transform:scale(1.35);}
 #level-wrap{display:inline-flex;align-items:flex-end;gap:2px}
-
 /* 구분선 */
 .ci-divider{height:1px;background:rgba(255,255,255,.05);margin:0 -2px}
-
 /* 수중/낚시 row */
 .ci-act-row{display:flex;align-items:center;gap:8px}
 .ci-act-icon{font-size:.9rem;flex-shrink:0;width:18px;text-align:center}
@@ -371,7 +340,6 @@ display:inline-flex;align-items:center;
 .ci-star{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.1);transition:background .3s}
 .ci-star.on{background:var(–star-color,#ffd700)}
 .ci-act-desc{font-size:.56rem;color:rgba(255,255,255,.45);flex:1;text-align:right}
-
 /* ══════════════════════════════════
 조석 패널 — 하단
 ══════════════════════════════════ */
@@ -384,7 +352,6 @@ position:relative;z-index:10;
 #tide-panel::before{
 content:’’;display:block;flex-shrink:0;height:28px;pointer-events:none;
 }
-
 .panel-hdr{
 display:flex;align-items:center;justify-content:space-between;
 padding:0 54px 8px;flex-shrink:0;
@@ -400,10 +367,8 @@ font-size:.48rem;font-weight:900;
 padding:2px 7px;border-radius:8px;letter-spacing:.3px;
 }
 .panel-upd{font-family:‘DM Mono’,monospace;font-size:.5rem;color:rgba(255,255,255,.25);font-weight:300}
-
 .tide-scroll{overflow-y:auto;padding:0 48px;scrollbar-width:none;flex:1}
 .tide-scroll::-webkit-scrollbar{display:none}
-
 .tide-row{
 display:grid;
 grid-template-columns:20px 1fr auto;
@@ -432,7 +397,6 @@ color:rgba(255,255,255,.55);text-align:right;white-space:nowrap;
 font-size:.45rem;background:rgba(255,255,255,.06);color:rgba(255,255,255,.28);
 padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle;
 }
-
 /* 로딩 */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;gap:10px}
 .ld-dots{display:flex;gap:5px}
@@ -444,12 +408,10 @@ padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;gap:8px;color:rgba(255,255,255,.15)}
 .empty-icon{font-size:1.6rem;opacity:.25}
 .empty-text{font-size:.65rem;font-weight:700;text-align:center;line-height:1.7}
-
 /* 푸터 */
 #footer{padding:4px 18px calc(env(safe-area-inset-bottom,16px) + 4px);text-align:center;flex-shrink:0}
 .credit{font-size:.45rem;color:rgba(255,255,255,.12);font-weight:400}
 .credit a{color:rgba(255,255,255,.15);text-decoration:none}
-
 /* 새로고침 버튼 */
 #refresh-btn{
 position:fixed;bottom:calc(env(safe-area-inset-bottom,16px) + 14px);right:32px;
@@ -463,7 +425,6 @@ box-shadow:0 4px 20px rgba(0,0,0,.4);
 #refresh-btn:active{transform:scale(.88)}
 #refresh-btn.spinning svg{animation:spin .7s linear}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
 /* 텍스트 크기 버튼 */
 .text-toggle-btn{
 position:fixed;top:calc(env(safe-area-inset-top,44px) + 108px);right:14px;z-index:999;
@@ -489,7 +450,6 @@ html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
 html.large-text #current-info{padding:8px 12px;gap:6px}
 html.large-text .ci-bar{width:15px;height:3px}
 html.large-text .future-val{font-size:3.6rem}
-
 /* ══════════════════════════════════
 바텀 시트
 ══════════════════════════════════ */
@@ -530,15 +490,14 @@ background:rgba(255,255,255,.02);cursor:pointer;transition:all .2s;text-align:ce
 .station-item-emoji{font-size:1rem}
 .station-item-name{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.65)}
 .station-item.active .station-item-name{color:var(–accent)}
-
-/* 달력 */
+/* 달력 /
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .cal-month-label{font-size:.88rem;font-weight:900}
 .cal-nav-btn{background:none;border:none;color:rgba(255,255,255,.35);font-size:1.1rem;cursor:pointer;padding:4px 10px}
 .cal-nav-btn:active{color:var(–accent)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
 .cal-day-lbl{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.25);padding:4px 0}
-/* cal-day → auth-overlay 위에 정의됨 */
+/ cal-day → auth-overlay 위에 정의됨 /
 .cal-day:active{transform:scale(.92)}
 .cal-day.today{border:1px solid rgba(0,229,195,.35);color:var(–accent)}
 .cal-day.selected{background:var(–accent);color:#040d18}
@@ -548,10 +507,10 @@ background:rgba(255,255,255,.02);cursor:pointer;transition:all .2s;text-align:ce
 .cal-day.selected.sunday,.cal-day.selected.saturday{color:#040d18}
 .cal-today-btn{width:100%;margin-top:12px;padding:10px;border-radius:12px;background:rgba(0,229,195,.07);border:1px solid rgba(0,229,195,.2);color:var(–accent);font-size:.75rem;font-weight:700;cursor:pointer;font-family:‘Noto Sans KR’,sans-serif;transition:all .2s}
 .cal-today-btn:active{background:rgba(0,229,195,.18)}
-/* 달력 물때 배지 */
+/ 달력 물때 배지 /
 .cal-day{padding:4px 2px 5px;border-radius:9px;font-size:.72rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center}
 .cal-tide-badge{font-size:.48rem;font-weight:700;letter-spacing:.2px;padding:2px 5px;border-radius:5px;line-height:1.3;opacity:.9}
-/* 물때 색상 클래스 */
+/ 물때 색상 클래스 */
 .tide-calm .cal-tide-badge{background:rgba(0,229,195,.18);color:#00e5c3}
 .tide-mid .cal-tide-badge{background:rgba(91,164,245,.18);color:#5ba4f5}
 .tide-strong .cal-tide-badge{background:rgba(61,126,245,.22);color:#7ab3f0}
@@ -563,7 +522,6 @@ background:rgba(255,255,255,.02);cursor:pointer;transition:all .2s;text-align:ce
 .cal-day.tide-peak{background:rgba(34,85,204,.06)}
 .cal-day.tide-jogeun{background:rgba(0,229,195,.07)}
 .cal-day.selected .cal-tide-badge{background:rgba(4,13,24,.25);color:rgba(4,13,24,.8)}
-
 /* ══ 로그인 시트 ══ */
 #auth-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 #auth-overlay.open{opacity:1;pointer-events:auto}
@@ -601,18 +559,14 @@ cursor:pointer;font-family:‘Noto Sans KR’,sans-serif;
 transition:all .2s;letter-spacing:.5px;
 }
 .auth-btn:active{transform:scale(.97)}
-
 .auth-err{font-size:.58rem;color:#ff6b6b;text-align:center;min-height:1em}
 .auth-switch{font-size:.58rem;color:rgba(255,255,255,.25);text-align:center;cursor:pointer}
 .auth-switch span{color:var(–accent);font-weight:700}
-
 /* 프로필 버튼 */
-
-/* ═══ 출조 기록 ═══ */
-/* 수위 클릭 힌트 */
+/* ═══ 출조 기록 ═══ /
+/ 수위 클릭 힌트 */
 #level-big{cursor:pointer;transition:opacity .15s}
 #level-big:active{opacity:.6}
-
 /* 기록 입력 시트 */
 #log-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 #log-overlay.open{opacity:1;pointer-events:auto}
@@ -655,7 +609,6 @@ font-size:.78rem;font-weight:700;cursor:pointer;
 font-family:‘Noto Sans KR’,sans-serif;transition:all .2s;
 }
 .log-save-btn:active{transform:scale(.97)}
-
 /* 기록 목록 시트 */
 #loglist-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 #loglist-overlay.open{opacity:1;pointer-events:auto}
@@ -687,7 +640,6 @@ border-radius:14px;padding:12px 14px;cursor:pointer;transition:background .15s;
 .log-card-del{font-size:.5rem;color:rgba(255,80,80,.4);cursor:pointer;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,80,80,.15);transition:all .2s;white-space:nowrap}
 .log-card-del:active{background:rgba(255,80,80,.15)}
 .log-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.2);font-size:.65rem;line-height:2}
-
 /* 기록 버튼 (footer) */
 #log-list-btn{
 background:none;border:none;color:rgba(255,255,255,.25);
@@ -696,7 +648,6 @@ font-family:‘Noto Sans KR’,sans-serif;
 letter-spacing:.3px;transition:color .2s;padding:2px 0;
 }
 #log-list-btn:active{opacity:.5}
-
 /* ═══ 사이드 드로어 ═══ */
 #drawer-overlay{
 position:fixed;inset:0;z-index:400;
@@ -717,7 +668,6 @@ display:flex;flex-direction:column;
 padding-top:env(safe-area-inset-top,44px);
 }
 #drawer.open{transform:translateX(0)}
-
 .drawer-profile{
 padding:20px 20px 16px;
 border-bottom:1px solid rgba(255,255,255,.06);
@@ -735,7 +685,6 @@ font-size:.62rem;color:rgba(255,255,255,.35);
 cursor:pointer;transition:color .2s;
 }
 .drawer-profile-login:active{color:var(–accent)}
-
 .drawer-menu{
 flex:1;overflow-y:auto;
 padding:10px 0;
@@ -789,10 +738,8 @@ cursor:pointer;font-family:‘Noto Sans KR’,sans-serif;
 padding:0;transition:color .2s;
 }
 .drawer-logout-btn:active{color:rgba(255,100,100,.8)}
-
 /* 로고 클릭 커서 */
 .hdr-left{cursor:pointer}
-
 #myinfo-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 #myinfo-overlay.open{opacity:1;pointer-events:auto}
 #myinfo-sheet{
@@ -803,7 +750,6 @@ transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
 padding-bottom:env(safe-area-inset-bottom);
 }
 #myinfo-sheet.open{transform:translateY(0)}
-
 /* 달 */
 #sky-moon{
 position:absolute;z-index:2;pointer-events:none;
@@ -811,7 +757,6 @@ transition:opacity 2s ease, top .5s ease, right .5s ease;
 opacity:0;
 }
 .moon-svg{filter:drop-shadow(0 0 18px rgba(220,220,180,.5)) drop-shadow(0 0 40px rgba(200,200,150,.2));}
-
 /* ═══ 관상 모드 ═══ */
 #zen-hint{
 position:fixed;bottom:calc(env(safe-area-inset-bottom,16px)+8px);
@@ -830,15 +775,12 @@ body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none}
 body.zen-mode #refresh-btn{opacity:0;pointer-events:none}
 body.zen-mode #zen-hint{opacity:0}
 body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
-
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
 .text-toggle-btn,#refresh-btn{
 transition:opacity .6s ease;
 }
-
 /* 배 클릭 애니메이션 */
-
 @keyframes boatJump{
 0%  {margin-top:0;   scale:1}
 35% {margin-top:-32px;scale:1.05}
@@ -850,7 +792,6 @@ animation:boatJump .55s cubic-bezier(.33,1.4,.68,1) forwards,
 boatSail var(–sail-dur,28s) ease-in-out infinite;
 transform-origin:center bottom;
 }
-
 /* 공유 버튼 */
 #share-row{padding:2px 18px 0;flex-shrink:0}
 #share-btn{
@@ -863,7 +804,6 @@ font-family:‘Noto Sans KR’,sans-serif;
 transition:color .2s;
 }
 #share-btn:active{color:rgba(0,229,195,.7)}
-
 #toast{
 position:fixed;bottom:calc(env(safe-area-inset-bottom,16px)+70px);
 left:50%;transform:translateX(-50%) translateY(12px);
@@ -877,7 +817,6 @@ transition:opacity .25s, transform .25s;
 z-index:500;white-space:nowrap;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 #unit-btn{
 font-size:.42rem;font-weight:700;
 color:rgba(255,255,255,.25);
@@ -887,7 +826,6 @@ transition:color .2s;
 align-self:flex-end;padding-bottom:8px;
 }
 #unit-btn:active{color:rgba(0,229,195,.8)}
-
 #wx-alert{
 display:none;
 width:100%;
@@ -902,7 +840,6 @@ animation:alertPulse 2s ease-in-out infinite;
 }
 #wx-alert.show{display:block}
 @keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.65}}
-
 #terms-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 #terms-overlay.open{opacity:1;pointer-events:auto}
 #terms-sheet{
@@ -919,8 +856,7 @@ padding-bottom:env(safe-area-inset-bottom);
 .term-item:last-child{border-bottom:none}
 .term-name{font-size:.72rem;font-weight:700;color:var(–accent);margin-bottom:4px}
 .term-desc{font-size:.6rem;color:rgba(255,255,255,.5);line-height:1.6}
-
-/* 물고기 떼 */
+/* 물고기 떼 /
 #fish-school{
 position:fixed;
 inset:0;
@@ -943,9 +879,8 @@ animation:fishSwim linear forwards;
 @keyframes fishWiggle{
 0%,100%{transform:scaleX(-1) translateY(0px)}
 25%    {transform:scaleX(-1) translateY(var(–wig,12px))}
-75%    {transform:scaleX(-1) translateY(calc(var(–wig,12px)*-1))}
+75%    {transform:scaleX(-1) translateY(calc(var(–wig,12px)-1))}
 }
-
 /* 배 글로우 */
 #sailboat.ready .boat-wrap{
 filter:drop-shadow(0 0 8px rgba(0,229,195,.9)) drop-shadow(0 0 20px rgba(0,229,195,.5));
@@ -955,17 +890,11 @@ transition:filter 1s ease;
 filter:drop-shadow(0 0 2px rgba(255,255,255,.2));
 transition:filter .4s ease;
 }
-
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body>
-
-<button id="text-size-btn" class="text-toggle-btn" onclick="toggleTextSize()">𝌆</button>
-
-<!-- SPLASH -->
-
-<div id="splash">
+<body><button id="text-size-btn" class="text-toggle-btn" onclick="toggleTextSize()">𝌆</button>
+<!-- SPLASH --><div id="splash">
   <div class="sp-grid"></div>
   <div class="sp-ring" style="width:200px;height:200px;--rd:3s;--rdelay:0s;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
   <div class="sp-ring" style="width:200px;height:200px;--rd:3s;--rdelay:1.5s;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
@@ -987,11 +916,7 @@ transition:filter .4s ease;
     <div class="sp-sub">바다 앞에 서기 전, 바당때 먼저</div>
     <div id="splash-status">INITIALIZING</div>
   </div>
-</div>
-
-<!-- OCEAN -->
-
-<div id="ocean">
+</div><!-- OCEAN --><div id="ocean">
   <div id="ocean-sky">
     <div id="sky-moon"></div>
   </div>
@@ -1010,13 +935,7 @@ transition:filter .4s ease;
       </svg>
     </div>
   </div>
-  <div id="horizon"></div>
-
-</div>
-
-  <!-- 돛단배 -->
-
-  <div id="sailboat">
+  <div id="horizon"></div></div><!-- 돛단배 --><div id="sailboat">
     <div id="boat-drift">
       <div class="boat-wrap" id="boat-wrap">
         <svg id="boat-svg" viewBox="0 0 60 50" width="52" height="44" xmlns="http://www.w3.org/2000/svg" overflow="visible">
@@ -1028,9 +947,7 @@ transition:filter .4s ease;
         </svg>
       </div>
     </div>
-  </div>
-
-<div id="toast"></div>
+  </div><div id="toast"></div>
 <div id="fish-school"></div>
 <!-- 게이지 -->
 <div id="gauge-rail">
@@ -1051,11 +968,7 @@ transition:filter .4s ease;
 <div id="gauge-low-label">
   <span class="g-val" id="gauge-low-val">--</span>
   <span class="g-name">간조</span>
-</div>
-
-<!-- APP -->
-
-<div id="app">
+</div><!-- APP --><div id="app">
   <div id="header">
     <div class="hdr-left" onclick="openDrawer()">
       <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
@@ -1068,9 +981,7 @@ transition:filter .4s ease;
       <div id="clock">--:--:--</div>
       <div id="lunar">음력 --월 --일 (-)</div>
     </div>
-  </div>
-
-  <div id="controls">
+  </div><div id="controls">
     <div class="loc-btn" onclick="openSheet()">
       <span id="loc-icon" style="font-size:.85rem;flex-shrink:0">📍</span>
       <span class="loc-text" id="loc-text">관측소 선택</span>
@@ -1084,17 +995,13 @@ transition:filter .4s ease;
       </div>
       <button class="date-nav-btn" onclick="shiftDate(+1)">›</button>
     </div>
-  </div>
-
-  <div id="weather">
+  </div><div id="weather">
     <span class="wx-icon" id="wx-icon">🌤</span>
     <span class="wx-text" id="wx-text">--</span>
   </div>
   <div id="share-row">
     <button id="share-btn" onclick="shareApp()" title="공유">🔗 공유하기</button>
-  </div>
-
-  <div id="hero">
+  </div><div id="hero">
     <!-- 온보딩: 관측소 미선택 상태 -->
     <div id="onboarding" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding:0 24px">
       <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" style="width:72px;height:72px;border-radius:20px;opacity:.9;animation:spFloat 3s ease-in-out infinite;box-shadow:0 8px 32px rgba(0,0,0,.4)">
@@ -1120,7 +1027,6 @@ transition:filter .4s ease;
       <div style="font-size:.52rem;color:rgba(255,255,255,.18);font-weight:400">제주 · 서해 · 남해 · 동해 29개 관측소</div>
     </div>
 
-```
 <div id="hero-inner">
   <div class="hero-top-row">
     <span class="tide-badge" id="tide-badge" style="display:none"></span>
@@ -1166,11 +1072,9 @@ transition:filter .4s ease;
   </div>
 
 </div>
-```
 
-  </div>
 
-  <div id="tide-panel">
+</div><div id="tide-panel">
     <div class="panel-hdr" id="panel-hdr" style="display:none">
       <div class="panel-title" id="panel-title">오늘 물때</div>
       <div class="panel-upd" id="panel-upd"></div>
@@ -1182,11 +1086,7 @@ transition:filter .4s ease;
       </div>
     </div>
   </div>
-</div>
-
-<!-- 관측소 시트 -->
-
-<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+</div><!-- 관측소 시트 --><div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
   <!-- 즐겨찾기 섹션 -->
@@ -1209,11 +1109,7 @@ transition:filter .4s ease;
     <div class="sheet-title" id="step-station-title">관측소 선택</div>
     <div class="station-grid" id="station-grid"></div>
   </div>
-</div>
-
-<!-- 달력 시트 -->
-
-<div class="sheet-overlay" id="cal-overlay" onclick="closeCalendar()"></div>
+</div><!-- 달력 시트 --><div class="sheet-overlay" id="cal-overlay" onclick="closeCalendar()"></div>
 <div class="sheet" id="cal-sheet" onclick="event.stopPropagation()">
   <div class="sheet-handle"></div>
   <div class="sheet-step">
@@ -1225,11 +1121,7 @@ transition:filter .4s ease;
     <div class="cal-grid" id="cal-grid"></div>
     <button class="cal-today-btn" onclick="calGoToday()">오늘로 돌아가기</button>
   </div>
-</div>
-
-<!-- 출조 기록 입력 시트 -->
-
-<div id="log-overlay" onclick="closeLogSheet()"></div>
+</div><!-- 출조 기록 입력 시트 --><div id="log-overlay" onclick="closeLogSheet()"></div>
 <div id="log-sheet" onclick="event.stopPropagation()">
   <div class="log-handle"></div>
   <div class="log-body">
@@ -1247,11 +1139,7 @@ transition:filter .4s ease;
     </div>
     <button class="log-save-btn" onclick="saveLog()">기록 저장</button>
   </div>
-</div>
-
-<!-- 출조 기록 목록 시트 -->
-
-<div id="loglist-overlay" onclick="closeLogList()"></div>
+</div><!-- 출조 기록 목록 시트 --><div id="loglist-overlay" onclick="closeLogList()"></div>
 <div id="loglist-sheet" onclick="event.stopPropagation()">
   <div class="log-handle" style="margin-bottom:0"></div>
   <div class="loglist-header">
@@ -1259,11 +1147,7 @@ transition:filter .4s ease;
     <button class="loglist-close" onclick="closeLogList()">✕</button>
   </div>
   <div id="loglist-body"></div>
-</div>
-
-<!-- 사이드 드로어 -->
-
-<div id="drawer-overlay" onclick="closeDrawer()"></div>
+</div><!-- 사이드 드로어 --><div id="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer">
   <div class="drawer-profile" id="drawer-profile">
     <div class="drawer-profile-name" id="drawer-name">바당때</div>
@@ -1272,7 +1156,6 @@ transition:filter .4s ease;
   </div>
   <div class="drawer-menu">
 
-```
 <div class="drawer-section-label">바다 정보</div>
 <div class="drawer-item" onclick="closeDrawer()">
   <span class="drawer-item-icon">🌊</span>
@@ -1310,20 +1193,16 @@ transition:filter .4s ease;
   <span class="drawer-item-text">화면 크기 조절</span>
   <span class="drawer-item-badge" id="drawer-textsize-badge">표준</span>
 </div>
-```
 
-  </div>
+
+</div>
   <div class="drawer-footer">
     <button class="drawer-logout-btn" id="drawer-logout-btn" onclick="drawerLogout()" style="display:none">로그아웃</button>
     <div style="font-size:.44rem;color:rgba(255,255,255,.12);margin-top:8px;line-height:1.6">
       조석 데이터 · 국립해양조사원 KHOA<br>Made by Boungje Min
     </div>
   </div>
-</div>
-
-<!-- 내 정보 수정 시트 -->
-
-<div id="myinfo-overlay" onclick="closeMyInfo()"></div>
+</div><!-- 내 정보 수정 시트 --><div id="myinfo-overlay" onclick="closeMyInfo()"></div>
 <div id="myinfo-sheet" onclick="event.stopPropagation()">
   <div class="log-handle"></div>
   <div class="log-body">
@@ -1339,9 +1218,7 @@ transition:filter .4s ease;
     <div class="auth-err" id="myinfo-err"></div>
     <button class="log-save-btn" onclick="saveMyInfo()">저장</button>
   </div>
-</div>
-
-<div id="terms-overlay" onclick="closeTerms()"></div>
+</div><div id="terms-overlay" onclick="closeTerms()"></div>
 <div id="terms-sheet" onclick="event.stopPropagation()">
   <div class="log-handle"></div>
   <div style="padding:12px 20px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)">
@@ -1394,22 +1271,15 @@ transition:filter .4s ease;
     <div class="auth-err" id="auth-err"></div>
     <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
 
-```
 <div class="auth-switch" id="auth-switch-text" onclick="switchAuthTab('signup')">계정이 없으신가요? <span>회원가입</span></div>
-```
 
-  </div>
+
 </div>
-
-<button id="refresh-btn" onclick="refresh()">
+</div><button id="refresh-btn" onclick="refresh()">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
   </svg>
-</button>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
+</button><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://raykkfvchlfsjtlkbpji.supabase.co';
 const SUPABASE_KEY='sb_publishable_HV81jL04Eq8m52cMm-LhSw_FX9pSikn';
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -1620,7 +1490,7 @@ function applyTheme(region,wCode,windSpeed){
 
   function dc(rgb,d){
     const [r,g,b]=rgb.split(',').map(Number);
-    return `${Math.round(r*d)},${Math.round(g*d)},${Math.round(b*d)}`;
+    return `${Math.round(r\*d)},${Math.round(g*d)},${Math.round(b*d)}`;
   }
   const wbc=dc(rw.wbc,dim),wbd=dc(rw.wbd,dim),wbd2=dc(rw.wbd,dim*.65);
   const wt=pal.wt;
@@ -1671,7 +1541,7 @@ function updateStars(tod,wcat){
       const sz=Math.random()<.12?2:1;
       const op=(0.25+Math.random()*0.75).toFixed(2);
       s.style.cssText=`position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:#fff;`
-        +`left:${Math.random()*100}%;top:${Math.random()*58}%;--sop:${op};`
+        +`left:${Math.random()\*100}%;top:${Math.random()*58}%;--sop:${op};`
         +`animation:sTwinkle ${1.8+Math.random()*3.2}s ease-in-out ${Math.random()*5}s infinite;`;
       stars.appendChild(s);
     }
@@ -1730,10 +1600,10 @@ function drawMoon(lunarDay){
   }else{ // gibbous
     if(phase.dir==='right'){
       moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
-      <ellipse cx="${r-(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+      <ellipse cx="${r-(r-2)\*.3}" cy="${r}" rx="${(r-2)\*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
     }else{
       moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
-      <ellipse cx="${r+(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+      <ellipse cx="${r+(r-2)\*.3}" cy="${r}" rx="${(r-2)\*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
     }
   }
   el.innerHTML=`<svg class="moon-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${moonPath}</svg>`;
@@ -1758,7 +1628,7 @@ function updateMoon(tod, wcat, lunarDay){
 function buildShimmers(color){
   document.querySelectorAll('.shimmer').forEach(s=>s.remove());
   const wb=document.getElementById('water-body');
-  for(let i=0;i<6;i++){const s=document.createElement('div');s.className='shimmer';s.style.cssText=`left:${8+i*15}%;height:${50+Math.random()*50}%;--d:${6+Math.random()*8}s;--delay:${Math.random()*6}s;background:linear-gradient(180deg,transparent 0%,${color}14 45%,transparent 100%)`;wb.appendChild(s);}
+  for(let i=0;i<6;i++){const s=document.createElement('div');s.className='shimmer';s.style.cssText=`left:${8+i\*15}%;height:${50+Math.random()*50}%;--d:${6+Math.random()\*8}s;--delay:${Math.random()*6}s;background:linear-gradient(180deg,transparent 0%,${color}14 45%,transparent 100%)`;wb.appendChild(s);}
 }
 
 /* ═══ 날씨 오브젝트 ═══ */
@@ -1801,7 +1671,7 @@ function getSunPosition(){
   const glow1=`rgba(${r1},${g1},${b1},.6)`;
   const glow2=`rgba(${r1},${g1},${b1},.2)`;
   const core1=`rgba(255,${g1},${b1},1)`;
-  const core2=`rgba(255,${Math.round(g1*.88)},${Math.round(b1*.5)},.65)`;
+  const core2=`rgba(255,${Math.round(g1\*.88)},${Math.round(b1*.5)},.65)`;
 
   return{x,y,size,core1,core2,glow1,glow2,arc};
 }
@@ -1884,7 +1754,7 @@ function updateSkyObjects(wc,windSpd){
   else if(isDrizzle||isRain||isHeavy||isStorm){mkC((1+r()*3)+'%',280,80,.35,0);mkC((5+r()*4)+'%',240,70,.3,.22);mkC((3+r()*4)+'%',220,65,.26,.48);mkC((8+r()*4)+'%',200,58,.22,.72);mkC((2+r()*3)+'%',260,75,.28,.9);}
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
-  for(let i=0;i<rc;i++){const d=document.createElement('div');d.className='raindrop';d.style.cssText=`left:${Math.random()*105}%;height:${10+Math.random()*18}px;--rd:${.5+Math.random()*.5}s;--rdelay:${-Math.random()*2}s;opacity:${.4+Math.random()*.4}`;rain.appendChild(d);}
+  for(let i=0;i<rc;i++){const d=document.createElement('div');d.className='raindrop';d.style.cssText=`left:${Math.random()\*105}%;height:${10+Math.random()*18}px;--rd:${.5+Math.random()\*.5}s;--rdelay:${-Math.random()*2}s;opacity:${.4+Math.random()*.4}`;rain.appendChild(d);}
 }
 
 /* ═══ 수위 & 게이지 ═══ */
@@ -2097,7 +1967,7 @@ function openSheet(){document.getElementById('sheet-overlay').classList.add('ope
 function closeSheet(){document.getElementById('sheet-overlay').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
 function showRegionStep(){document.getElementById('step-region').style.display='block';document.getElementById('step-station').style.display='none';document.querySelectorAll('.region-item').forEach(el=>{const r=el.getAttribute('onclick').match(/'(\w+)'/)?.[1];el.classList.toggle('active',currentStation&&STATIONS[currentStation]?.region===r);});}
 function backToRegion(){showRegionStep();}
-function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.emoji} ${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-emoji">${EMOJI[n]||'📍'}</span><span class="station-item-name">${n}</span></div>`).join('');}
+function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.emoji} ${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-emoji">${EMOJI\[n\]||'📍'}</span><span class="station-item-name">${n}</span></div>`).join('');}
 function pickStation(n){closeSheet();selectStation(n);}
 async function selectStation(name){
   document.getElementById('weather').classList.remove('show');
@@ -2267,7 +2137,7 @@ function showError(msg){document.getElementById('tide-list').innerHTML=`<div cla
 let wxCache={};
 async function loadWeather(lat,lng){
   try{
-    const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
+    const cacheKey=`${lat.toFixed(2)}\_${lng.toFixed(2)}_${new Date().toDateString()}`;
     let data=wxCache[cacheKey];
     if(!data){
       const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
@@ -2598,7 +2468,7 @@ async function renderLogList(){
           <button class="log-card-del" onclick="deleteLog(${i},event)">삭제</button>
         </div>
       </div>
-      ${l.tide_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
+      ${l.tide\_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
       ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
       ${l.memo?`<div class="log-card-memo">${l.memo}</div>`:''}
     </div>`;
@@ -3048,7 +2918,5 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
   if(session?.user)onAuthSuccess(session.user);
 });
 
-</script>
-
-</body>
+</script></body>
 </html>

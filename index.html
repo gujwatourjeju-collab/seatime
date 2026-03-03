@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="바당때">
-<meta name="theme-color" content="#060f1e">
+<meta name="theme-color" content="#060f1e" id="theme-color-meta">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -138,17 +138,19 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
    게이지 — 우측 슬림 바
 ══════════════════════════════════ */
 #gauge-rail{position:fixed;right:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
-#gauge-track{position:absolute;top:22%;bottom:20%;width:2px;background:rgba(255,255,255,.06);border-radius:1px}
-#gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(0,229,195,.25),rgba(0,180,216,.45));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
+#gauge-track{position:absolute;top:22%;bottom:20%;width:2px;background:rgba(80,140,200,.1);border-radius:1px}
+#gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(100,180,255,.15),rgba(40,120,220,.5));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
 #gauge-dot{
-  position:fixed;right:8px;
-  width:10px;height:10px;border-radius:50%;
-  background:var(--accent);
-  border:2px solid #060f1e;
-  box-shadow:0 0 0 3px rgba(0,229,195,.2),0 0 16px rgba(0,229,195,.8);
+  position:fixed;right:5px;
+  width:16px;height:16px;
+  display:flex;align-items:center;justify-content:center;
   transform:translate(0,-50%);
   transition:top 5s cubic-bezier(.25,.46,.45,.94);
+  filter:drop-shadow(0 0 6px rgba(0,229,195,.9)) drop-shadow(0 0 14px rgba(0,180,216,.6));
+  z-index:21;
 }
+#gauge-dot svg{width:16px;height:16px;transition:transform .4s ease}
+/* 게이지 트랙 푸른톤 */
 #gauge-high-label,#gauge-low-label{
   position:fixed;right:26px;
   display:flex;flex-direction:column;align-items:flex-end;gap:1px;
@@ -199,17 +201,29 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* 헤더 */
 #header{
-  padding:calc(env(safe-area-inset-top,44px) + 6px) 18px 0;
+  padding:calc(env(safe-area-inset-top,44px) + 6px) 18px 8px;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
+  position:relative;
 }
-.hdr-left{display:flex;align-items:center;gap:9px}
-.hdr-logo{width:28px;height:28px;border-radius:8px;object-fit:cover;opacity:.8}
-.hdr-brand{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:3px;color:rgba(255,255,255,.55)}
-.hdr-sub{font-size:.4rem;font-weight:400;color:rgba(255,255,255,.18);letter-spacing:.5px;margin-top:1px}
-.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:0px}
-#clock{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:300;color:rgba(255,255,255,.65);letter-spacing:1px;line-height:1}
-#lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:2px}
+/* safe-area 위 영역 채우기 */
+#header::before{
+  content:'';
+  position:fixed;top:0;left:0;right:0;
+  height:env(safe-area-inset-top,44px);
+  background:inherit;
+  z-index:-1;
+}
+.hdr-left{display:flex;align-items:center;gap:8px}
+.hdr-logo{width:32px;height:32px;border-radius:8px;object-fit:cover;opacity:.85}
+.hdr-brand{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:2.5px;color:rgba(255,255,255,.75);line-height:1}
+.hdr-sub{font-size:.46rem;font-weight:400;color:rgba(255,255,255,.28);letter-spacing:.4px;margin-top:1px;line-height:1}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+#clock{font-family:'DM Mono',monospace;font-size:.88rem;font-weight:300;color:rgba(255,255,255,.65);letter-spacing:1px;line-height:1}
+#lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px}
+/* 헤더 로그인 버튼 */
+
+
 
 /* 컨트롤 */
 #controls{padding:8px 14px 0;display:flex;gap:7px;flex-shrink:0}
@@ -435,7 +449,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* 텍스트 크기 버튼 */
 .text-toggle-btn{
-  position:fixed;top:calc(env(safe-area-inset-top,44px) + 94px);right:14px;z-index:999;
+  position:fixed;top:calc(env(safe-area-inset-top,44px) + 123px);right:14px;z-index:999;
   background:none;border:none;font-size:1.3rem;color:#fff;padding:6px;
   text-shadow:0 2px 8px rgba(0,0,0,.7);cursor:pointer;transition:transform .2s;
 }
@@ -507,7 +521,7 @@ html.large-text .future-val{font-size:3.6rem}
 .cal-nav-btn:active{color:var(--accent)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
 .cal-day-lbl{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.25);padding:4px 0}
-.cal-day{padding:7px 3px;border-radius:9px;font-size:.75rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s}
+/* cal-day → auth-overlay 위에 정의됨 */
 .cal-day:active{transform:scale(.92)}
 .cal-day.today{border:1px solid rgba(0,229,195,.35);color:var(--accent)}
 .cal-day.selected{background:var(--accent);color:#040d18}
@@ -517,6 +531,68 @@ html.large-text .future-val{font-size:3.6rem}
 .cal-day.selected.sunday,.cal-day.selected.saturday{color:#040d18}
 .cal-today-btn{width:100%;margin-top:12px;padding:10px;border-radius:12px;background:rgba(0,229,195,.07);border:1px solid rgba(0,229,195,.2);color:var(--accent);font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
 .cal-today-btn:active{background:rgba(0,229,195,.18)}
+/* 달력 물때 배지 */
+.cal-day{padding:5px 2px 4px;border-radius:9px;font-size:.75rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:42px;justify-content:center}
+.cal-tide-badge{font-size:.38rem;font-weight:700;letter-spacing:.3px;padding:1px 4px;border-radius:4px;line-height:1.4;opacity:.85}
+/* 물때 색상 클래스 */
+.tide-calm .cal-tide-badge{background:rgba(0,229,195,.18);color:#00e5c3}
+.tide-mid .cal-tide-badge{background:rgba(91,164,245,.18);color:#5ba4f5}
+.tide-strong .cal-tide-badge{background:rgba(61,126,245,.22);color:#7ab3f0}
+.tide-peak .cal-tide-badge{background:rgba(34,85,204,.25);color:#88aaff}
+.tide-jogeun .cal-tide-badge{background:rgba(0,229,195,.22);color:#00e5c3;font-size:.42rem}
+.cal-day.tide-calm{background:rgba(0,229,195,.04)}
+.cal-day.tide-mid{background:rgba(91,164,245,.04)}
+.cal-day.tide-strong{background:rgba(61,126,245,.05)}
+.cal-day.tide-peak{background:rgba(34,85,204,.06)}
+.cal-day.tide-jogeun{background:rgba(0,229,195,.07)}
+.cal-day.selected .cal-tide-badge{background:rgba(4,13,24,.25);color:rgba(4,13,24,.8)}
+
+/* ══ 로그인 시트 ══ */
+#auth-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#auth-overlay.open{opacity:1;pointer-events:auto}
+#auth-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  background:linear-gradient(180deg,#0d1e38,#060f1e);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+#auth-sheet.open{transform:translateY(0)}
+.auth-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+.auth-body{padding:20px 24px 28px;display:flex;flex-direction:column;gap:14px}
+.auth-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:#fff;text-align:center}
+.auth-sub{font-size:.6rem;color:rgba(255,255,255,.3);text-align:center;margin-top:-8px;line-height:1.6}
+.auth-tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.auth-tab{flex:1;padding:8px;font-size:.68rem;font-weight:700;background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
+.auth-tab.active{background:rgba(0,229,195,.12);color:var(--accent)}
+.auth-field{display:flex;flex-direction:column;gap:5px}
+.auth-label{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px}
+.auth-input{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:11px 14px;
+  font-size:.78rem;color:#fff;font-family:'Noto Sans KR',sans-serif;
+  outline:none;transition:border-color .2s;
+}
+.auth-input:focus{border-color:rgba(0,229,195,.4)}
+.auth-input::placeholder{color:rgba(255,255,255,.2)}
+.auth-btn{
+  width:100%;padding:13px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(0,229,195,.25),rgba(0,180,216,.2));
+  border:1px solid rgba(0,229,195,.35);
+  color:var(--accent);font-size:.78rem;font-weight:700;
+  cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+  transition:all .2s;letter-spacing:.5px;
+}
+.auth-btn:active{transform:scale(.97)}
+
+
+.auth-err{font-size:.58rem;color:#ff6b6b;text-align:center;min-height:1em}
+.auth-switch{font-size:.58rem;color:rgba(255,255,255,.25);text-align:center;cursor:pointer}
+.auth-switch span{color:var(--accent);font-weight:700}
+
+/* 프로필 버튼 */
+
+
 </style>
 </head>
 <body>
@@ -579,7 +655,12 @@ html.large-text .future-val{font-size:3.6rem}
     <div id="gauge-fill-bar"></div>
   </div>
 </div>
-<div id="gauge-dot"></div>
+<div id="gauge-dot">
+  <svg id="gauge-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polyline id="arrow-shape" points="4,10 8,5 12,10" stroke="rgba(0,229,195,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <line x1="8" y1="5" x2="8" y2="13" stroke="rgba(0,229,195,.5)" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+</div>
 <div id="gauge-high-label">
   <span class="g-val" id="gauge-high-val">--</span>
   <span class="g-name">만조</span>
@@ -595,8 +676,8 @@ html.large-text .future-val{font-size:3.6rem}
     <div class="hdr-left">
       <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
       <div>
-        <div class="hdr-brand">바당때</div>
-        <div class="hdr-sub">조석예보 · 물때정보</div>
+        <div class="hdr-brand" style="cursor:pointer" onclick="openAuth()">바당때</div>
+        <div class="hdr-sub" id="hdr-sub">로그인 해주세요</div>
       </div>
     </div>
     <div class="hdr-right">
@@ -748,6 +829,38 @@ html.large-text .future-val{font-size:3.6rem}
   </div>
 </div>
 
+
+<!-- 로그인/회원가입 시트 -->
+<div id="auth-overlay" onclick="closeAuth()"></div>
+<div id="auth-sheet" onclick="event.stopPropagation()">
+  <div class="auth-handle"></div>
+  <div class="auth-body">
+    <div class="auth-title">바당때</div>
+    <div class="auth-sub">로그인하면 즐겨찾기·출조 기록을 저장할 수 있어요</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">로그인</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">회원가입</button>
+    </div>
+    <div class="auth-field">
+      <div class="auth-label">이메일</div>
+      <input class="auth-input" id="auth-email" type="email" placeholder="hello@sea.com" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <div class="auth-label">비밀번호</div>
+      <input class="auth-input" id="auth-pw" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="auth-field" id="auth-pw2-wrap" style="display:none">
+      <div class="auth-label">비밀번호 확인</div>
+      <input class="auth-input" id="auth-pw2" type="password" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div class="auth-err" id="auth-err"></div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
+
+    <div class="auth-switch" id="auth-switch-text" onclick="switchAuthTab('signup')">계정이 없으신가요? <span>회원가입</span></div>
+  </div>
+</div>
+
+
 <button id="refresh-btn" onclick="refresh()">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -768,7 +881,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'수영해도 이동이 생겨요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },
@@ -782,18 +895,18 @@ const TIDE_DATA={
 
 /* 조류 세기별 바 색상 */
 function barColor(bars){
-  if(bars<=1)return 'var(--accent)';       // 민트 — 잔잔
-  if(bars<=2)return '#5dd4c8';              // 연민트
-  if(bars<=3)return '#7ab3f0';              // 블루 계열 — 보통
-  if(bars<=4)return '#c484e8';              // 라벤더 — 강함
-  return '#ff6b9d';                          // 핑크-레드 — 위험
+  if(bars<=1)return 'var(--accent)';
+  if(bars<=2)return '#4ecdc4';
+  if(bars<=3)return '#5ba4f5';
+  if(bars<=4)return '#3d7ef5';
+  return '#2255cc';
 }
 
 /* 별점 색상 */
 function starColor(stars){
   if(stars>=4)return 'var(--accent)';   // 민트 — 좋음
-  if(stars===3)return '#7ab3f0';         // 블루 — 보통
-  return '#c484e8';                       // 라벤더 — 주의/나쁨
+  if(stars===3)return '#5ba4f5';
+  return '#3d7ef5';
 }
 
 function renderCurrentInfo(tn){
@@ -937,6 +1050,10 @@ function applyTheme(region,wCode,windSpeed){
   const sky=document.getElementById('ocean-sky');
   sky.style.background=pal.sky;
   sky.style.filter='none';
+  // 다이내믹 아일랜드 / 상태바 색상 동기화
+  const skyTop=pal.sky.match(/#[0-9a-f]{6}/i)?.[0]||'#060f1e';
+  const tcMeta=document.getElementById('theme-color-meta');
+  if(tcMeta)tcMeta.setAttribute('content',skyTop);
 
   document.getElementById('water-body').style.background=
     `linear-gradient(180deg,${wt} 0%,rgba(${wbc},.4) 6%,rgba(${wbc},.68) 30%,rgba(${wbd},.94) 70%,rgba(${wbd2},1) 100%)`;
@@ -1027,6 +1144,24 @@ function setOceanLevel(pct,isFalling,animate=true){
     horizon.style.top=horizonTop+'%';
     fill.style.height=pct+'%';
     dot.style.top=horizonTop+'%';
+    // 화살표 방향 업데이트
+    const arrow=document.getElementById('arrow-shape');
+    const arrowLine=dot.querySelector('line');
+    if(arrow){
+      if(isFalling){
+        // 아래 화살표
+        arrow.setAttribute('points','4,6 8,11 12,6');
+        arrow.setAttribute('stroke','rgba(120,180,255,1)');
+        if(arrowLine){arrowLine.setAttribute('x1','8');arrowLine.setAttribute('y1','3');arrowLine.setAttribute('x2','8');arrowLine.setAttribute('y2','11');arrowLine.setAttribute('stroke','rgba(120,180,255,.5)');}
+        dot.style.filter='drop-shadow(0 0 6px rgba(100,160,255,.9)) drop-shadow(0 0 14px rgba(60,120,220,.6))';
+      }else{
+        // 위 화살표
+        arrow.setAttribute('points','4,10 8,5 12,10');
+        arrow.setAttribute('stroke','rgba(0,229,195,1)');
+        if(arrowLine){arrowLine.setAttribute('x1','8');arrowLine.setAttribute('y1','5');arrowLine.setAttribute('x2','8');arrowLine.setAttribute('y2','13');arrowLine.setAttribute('stroke','rgba(0,229,195,.5)');}
+        dot.style.filter='drop-shadow(0 0 6px rgba(0,229,195,.9)) drop-shadow(0 0 14px rgba(0,180,216,.6))';
+      }
+    }
     // 돛단배 수면에 동기화
     const boat=document.getElementById('sailboat');
     if(boat){
@@ -1394,20 +1529,51 @@ function openCalendar(){const s=getOffsetDate(selectedDateOffset);calY=s.getFull
 function closeCalendar(){document.getElementById('cal-overlay').classList.remove('open');document.getElementById('cal-sheet').classList.remove('open');}
 function calShiftMonth(d){let nM=calM+d,nY=calY;if(nM>11){nM=0;nY++;}if(nM<0){nM=11;nY--;}const t=new Date();t.setHours(0,0,0,0);const mn=new Date(t);mn.setDate(mn.getDate()-1);if(nY<mn.getFullYear()||(nY===mn.getFullYear()&&nM<mn.getMonth()))return;calM=nM;calY=nY;renderCal();}
 function calGoToday(){closeCalendar();goToday();}
-function shiftDate(d){if(selectedDateOffset+d<-1)return;selectedDateOffset+=d;updateLunarDisplay();updateDateNav();if(currentStation){loadTide(currentStation);const s=STATIONS[currentStation];loadWeather(s.lat,s.lng);}}
+function shiftDate(d){
+  if(selectedDateOffset+d<-1)return;
+  if(d>0&&selectedDateOffset+d>0&&!currentUser){openAuth();showLoginNudge();return;}
+  selectedDateOffset+=d;updateLunarDisplay();updateDateNav();
+  if(currentStation){loadTide(currentStation);const s=STATIONS[currentStation];loadWeather(s.lat,s.lng);}
+}
 function goToday(){if(selectedDateOffset===0)return;selectedDateOffset=0;updateLunarDisplay();updateDateNav();if(currentStation){loadTide(currentStation);const s=STATIONS[currentStation];loadWeather(s.lat,s.lng);}}
-function calSelectDate(y,m,d){const t=new Date();t.setHours(0,0,0,0);selectedDateOffset=Math.round((new Date(y,m,d)-t)/86400000);updateLunarDisplay();updateDateNav();if(currentStation){loadTide(currentStation);const s=STATIONS[currentStation];loadWeather(s.lat,s.lng);}closeCalendar();}
+function calSelectDate(y,m,d){
+  const t=new Date();t.setHours(0,0,0,0);
+  const offset=Math.round((new Date(y,m,d)-t)/86400000);
+  if(offset>0&&!currentUser){closeCalendar();openAuth();showLoginNudge();return;}
+  selectedDateOffset=offset;updateLunarDisplay();updateDateNav();
+  if(currentStation){loadTide(currentStation);const s=STATIONS[currentStation];loadWeather(s.lat,s.lng);}
+  closeCalendar();
+}
+function getTideClass(tn){
+  if(!tn)return '';
+  if(tn==='조금'||tn==='1물'||tn==='14물')return 'tide-jogeun';
+  if(tn==='무시'||tn==='2물'||tn==='13물')return 'tide-calm';
+  if(tn==='3물'||tn==='4물'||tn==='12물'||tn==='11물')return 'tide-mid';
+  if(tn==='5물'||tn==='6물'||tn==='9물'||tn==='10물')return 'tide-strong';
+  return 'tide-peak'; // 7물 8물
+}
 function renderCal(){
   const today=new Date();today.setHours(0,0,0,0);const sel=getOffsetDate(selectedDateOffset);sel.setHours(0,0,0,0);
   const max=new Date(today);max.setDate(max.getDate()+60);const min=new Date(today);min.setDate(min.getDate()-1);
+  const region=currentStation?STATIONS[currentStation]?.region:'jeju';
   document.getElementById('cal-month-label').textContent=`${calY}년 ${calM+1}월`;
   const fd=new Date(calY,calM,1).getDay(),ld=new Date(calY,calM+1,0).getDate();
   const days=['일','월','화','수','목','금','토'];
   let h=days.map((d,i)=>`<div class="cal-day-lbl" style="${i===0?'color:#ff5e7a':i===6?'color:#5ba4f5':''}">${d}</div>`).join('');
   const pl=new Date(calY,calM,0).getDate();
-  for(let i=0;i<fd;i++)h+=`<div class="cal-day other-month">${pl-fd+1+i}</div>`;
-  for(let d=1;d<=ld;d++){const td=new Date(calY,calM,d);td.setHours(0,0,0,0);const iT=td.getTime()===today.getTime(),iS=td.getTime()===sel.getTime(),iF=td>max,iP=td<min,dw=td.getDay();const isOut=iF||iP;const cls=['cal-day',iT&&!iS?'today':'',iS?'selected':'',dw===0?'sunday':dw===6?'saturday':'',isOut?'other-month':''].filter(Boolean).join(' ');h+=`<div class="${cls}" ${isOut?'':'onclick="calSelectDate('+calY+','+calM+','+d+')"'}>${d}</div>`;}
-  const rem=(fd+ld)%7===0?0:7-(fd+ld)%7;for(let i=1;i<=rem;i++)h+=`<div class="cal-day other-month">${i}</div>`;
+  for(let i=0;i<fd;i++)h+=`<div class="cal-day other-month"><span>${pl-fd+1+i}</span></div>`;
+  for(let d=1;d<=ld;d++){
+    const td=new Date(calY,calM,d);td.setHours(0,0,0,0);
+    const iT=td.getTime()===today.getTime(),iS=td.getTime()===sel.getTime();
+    const iF=td>max,iP=td<min,dw=td.getDay();
+    const isOut=iF||iP;
+    const ld2=getLunarDay(td),tn=isOut?'':getTideName(ld2,region);
+    const tc=getTideClass(tn);
+    const cls=['cal-day',tc,iT&&!iS?'today':'',iS?'selected':'',dw===0?'sunday':dw===6?'saturday':'',isOut?'other-month':''].filter(Boolean).join(' ');
+    const badge=tn&&!isOut?`<span class="cal-tide-badge">${tn}</span>`:'';
+    h+=`<div class="${cls}" ${isOut?'':'onclick="calSelectDate('+calY+','+calM+','+d+')"'}><span>${d}</span>${badge}</div>`;
+  }
+  const rem=(fd+ld)%7===0?0:7-(fd+ld)%7;for(let i=1;i<=rem;i++)h+=`<div class="cal-day other-month"><span>${i}</span></div>`;
   document.getElementById('cal-grid').innerHTML=h;
 }
 
@@ -1514,6 +1680,103 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('/seatime/sw.js
 
 function toggleTextSize(){const h=document.documentElement,b=document.getElementById('text-size-btn');if(h.classList.contains('large-text')){h.classList.remove('large-text');localStorage.setItem('textSize','normal');if(b)b.textContent='𝌆';}else{h.classList.add('large-text');localStorage.setItem('textSize','large');if(b)b.textContent='－';}}
 (()=>{const s=localStorage.getItem('textSize'),b=document.getElementById('text-size-btn');if(s==='large'){document.documentElement.classList.add('large-text');if(b)b.textContent='－';}})();
+
+/* ═══ 인증 ═══ */
+let currentUser=null;
+let authTab='login';
+
+function openAuth(){
+  document.getElementById('auth-overlay').classList.add('open');
+  document.getElementById('auth-sheet').classList.add('open');
+  document.getElementById('auth-err').textContent='';
+}
+function closeAuth(){
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.getElementById('auth-sheet').classList.remove('open');
+}
+function switchAuthTab(tab){
+  authTab=tab;
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active',tab==='signup');
+  document.getElementById('auth-pw2-wrap').style.display=tab==='signup'?'flex':'none';
+  document.getElementById('auth-submit-btn').textContent=tab==='login'?'로그인':'회원가입';
+    const sw=document.getElementById('auth-switch-text');
+  if(tab==='login'){
+    sw.innerHTML='계정이 없으신가요? ';
+    const sp=document.createElement('span');sp.textContent='회원가입';sp.onclick=()=>switchAuthTab('signup');sw.appendChild(sp);
+  }else{
+    sw.innerHTML='이미 계정이 있으신가요? ';
+    const sp=document.createElement('span');sp.textContent='로그인';sp.onclick=()=>switchAuthTab('login');sw.appendChild(sp);
+  }
+  document.getElementById('auth-err').textContent='';
+}
+async function submitAuth(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pw=document.getElementById('auth-pw').value;
+  const pw2=document.getElementById('auth-pw2').value;
+  const err=document.getElementById('auth-err');
+  if(!email||!pw){err.textContent='이메일과 비밀번호를 입력해주세요';return;}
+  if(authTab==='signup'&&pw!==pw2){err.textContent='비밀번호가 일치하지 않아요';return;}
+  if(pw.length<6){err.textContent='비밀번호는 6자 이상이어야 해요';return;}
+  const btn=document.getElementById('auth-submit-btn');
+  btn.textContent='잠시만요...';btn.disabled=true;err.textContent='';
+  try{
+    let result;
+    if(authTab==='login'){
+      result=await supabaseClient.auth.signInWithPassword({email,password:pw});
+    }else{
+      result=await supabaseClient.auth.signUp({email,password:pw});
+    }
+    if(result.error)throw result.error;
+    if(authTab==='signup'&&!result.data?.session){
+      err.style.color='var(--accent)';
+      err.textContent='인증 메일을 보냈어요. 확인 후 로그인해주세요 ✉️';
+      btn.textContent='회원가입';btn.disabled=false;return;
+    }
+    onAuthSuccess(result.data.user);
+    closeAuth();
+  }catch(e){
+    err.style.color='#ff6b6b';
+    err.textContent=e.message==='Invalid login credentials'?'이메일 또는 비밀번호가 틀렸어요':e.message;
+    btn.textContent=authTab==='login'?'로그인':'회원가입';btn.disabled=false;
+  }
+}
+
+function onAuthSuccess(user){
+  currentUser=user;
+  closeAuth();
+  const nick=user.email.split('@')[0];
+  const sub=document.getElementById('hdr-sub');
+  if(sub)sub.textContent=nick+'님 환영해요';
+  // 브랜드 클릭 → 로그아웃
+  const brand=document.querySelector('.hdr-brand');
+  if(brand)brand.onclick=()=>{
+    if(confirm(user.email+'\n로그아웃할까요?')){
+      supabaseClient.auth.signOut().then(()=>{
+        currentUser=null;
+        if(sub)sub.textContent='로그인 해주세요';
+        if(brand)brand.onclick=openAuth;
+      });
+    }
+  };
+}
+
+function showLoginNudge(){
+  const sub=document.getElementById('hdr-sub');
+  if(!sub)return;
+  const orig=sub.textContent;
+  sub.style.color='var(--accent)';
+  sub.textContent='로그인하면 미래 물때를 볼 수 있어요';
+  setTimeout(()=>{sub.textContent=orig;sub.style.color='';},3000);
+}
+// 세션 복원
+supabaseClient.auth.getSession().then(({data:{session}})=>{
+  if(session?.user)onAuthSuccess(session.user);
+});
+supabaseClient.auth.onAuthStateChange((_,session)=>{
+  if(session?.user)onAuthSuccess(session.user);
+});
+
 </script>
 </body>
 </html>

@@ -254,7 +254,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   justify-content:center;align-items:center;
   padding:0 20px;
   margin-top:-15px;
+  pointer-events:none;
 }
+#hero>*{pointer-events:auto}
 #hero-inner{display:none;flex-direction:column;align-items:center;text-align:center;gap:0}
 
 /* 상단 배지 row */
@@ -282,7 +284,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   font-size:5.8rem;line-height:.9;letter-spacing:2px;color:#fff;
   text-shadow:0 0 80px rgba(0,229,195,.35),0 4px 30px rgba(0,0,0,.8);
 }
-#level-unit{font-family:'DM Mono',monospace;font-size:1.4rem;opacity:.35;margin-left:3px;letter-spacing:0;vertical-align:bottom}
+#level-unit{font-family:'DM Mono',monospace;font-size:1.4rem;opacity:.35;margin-left:3px;letter-spacing:0;align-self:flex-end;padding-bottom:6px}
 
 /* 상태 row */
 .tide-status-row{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;margin-bottom:10px}
@@ -350,7 +352,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 #fav-star.active{opacity:1;filter:drop-shadow(0 0 6px rgba(255,210,0,.8));}
 #fav-star:active{transform:scale(1.35);}
-#level-wrap{display:inline-flex;align-items:center}
+#level-wrap{display:inline-flex;align-items:flex-end;gap:2px}
 
 /* 구분선 */
 .ci-divider{height:1px;background:rgba(255,255,255,.05);margin:0 -2px}
@@ -841,21 +843,111 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 /* 배 클릭 애니메이션 */
 
 @keyframes boatJump{
-  0%  {margin-top:0;    rotate:0deg;   scale:1}
-  12% {margin-top:-18px;rotate:20deg;  scale:1.08}
-  28% {margin-top:-38px;rotate:-15deg; scale:1.12}
-  45% {margin-top:-52px;rotate:360deg; scale:1.15}
-  60% {margin-top:-30px;rotate:380deg; scale:1.1}
-  72% {margin-top:-10px;rotate:355deg; scale:1.05}
-  82% {margin-top:-18px;rotate:362deg; scale:1.07}
-  90% {margin-top:-5px; rotate:358deg; scale:1.02}
-  96% {margin-top:-8px; rotate:361deg; scale:1.03}
-  100%{margin-top:0;    rotate:360deg; scale:1}
+  0%  {margin-top:0;   scale:1}
+  35% {margin-top:-32px;scale:1.05}
+  70% {margin-top:-4px; scale:1.0}
+  100%{margin-top:0;   scale:1}
 }
 #sailboat.jumping{
-  animation:boatJump .95s cubic-bezier(.36,.07,.19,.97) forwards,
+  animation:boatJump .55s cubic-bezier(.33,1.4,.68,1) forwards,
             boatSail var(--sail-dur,28s) ease-in-out infinite;
   transform-origin:center bottom;
+}
+
+
+/* 공유 버튼 */
+#share-row{padding:2px 18px 0;flex-shrink:0}
+#share-btn{
+  background:none;border:none;
+  font-size:.5rem;font-weight:600;
+  color:rgba(255,255,255,.22);
+  cursor:pointer;padding:0;
+  letter-spacing:.3px;
+  font-family:'Noto Sans KR',sans-serif;
+  transition:color .2s;
+}
+#share-btn:active{color:rgba(0,229,195,.7)}
+
+
+#toast{
+  position:fixed;bottom:calc(env(safe-area-inset-bottom,16px)+70px);
+  left:50%;transform:translateX(-50%) translateY(12px);
+  background:rgba(0,229,195,.15);
+  border:1px solid rgba(0,229,195,.3);
+  backdrop-filter:blur(12px);
+  color:#fff;font-size:.62rem;font-weight:600;
+  padding:8px 18px;border-radius:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s, transform .25s;
+  z-index:500;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+
+#unit-btn{
+  font-size:.42rem;font-weight:700;
+  color:rgba(255,255,255,.25);
+  background:none;border:none;cursor:pointer;
+  letter-spacing:.5px;padding:2px 6px;
+  transition:color .2s;
+  align-self:flex-end;padding-bottom:8px;
+}
+#unit-btn:active{color:rgba(0,229,195,.8)}
+
+
+#wx-alert{
+  display:none;
+  width:100%;
+  background:linear-gradient(90deg,rgba(255,80,80,.15),rgba(255,120,50,.1));
+  border-bottom:1px solid rgba(255,80,80,.2);
+  padding:6px 18px;
+  font-size:.52rem;font-weight:700;
+  color:rgba(255,160,100,.9);
+  letter-spacing:.3px;
+  flex-shrink:0;
+  animation:alertPulse 2s ease-in-out infinite;
+}
+#wx-alert.show{display:block}
+@keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+
+#terms-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#terms-overlay.open{opacity:1;pointer-events:auto}
+#terms-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:351;max-width:480px;margin:0 auto;
+  background:linear-gradient(180deg,#0d1e38,#060f1e);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  max-height:75vh;display:flex;flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+#terms-sheet.open{transform:translateY(0)}
+.terms-body{overflow-y:auto;flex:1;min-height:0;padding:16px 20px}
+.term-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.term-item:last-child{border-bottom:none}
+.term-name{font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:4px}
+.term-desc{font-size:.6rem;color:rgba(255,255,255,.5);line-height:1.6}
+
+
+/* 물고기 떼 */
+#fish-school{
+  position:fixed;
+  inset:0;
+  z-index:9997;
+  pointer-events:none;
+}
+.fish{
+  position:fixed;
+  font-size:.7rem;
+  animation:fishSwim linear forwards;
+}
+@keyframes fishSwim{
+  0%  {right:-8vw; top:var(--fy-start,50vh)}
+  100%{right:115vw;top:var(--fy-end,50vh)}
+}
+@keyframes fishMove{
+  0%  {right:-60px}
+  100%{right:115vw;margin-top:var(--drift,0px)}
 }
 
 </style>
@@ -901,6 +993,8 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   </div>
   <div id="horizon"></div>
 
+</div>
+
   <!-- 돛단배 -->
   <div id="sailboat">
     <div id="boat-drift">
@@ -915,8 +1009,9 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       </div>
     </div>
   </div>
-</div>
 
+<div id="toast"></div>
+<div id="fish-school"></div>
 <!-- 게이지 -->
 <div id="gauge-rail">
   <div id="gauge-track">
@@ -974,6 +1069,9 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     <span class="wx-icon" id="wx-icon">🌤</span>
     <span class="wx-text" id="wx-text">--</span>
   </div>
+  <div id="share-row">
+    <button id="share-btn" onclick="shareApp()" title="공유">🔗 공유하기</button>
+  </div>
 
   <div id="hero">
     <!-- 온보딩: 관측소 미선택 상태 -->
@@ -1007,7 +1105,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
         <div class="station-pill" id="station-pill"></div><span id="fav-star" onclick="toggleFav()">☆</span>
       </div>
       <div class="tide-desc" id="tide-desc" style="display:none"></div>
-      <div id="level-wrap"><div id="level-big" onclick="openLogSheet()">--<span id="level-unit">cm</span></div></div>
+      <div id="level-wrap"><div id="level-big" onclick="openLogSheet()">--</div><span id="level-unit">cm</span><button id="unit-btn" onclick="toggleUnit()">⇄</button></div>
       <div class="tide-status-row">
         <div class="status-pill" id="status-pill">--</div>
         <div class="timeleft-pill" id="timeleft-pill">--</div>
@@ -1173,6 +1271,11 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
     <div class="drawer-divider"></div>
     <div class="drawer-section-label">기타</div>
+    <div class="drawer-item" onclick="openTerms()">
+      <span class="drawer-item-icon">📖</span>
+      <span class="drawer-item-text">조석 용어 설명</span>
+      <span class="drawer-item-arrow">›</span>
+    </div>
     <div class="drawer-item" onclick="closeDrawer();toggleTextSize()">
       <span class="drawer-item-icon">🔠</span>
       <span class="drawer-item-text">화면 크기 조절</span>
@@ -1207,6 +1310,25 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   </div>
 </div>
 
+<div id="terms-overlay" onclick="closeTerms()"></div>
+<div id="terms-sheet" onclick="event.stopPropagation()">
+  <div class="log-handle"></div>
+  <div style="padding:12px 20px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px">조석 용어</div>
+    <button onclick="closeTerms()" style="background:none;border:none;color:rgba(255,255,255,.3);font-size:1.1rem;cursor:pointer">×</button>
+  </div>
+  <div class="terms-body">
+    <div class="term-item"><div class="term-name">물때</div><div class="term-desc">음력을 기준으로 조류의 흐름을 나타내는 주기. 1물(조금)~8물(사리)~15물 순으로 반복.</div></div>
+    <div class="term-item"><div class="term-name">사리</div><div class="term-desc">보름달·초승달 때 조수 간만의 차이가 가장 큰 시기. 7~8물에 해당. 물살이 강해 낚시·조업 주의.</div></div>
+    <div class="term-item"><div class="term-name">조금</div><div class="term-desc">사리 반대로 조수 간만의 차이가 가장 작은 시기. 1~2물에 해당. 물살이 약해 스쿠버에 적합.</div></div>
+    <div class="term-item"><div class="term-name">만조</div><div class="term-desc">하루 중 해수면이 가장 높아진 상태.</div></div>
+    <div class="term-item"><div class="term-name">간조</div><div class="term-desc">하루 중 해수면이 가장 낮아진 상태.</div></div>
+    <div class="term-item"><div class="term-name">조류</div><div class="term-desc">밀물과 썰물에 의해 수평으로 흐르는 해수의 흐름.</div></div>
+    <div class="term-item"><div class="term-name">밀물</div><div class="term-desc">간조에서 만조로 수위가 높아지는 흐름. 차오르는 중.</div></div>
+    <div class="term-item"><div class="term-name">썰물</div><div class="term-desc">만조에서 간조로 수위가 낮아지는 흐름. 빠지는 중.</div></div>
+    <div class="term-item"><div class="term-name">조차</div><div class="term-desc">만조와 간조의 수위 차이. 사리 때 최대, 조금 때 최소.</div></div>
+  </div>
+</div>
 <!-- 로그인/회원가입 시트 -->
 <div id="auth-overlay" onclick="closeAuth()"></div>
 <div id="auth-sheet" onclick="event.stopPropagation()">
@@ -2012,7 +2134,8 @@ function renderTide(data,name,isToday){
   if(isToday){
     const cur=data.find(d=>d.isCurrent);
     if(!cur){showError('현재 데이터 없음');return;}
-    document.getElementById('level-big').innerHTML=cur.level+'<span id="level-unit">cm</span>';
+    const lb=document.getElementById('level-big');lb.dataset.raw=cur.level;lb.textContent=unitM?(cur.level/100).toFixed(2):cur.level;
+    const lu=document.getElementById('level-unit');if(lu)lu.textContent=unitM?'m':'cm';
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm),isFalling=nextTide?.type==='low';
     if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;}
     document.getElementById('tide-panel').style.marginTop='-55px';
@@ -2037,17 +2160,7 @@ function renderTide(data,name,isToday){
     // 조류 인포 (오늘만)
     renderCurrentInfo(tn);
   }else{
-    document.getElementById('level-big').innerHTML=`
-      <div class="future-levels">
-        <div class="future-level-row">
-          <span class="future-lbl future-lbl-high">↑ HIGH</span>
-          <span class="future-val">${dayMaxL}<span class="future-unit">cm</span></span>
-        </div>
-        <div class="future-level-row">
-          <span class="future-lbl future-lbl-low">↓ LOW</span>
-          <span class="future-val">${dayMinL}<span class="future-unit">cm</span></span>
-        </div>
-      </div>`;
+    document.getElementById('level-big').dataset.raw=cur.level;document.getElementById('level-big').textContent=unitM?(cur.level/100).toFixed(2):cur.level;if(document.getElementById('level-unit'))document.getElementById('level-unit').textContent=unitM?'m':'cm';
     document.querySelector('.tide-status-row').style.display='none';
     document.getElementById('gauge-rail').style.display='none';
     document.getElementById('gauge-dot').style.display='none';
@@ -2120,7 +2233,7 @@ async function loadWeather(lat,lng){
     let wCode,wSpeed,wDir;
     if(selectedDateOffset===0){wCode=data.current.weather_code;wSpeed=data.current.wind_speed_10m;wDir=data.current.wind_direction_10m;}
     else{wCode=data.daily.weather_code[selectedDateOffset];wSpeed=data.daily.wind_speed_10m_max[selectedDateOffset];wDir=data.daily.wind_direction_10m_dominant[selectedDateOffset];}
-    currentWeatherCode=wCode;if(currentStation)applyTheme(STATIONS[currentStation]?.region,wCode,wSpeed);updateSkyObjects(wCode);
+    currentWeatherCode=wCode;if(currentStation)applyTheme(STATIONS[currentStation]?.region,wCode,wSpeed);updateSkyObjects(wCode);checkWeatherAlert(wCode,wSpeed);
     const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(wDir/45)%8]||"북";
     updateSailboat(wSpeed, wDir);
     const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
@@ -2462,6 +2575,7 @@ let zenMode=false;
 
 function toggleZenMode(){
   zenMode=!zenMode;
+  if(navigator.vibrate)navigator.vibrate(zenMode?[10,30,10]:15);
   document.body.classList.toggle('zen-mode',zenMode);
 }
 
@@ -2472,20 +2586,17 @@ function toggleZenMode(){
   function attach(){
     const hero=document.getElementById('hero');
     if(!hero){setTimeout(attach,300);return;}
-    hero.addEventListener('click',function(e){
-      // 클릭된 요소가 hero 자신이거나 hero-inner, tide-panel의 빈 배경인지 확인
-      const t=e.target;
-      const interactive=['BUTTON','INPUT','SELECT','TEXTAREA','A'];
-      if(interactive.includes(t.tagName))return;
-      // 인터랙티브 요소의 자식인지 확인
-      if(t.closest('button,input,select,textarea,a,[onclick]'))return;
-      // tide-panel 스크롤 영역이나 tr-row 클릭은 무시
-      if(t.closest('.tr-row,.tide-row,.tr-level,.tr-time,.tr-badge'))return;
-      // hero-inner 숫자/배지/버튼 무시
-      if(t.closest('#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#current-info'))return;
-      // 나머지 빈 영역 탭 → 관상모드
-      toggleZenMode();
-    });
+    // hero는 pointer-events:none이라 ocean(배경)에 클릭 이벤트 붙임
+    const ocean=document.getElementById('ocean');
+    if(ocean){
+      ocean.addEventListener('click',function(e){
+        const t=e.target;
+        if(t.closest('button,input,select,textarea,a,[onclick]'))return;
+        if(t.closest('#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#current-info'))return;
+        if(t.closest('.tr-row,.tide-row'))return;
+        toggleZenMode();
+      });
+    }
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach);
@@ -2502,20 +2613,135 @@ function toggleZenMode(){
     if(!boat){setTimeout(attach,300);return;}
     let jumping=false;
     boat.addEventListener('click',function(e){
-      e.stopPropagation(); // zen모드 트리거 방지
+      e.stopPropagation();
+      if(navigator.vibrate)navigator.vibrate(18);
       if(jumping)return;
+      setTimeout(spawnFishSchool, 200);
       jumping=true;
       boat.classList.add('jumping');
       setTimeout(()=>{
         boat.classList.remove('jumping');
         jumping=false;
-      },980);
+      },580);
     });
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach);
   }else{attach();}
 })();
+
+
+/* 공유 */
+async function shareApp(){
+  if(navigator.vibrate)navigator.vibrate(15);
+  const station=currentStation||'';
+  const level=document.getElementById('level-big')?.textContent||'';
+  const tideName=document.getElementById('tide-badge')?.textContent||'';
+  const text=station
+    ?`🌊 바당때 — ${station}\n현재 수위 ${level}cm · ${tideName}\nhttps://gujwatourjeju-collab.github.io/seatime/`
+    :`🌊 바당때 — 내 손안의 물때 앱\nhttps://gujwatourjeju-collab.github.io/seatime/`;
+  if(navigator.share){
+    try{await navigator.share({title:'바당때',text,url:'https://gujwatourjeju-collab.github.io/seatime/'});}
+    catch(e){}
+  }else{
+    try{await navigator.clipboard.writeText(text);showToast('링크 복사됨 ✓');}
+    catch(e){showToast('공유 불가');}
+  }
+}
+
+/* 단위 전환 cm ↔ m */
+let unitM = false;
+function toggleUnit(){
+  if(navigator.vibrate)navigator.vibrate(15);
+  unitM=!unitM;
+  const big=document.getElementById('level-big');
+  const unit=document.getElementById('level-unit');
+  const raw=parseInt(big?.dataset.raw||big?.textContent||0);
+  if(unitM){
+    if(big)big.textContent=(raw/100).toFixed(2);
+    if(unit)unit.textContent='m';
+  }else{
+    if(big)big.textContent=raw;
+    if(unit)unit.textContent='cm';
+  }
+}
+
+function showToast(msg,dur=2000){
+  const t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* 기상특보 */
+function checkWeatherAlert(wc, windSpeed){
+  const alert=document.getElementById('wx-alert');
+  if(!alert)return;
+  let msg='';
+  if(wc>=95)msg='⚡ 뇌우 주의 — 해상 활동을 자제하세요';
+  else if(wc>=80)msg='🌧 폭우 주의 — 출조 시 각별히 주의하세요';
+  else if(windSpeed>=14)msg='💨 강풍 주의 — 풍속 '+windSpeed.toFixed(1)+'m/s';
+  else if(windSpeed>=10)msg='🌬 바람 강함 — 풍속 '+windSpeed.toFixed(1)+'m/s';
+  if(msg){alert.textContent=msg;alert.classList.add('show');}
+  else{alert.classList.remove('show');}
+}
+
+function openTerms(){closeDrawer();document.getElementById('terms-overlay').classList.add('open');document.getElementById('terms-sheet').classList.add('open');}
+function closeTerms(){document.getElementById('terms-overlay').classList.remove('open');document.getElementById('terms-sheet').classList.remove('open');}
+
+
+/* 물고기 떼 */
+function spawnFishSchool(){
+  const school=document.getElementById('fish-school');
+  if(!school)return;
+
+  // 실제 수면 Y좌표
+  const horizon=document.getElementById('horizon');
+  const vh=window.innerHeight;
+  let surfaceY=vh*0.58;
+  if(horizon && horizon.style.top){
+    surfaceY=(parseFloat(horizon.style.top)/100)*vh;
+  }
+  const waterTop=surfaceY+12;
+  const waterBot=Math.min(surfaceY+110, vh-10);
+  if(waterBot<=waterTop)return;
+
+  school.innerHTML='';
+  const count=10+Math.floor(Math.random()*8);
+  const emojis=['🐟','🐠','🐡'];
+  const maxDur=2.5;
+
+  for(let i=0;i<count;i++){
+    const f=document.createElement('div');
+    f.className='fish';
+    f.textContent=emojis[i%3];
+    const y=waterTop+Math.random()*(waterBot-waterTop);
+    const drift=(Math.random()-0.5)*20;
+    const delay=Math.random()*0.7;
+    const dur=1.8+Math.random()*0.8;
+    const sz=0.5+Math.random()*0.4;
+    // 오른쪽에서 왼쪽으로 — right 음수값 → 큰 양수값
+    f.style.cssText=[
+      `top:${y}px`,
+      `right:-60px`,
+      `font-size:${sz}rem`,
+      `opacity:${0.2+Math.random()*0.2}`,
+      `filter:blur(.5px) brightness(.65) saturate(.8)`,
+      `transform:scaleX(-1)`,
+      `animation-name:fishMove`,
+      `animation-duration:${dur}s`,
+      `animation-delay:${delay}s`,
+      `animation-timing-function:linear`,
+      `animation-fill-mode:forwards`,
+      `--drift:${drift}px`,
+    ].join(';');
+    school.appendChild(f);
+  }
+
+  // 끝나면 정리
+  setTimeout(()=>{school.innerHTML='';}, (maxDur+1.5)*1000);
+}
 
 /* ═══ 드로어 ═══ */
 function openDrawer(){

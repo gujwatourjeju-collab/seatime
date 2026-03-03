@@ -796,6 +796,54 @@ html.large-text .future-val{font-size:3.6rem}
 }
 #myinfo-sheet.open{transform:translateY(0)}
 
+
+/* 달 */
+#sky-moon{
+  position:absolute;z-index:2;pointer-events:none;
+  transition:opacity 2s ease, top .5s ease, right .5s ease;
+  opacity:0;
+}
+.moon-svg{filter:drop-shadow(0 0 18px rgba(220,220,180,.5)) drop-shadow(0 0 40px rgba(200,200,150,.2));}
+
+
+
+
+/* ═══ 관상 모드 ═══ */
+#zen-hint{
+  position:fixed;bottom:calc(env(safe-area-inset-bottom,16px)+8px);
+  left:50%;transform:translateX(-50%);
+  font-size:.44rem;color:rgba(255,255,255,.18);
+  letter-spacing:1px;pointer-events:none;
+  transition:opacity .5s;z-index:20;
+  white-space:nowrap;
+}
+body.zen-mode #app{opacity:0;pointer-events:none}
+body.zen-mode #gauge-rail{opacity:0;pointer-events:none}
+body.zen-mode #gauge-dot{opacity:0;pointer-events:none}
+body.zen-mode #gauge-high-label{opacity:0}
+body.zen-mode #gauge-low-label{opacity:0}
+body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none}
+body.zen-mode #refresh-btn{opacity:0;pointer-events:none}
+body.zen-mode #zen-hint{opacity:0}
+body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
+
+/* 트랜지션 */
+#app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
+.text-toggle-btn,#refresh-btn{
+  transition:opacity .6s ease;
+}
+
+
+#zen-tap-overlay{
+  position:fixed;inset:0;z-index:50;
+  background:transparent;cursor:pointer;
+  pointer-events:none;
+  display:none;
+}
+body.zen-mode #zen-tap-overlay{
+  display:block;
+  z-index:9999;
+}
 </style>
 </head>
 <body>
@@ -819,7 +867,11 @@ html.large-text .future-val{font-size:3.6rem}
 
 <!-- OCEAN -->
 <div id="ocean">
-  <div id="ocean-sky"></div>
+  <div id="ocean-sky">
+    <div id="sky-moon"></div>
+  </div>
+<div id="zen-hint">바다를 탭하면 관상 모드</div>
+<div id="zen-tap-overlay" onclick="toggleZenMode()"></div>
   <div id="sky-objects">
     <div id="sky-sun"><div class="sun-rays"></div></div>
     <div id="rain-container"></div>
@@ -1201,7 +1253,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'물살이 쎈편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },
@@ -1346,6 +1398,7 @@ const REGION_WATER={
 };
 
 let currentRegion='jeju',currentWeatherCode=0,currentWindSpeed=0;
+let currentTideContext={level:0,high:0,low:0,isFalling:false,highTime:'',lowTime:''};
 
 function applyTheme(region,wCode,windSpeed){
   currentRegion=region||'jeju';
@@ -1391,6 +1444,8 @@ function applyTheme(region,wCode,windSpeed){
 
   buildShimmers(rw.accent);
   updateStars(tod,wcat);
+  const lunarDayNow=getLunarDay(getOffsetDate(selectedDateOffset));
+  updateMoon(tod,wcat,lunarDayNow);
 }
 
 function updateStars(tod,wcat){
@@ -1418,6 +1473,83 @@ function updateStars(tod,wcat){
   }
   stars.style.opacity=tod==='night'?(wcat==='clear'?'1':'.45'):'.25';
 }
+
+function getMoonPhase(lunarDay){
+  // 삭(그믐/초승) = 1일, 보름 = 15일 기준
+  const d=lunarDay;
+  // 삭 전후 — 그믐/초승
+  if(d>=28||d<=2)return{type:'crescent',dir:d>=28?'left':'right',illum:.04};
+  // 초승달 3~6일
+  if(d<=6)return{type:'crescent',dir:'right',illum:.08+(d-3)/4*.3};
+  // 상현달 7~8일
+  if(d<=8)return{type:'half',dir:'right',illum:.5};
+  // 상현 볼록달 9~13일
+  if(d<=13)return{type:'gibbous',dir:'right',illum:.55+(d-9)/5*.43};
+  // 보름달 14~16일
+  if(d<=16)return{type:'full',dir:'none',illum:1};
+  // 하현 볼록달 17~21일
+  if(d<=21)return{type:'gibbous',dir:'left',illum:.98-(d-16)/6*.43};
+  // 하현달 22~23일
+  if(d<=23)return{type:'half',dir:'left',illum:.5};
+  // 그믐달 24~27일
+  return{type:'crescent',dir:'left',illum:.35-(d-24)/4*.3};
+}
+
+function drawMoon(lunarDay){
+  const el=document.getElementById('sky-moon');
+  if(!el)return;
+  const phase=getMoonPhase(lunarDay);
+  const size=52;
+  const r=size/2;
+  // SVG로 달 모양 그리기
+  let moonPath='';
+  if(phase.type==='full'){
+    moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,220,${0.82+phase.illum*.15})"/>`;
+  }else if(phase.type==='half'){
+    if(phase.dir==='right'){
+      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 0,1 ${r},${size-2} A${r-2},${r-2} 0 0,0 ${r},2 Z" fill="rgba(255,248,200,.85)"/>
+      <path d="M${r},2 A${r-2},${r-2} 0 0,0 ${r},${size-2} Z" fill="rgba(255,255,255,.05)"/>`;
+    }else{
+      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 0,0 ${r},${size-2} A${r-2},${r-2} 0 0,1 ${r},2 Z" fill="rgba(255,248,200,.85)"/>`;
+    }
+  }else if(phase.type==='crescent'){
+    const ox=phase.dir==='right'?(r-2)*(.9-phase.illum*1.1):(-(r-2)*(.9-phase.illum*1.1));
+    const cx=r+ox, cy=r;
+    if(phase.dir==='right'){
+      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 1,1 ${r},${size-2}
+        A${r-4},${r-4} 0 1,0 ${r},2 Z" fill="rgba(255,248,200,.88)"/>`;
+    }else{
+      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 1,0 ${r},${size-2}
+        A${r-4},${r-4} 0 1,1 ${r},2 Z" fill="rgba(255,248,200,.88)"/>`;
+    }
+  }else{ // gibbous
+    if(phase.dir==='right'){
+      moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
+      <ellipse cx="${r-(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+    }else{
+      moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
+      <ellipse cx="${r+(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+    }
+  }
+  el.innerHTML=`<svg class="moon-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${moonPath}</svg>`;
+}
+
+function updateMoon(tod, wcat, lunarDay){
+  const el=document.getElementById('sky-moon');
+  if(!el)return;
+  const show=(tod==='night'||tod==='evening')&&(wcat==='clear'||wcat==='partly');
+  if(!show){el.style.opacity='0';return;}
+  drawMoon(lunarDay);
+  // 위치: 저녁엔 오른쪽 높이, 밤엔 중앙 상단
+  if(tod==='evening'){
+    el.style.cssText+='position:absolute;top:8%;right:18%;';
+  }else{
+    el.style.cssText+='position:absolute;top:5%;right:22%;';
+  }
+  const baseOp=tod==='night'?(wcat==='clear'?.95:.55):.45;
+  el.style.opacity=String(baseOp);
+}
+
 function buildShimmers(color){
   document.querySelectorAll('.shimmer').forEach(s=>s.remove());
   const wb=document.getElementById('water-body');
@@ -1767,6 +1899,11 @@ function renderTide(data,name,isToday){
     const pct=maxL>minL?((cur.level-minL)/(maxL-minL))*100:50;
     setOceanLevel(pct,isFalling,true);
     updateGaugeLabels(data,cur);
+    // 현재 조석 컨텍스트 저장
+    currentTideContext={
+      level:cur.level,high:maxL,low:minL,isFalling,
+      highTime:nearHigh?nearHigh.time:'',lowTime:nearLow?nearLow.time:''
+    };
     // 조류 인포 (오늘만)
     renderCurrentInfo(tn);
   }else{
@@ -1826,10 +1963,24 @@ function showLoading(){document.getElementById('tide-list').innerHTML=`<div clas
 function showError(msg){document.getElementById('tide-list').innerHTML=`<div class="err-msg">⚠ ${msg}</div>`;document.getElementById('hero-inner').style.display='none';}
 
 /* 날씨 */
+let wxCache={};
 async function loadWeather(lat,lng){
   try{
-    const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
-    const res=await fetch(url);const data=await res.json();
+    const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
+    let data=wxCache[cacheKey];
+    if(!data){
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
+      let res;
+      // 실패시 최대 2회 재시도
+      for(let attempt=0;attempt<3;attempt++){
+        try{res=await fetch(url);if(res.ok)break;}catch(e){
+          if(attempt<2){await new Promise(r=>setTimeout(r,1500*(attempt+1)));}
+        }
+      }
+      if(!res||!res.ok)throw new Error('날씨 서버 응답 없음');
+      data=await res.json();
+      wxCache[cacheKey]=data;
+    }
     const max=data.daily?.time?.length||0;
     const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
     if(selectedDateOffset<0||selectedDateOffset>=max){wi.style.display='none';wx.textContent=selectedDateOffset<0?'과거 날씨 조회 불가':'예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(STATIONS[currentStation]?.region,0);updateSkyObjects(0);document.getElementById('weather').classList.add('show');return;}
@@ -1847,6 +1998,12 @@ async function loadWeather(lat,lng){
     document.getElementById('weather').classList.add('show');
   }catch(e){
     console.error('날씨 오류:',e);
+    // 이전 캐시에서 아무거나 찾기
+    const anyCache=Object.values(wxCache)[0];
+    if(anyCache){
+      console.log('캐시 fallback 사용');
+      return;
+    }
     const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
     if(wx){wi.style.display='none';wx.textContent='날씨 정보 없음';}
     document.getElementById('weather').classList.add('show');
@@ -2037,6 +2194,12 @@ function openLogSheet(){
   const ciDesc=document.getElementById('ci-current-desc');
   const wxText=document.getElementById('wx-text');
 
+  const ctx=currentTideContext;
+  const dirArrow=ctx.isFalling?'↓':'↑';
+  const dirWord=ctx.isFalling?'하강 중':'상승 중';
+  const contextStr=ctx.high&&ctx.low
+    ?`간조 ${ctx.low}cm ${dirArrow} 만조 ${ctx.high}cm (${dirWord})`:'';
+
   logSnapshot={
     station:currentStation,
     level,
@@ -2047,6 +2210,9 @@ function openLogSheet(){
     timeleft:timeleftEl?timeleftEl.textContent:'',
     current:ciDesc?ciDesc.textContent:'',
     weather:wxText?wxText.textContent:'',
+    tide_context:contextStr,
+    high_level:ctx.high||0,
+    low_level:ctx.low||0,
     saved_at:now.toISOString(),
   };
 
@@ -2054,7 +2220,7 @@ function openLogSheet(){
   document.getElementById('log-snap-level').textContent=level;
   document.getElementById('log-snap-meta').innerHTML=
     `${currentStation} · ${dateStr} ${timeStr}<br>${logSnapshot.weather}`;
-  const tags=[tn,logSnapshot.status,logSnapshot.current].filter(Boolean);
+  const tags=[tn,logSnapshot.status,contextStr].filter(Boolean);
   document.getElementById('log-snap-tags').innerHTML=
     tags.map(t=>`<span class="log-snap-tag">${t}</span>`).join('');
   document.getElementById('log-memo').value='';
@@ -2128,6 +2294,7 @@ async function renderLogList(){
           <button class="log-card-del" onclick="deleteLog(${i},event)">삭제</button>
         </div>
       </div>
+      ${l.tide_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
       ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
       ${l.memo?`<div class="log-card-memo">${l.memo}</div>`:''}
     </div>`;
@@ -2153,6 +2320,17 @@ async function deleteLog(idx,e){
   await renderLogList();
 }
 
+
+
+
+
+/* ═══ 관상 모드 ═══ */
+let zenMode=false;
+
+function toggleZenMode(){
+  zenMode=!zenMode;
+  document.body.classList.toggle('zen-mode',zenMode);
+}
 
 /* ═══ 드로어 ═══ */
 function openDrawer(){

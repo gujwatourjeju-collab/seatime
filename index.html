@@ -139,7 +139,7 @@ transition:top 5s cubic-bezier(.25,.46,.45,.94);pointer-events:none;
 #sky-sun{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,245,180,1) 30%,rgba(255,220,80,.6) 60%,transparent 100%);box-shadow:0 0 40px rgba(255,230,100,.5),0 0 80px rgba(255,200,60,.2);transition:opacity 2s ease, left 60s linear, top 60s ease, width .5s, height .5s}
 .sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite}
 @keyframes sunP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
-.sky-cloud{position:absolute;animation:cDrift var(–cd,28s) linear var(–cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none}
+.sky-cloud{position:absolute;animation:cDrift var(–cd,28s) linear var(–cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none;overflow:visible}
 @keyframes cDrift{0%{transform:translateX(-120%)}100%{transform:translateX(120vw)}}
 #rain-container{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .raindrop{position:absolute;top:-20px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(180,220,255,.45));animation:rFall var(–rd,.8s) linear var(–rdelay,0s) infinite}
@@ -1861,11 +1861,12 @@ function updateSkyObjects(wc,windSpd){
     el.className='sky-cloud';
     const dur=(baseDur*(0.75+Math.random()*0.5)).toFixed(1);
     const delay=(-(baseDur*df)).toFixed(1);
-    el.style.cssText='position:absolute;top:'+top+';left:0;width:'+w+'px;height:'+h+'px;--cd:'+dur+'s;--cdelay:'+delay+'s;opacity:0;transition:opacity 2s ease';
+    el.style.cssText='position:absolute;top:'+top+';left:0;width:100%;height:'+h+'px;--cd:'+dur+'s;--cdelay:'+delay+'s;opacity:0;transition:opacity 2s ease';
+    const xOff=(15+Math.random()*60).toFixed(0);
     const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('viewBox','0 0 '+w+' '+h);
     svg.setAttribute('width',w);svg.setAttribute('height',h);
-    svg.style.display='block';
+    svg.style.cssText='display:block;position:absolute;left:'+xOff+'%;transform:translateX(-50%)';
     const by=h*0.78;
     [[w*0.22,by-h*0.35,w*0.18,h*0.38],[w*0.38,by-h*0.55,w*0.22,h*0.5],[w*0.55,by-h*0.42,w*0.2,h*0.42],[w*0.70,by-h*0.28,w*0.16,h*0.32],[w*0.5,by,w*0.48,h*0.28]].forEach(function(b){
       const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
@@ -2230,7 +2231,8 @@ function renderTide(data,name,isToday){
     document.getElementById('tide-panel').style.marginTop='0';
     document.getElementById('hero').style.flex='0 0 auto';
     document.getElementById('hero').style.paddingTop='40px';
-    const ci=document.getElementById('current-info');if(ci)ci.classList.remove('show');
+    // 미래에도 조류 카드 표시
+    renderCurrentInfo(tn);
   }
 
   // 패널 타이틀

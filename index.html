@@ -1622,8 +1622,8 @@ function getSunPosition(){
   const {rise,set}=getSunTimes();
 
   // 일출 전/후 진입 여유 (화면 밖에서 시작)
-  const riseStart=rise-0.3; // 일출 18분 전부터 화면 오른쪽 밖에서 진입
-  const setEnd=set+0.3;     // 일몰 18분 후 화면 왼쪽 밖으로 사라짐
+  const riseStart=rise-1.0; // 일출 1시간 전부터 화면 오른쪽 밖에서 진입
+  const setEnd=set+1.0;     // 일몰 1시간 후 화면 왼쪽 밖으로 사라짐
 
   if(h<riseStart||h>setEnd) return null; // 화면 밖
 

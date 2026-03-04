@@ -502,7 +502,7 @@ position:fixed;inset:0;background:rgba(0,0,0,.7);
 opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
 #auth-overlay,#log-overlay,#loglist-overlay,#myinfo-overlay{z-index:409}
-#terms-overlay{z-index:350}
+#terms-overlay{z-index:411}
 .sheet-overlay{z-index:200}
 .sheet-overlay.open,#auth-overlay.open,#log-overlay.open,#loglist-overlay.open,#myinfo-overlay.open,#terms-overlay.open{opacity:1;pointer-events:auto}
 .sheet{
@@ -631,7 +631,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 /* 기록 입력 시트 */
 
 #log-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -667,7 +667,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 /* 기록 목록 시트 */
 
 #loglist-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -803,7 +803,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 
 #myinfo-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -929,7 +929,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 
 #terms-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:351;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:412;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -1739,103 +1739,84 @@ function updateStars(tod,wcat){
 }
 
 function getMoonPhase(lunarDay){
-  // 음력 1일=삭(신월), 15일=보름
-  // 1~2: 삭 직후 초승 (오른쪽 가는 초승)
-  // 3~6: 초승달 (오른쪽)
-  // 7~8: 상현 반달 (오른쪽)
-  // 9~14: 상현 볼록달 (오른쪽)
-  // 15~16: 보름달
-  // 17~22: 하현 볼록달 (왼쪽)
-  // 23~24: 하현 반달 (왼쪽)
-  // 25~29: 그믐 초승 (왼쪽)
-  // 30: 삭 (매우 가는 왼쪽)
   const d=lunarDay;
-  if(d<=2)return{type:'crescent',dir:'right',illum:.05+(d-1)*.03};
-  if(d<=6)return{type:'crescent',dir:'right',illum:.08+(d-3)*.07};
-  if(d<=8)return{type:'half',dir:'right',illum:.5};
-  if(d<=14)return{type:'gibbous',dir:'right',illum:.6+(d-9)*.07};
-  if(d<=16)return{type:'full',dir:'none',illum:1};
-  if(d<=22)return{type:'gibbous',dir:'left',illum:.95-(d-17)*.07};
-  if(d<=24)return{type:'half',dir:'left',illum:.5};
-  if(d<=29)return{type:'crescent',dir:'left',illum:.28-(d-25)*.05};
-  return{type:'crescent',dir:'left',illum:.03};
+  if(d<=2)  return{type:'crescent',dir:'right',illum:.04+(d-1)*.03};
+  if(d<=6)  return{type:'crescent',dir:'right',illum:.1+(d-3)*.06};
+  if(d<=8)  return{type:'half',    dir:'right',illum:.5};
+  if(d<=14) return{type:'gibbous', dir:'right',illum:.62+(d-9)*.065};
+  if(d<=16) return{type:'full',    dir:'none', illum:1};
+  if(d<=22) return{type:'gibbous', dir:'left', illum:.95-(d-17)*.065};
+  if(d<=24) return{type:'half',    dir:'left', illum:.5};
+  if(d<=29) return{type:'crescent',dir:'left', illum:.26-(d-25)*.05};
+  return    {type:'crescent',      dir:'left', illum:.03};
 }
 
 function drawMoon(lunarDay){
   const el=document.getElementById('sky-moon');
   if(!el)return;
   const phase=getMoonPhase(lunarDay);
-  const size=52, r=size/2, ri=r-2; // ri = 달 반지름
+  const size=52, r=size/2, ri=r-2;
   const fill='rgba(255,248,210,.92)';
-  const shadow='rgba(8,18,40,1)';
   let moonPath='';
+  const uid=()=>Math.random().toString(36).slice(2,7);
 
   if(phase.type==='full'){
-    // 보름달: 단순 원
+    // 보름달
     moonPath=`<circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}"/>`;
 
   }else if(phase.type==='half'){
-    // 반달: 원 + 지름선으로 반 자르기 (clip-path 활용)
-    const id='hc'+Math.random().toString(36).slice(2,6);
+    // 반달: clipPath로 정확히 반
+    const id=uid();
     if(phase.dir==='right'){
-      // 오른쪽 반 밝음 (상현)
       moonPath=`<defs><clipPath id="${id}"><rect x="${r}" y="0" width="${r}" height="${size}"/></clipPath></defs>
-      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.06)"/>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }else{
-      // 왼쪽 반 밝음 (하현)
       moonPath=`<defs><clipPath id="${id}"><rect x="0" y="0" width="${r}" height="${size}"/></clipPath></defs>
-      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.06)"/>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }
 
   }else if(phase.type==='crescent'){
-    // 초승달/그믐달: 두 원의 교집합
-    // illum 0.04~0.38 → 그림자 원의 중심 오프셋
-    const illum=phase.illum;
-    const offset=ri*(1-illum*2.2); // 그림자 원 중심 이동량
-    const id='cc'+Math.random().toString(36).slice(2,6);
+    // 초승/그믐달: mask로 달에서 그림자원 제거
+    const id=uid();
+    // illum 작을수록 얇음 → 그림자 원이 달 중심에 가까워짐
+    const overlap=ri*(0.96-phase.illum*0.5);
     if(phase.dir==='right'){
-      // 오른쪽 초승달: 달 원에서 왼쪽으로 치우친 그림자 원 제거
-      moonPath=`<defs>
-        <mask id="${id}">
-          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
-          <circle cx="${r-offset}" cy="${r}" r="${ri}" fill="black"/>
-        </mask>
-      </defs>
+      // 오른쪽 초승: 그림자를 오른쪽으로 약간 이동해서 왼쪽 빛 남김
+      moonPath=`<defs><mask id="${id}">
+        <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+        <circle cx="${r-overlap}" cy="${r}" r="${ri}" fill="black"/>
+      </mask></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
-      // 왼쪽 그믐달
-      moonPath=`<defs>
-        <mask id="${id}">
-          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
-          <circle cx="${r+offset}" cy="${r}" r="${ri}" fill="black"/>
-        </mask>
-      </defs>
+      // 왼쪽 그믐: 반대
+      moonPath=`<defs><mask id="${id}">
+        <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+        <circle cx="${r+overlap}" cy="${r}" r="${ri}" fill="black"/>
+      </mask></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }
 
-  }else{ // gibbous (볼록달)
-    const illum=phase.illum; // 0.55~0.98
-    const offset=ri*(1-illum)*1.8; // illum 높을수록 그림자 작음
-    const id='gc'+Math.random().toString(36).slice(2,6);
+  }else{
+    // gibbous (볼록달): 달에서 작은 그림자 원 제거
+    const id=uid();
+    // illum 높을수록 그림자 작음
+    const shadowR=ri*(1.05-phase.illum);
+    const offset=ri*(1-phase.illum)*1.4;
     if(phase.dir==='right'){
-      // 오른쪽 볼록 (상현 → 보름 사이): 왼쪽에 그림자 조금
-      moonPath=`<defs>
-        <mask id="${id}">
-          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
-          <circle cx="${r-offset}" cy="${r}" r="${ri}" fill="black"/>
-        </mask>
-      </defs>
+      // 상현→보름: 왼쪽에 약간 그림자
+      moonPath=`<defs><mask id="${id}">
+        <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+        <circle cx="${r-offset}" cy="${r}" r="${shadowR}" fill="black"/>
+      </mask></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
-      // 왼쪽 볼록 (보름 → 하현 사이)
-      moonPath=`<defs>
-        <mask id="${id}">
-          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
-          <circle cx="${r+offset}" cy="${r}" r="${ri}" fill="black"/>
-        </mask>
-      </defs>
+      // 보름→하현: 오른쪽에 약간 그림자
+      moonPath=`<defs><mask id="${id}">
+        <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+        <circle cx="${r+offset}" cy="${r}" r="${shadowR}" fill="black"/>
+      </mask></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }
   }
@@ -1847,7 +1828,13 @@ function updateMoon(tod, wcat, lunarDay){
   if(!el)return;
   const show=(tod==='night'||tod==='evening')&&(wcat==='clear'||wcat==='partly');
   if(!show){el.style.opacity='0';return;}
-  drawMoon(lunarDay);
+  // 달 API로 정확한 age 가져오기
+  (async()=>{
+    const today=new Date();
+    const ds=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+    const moonData=await fetchMoonData(ds);
+    drawMoon(moonData ? ageToLunarDay(moonData.age) : lunarDay);
+  })();
   // 위치: 저녁엔 오른쪽 높이, 밤엔 중앙 상단
   if(tod==='evening'){
     el.style.cssText+='position:absolute;top:18%;right:18%;';
@@ -1909,7 +1896,7 @@ function getSunPosition(){
   return{x,y,size,core1,core2,glow1,glow2,arc};
 }
 
-function animateSun(wc){
+async function animateSun(wc){
   if(sunAnimFrame)cancelAnimationFrame(sunAnimFrame);
   const sun=document.getElementById('sky-sun');
   if(!sun)return;
@@ -2171,7 +2158,7 @@ function updateGaugeLabels(data,current){
 
 /* ═══ 관측소 데이터 ═══ */
 const STATIONS={
-  '김녕':{type:'blend',obs1:'DT_0004',obs2:'DT_0022',w1:.48,w2:.52,timeCorr:+10,lat:33.558,lng:126.751,region:'jeju'},
+  '김녕':{type:'blend',obs1:'DT_0004',obs2:'DT_0022',w1:.35,w2:.65,timeCorr:+18,lat:33.558,lng:126.751,region:'jeju'},
   '제주':{type:'single',obs:'DT_0004',lat:33.5275,lng:126.543,region:'jeju'},
   '성산포':{type:'single',obs:'DT_0022',lat:33.4747,lng:126.927,region:'jeju'},
   '서귀포':{type:'single',obs:'DT_0061',lat:33.2468,lng:126.561,region:'jeju'},
@@ -2219,7 +2206,21 @@ function getTideName(day,region){
 }
 function getOffsetDate(o){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+o);return d;}
 function dateToStr(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');}
-function updateLunarDisplay(){const d=getOffsetDate(selectedDateOffset),ld=getLunarDay(d),lm=getLunarMonth(d),wd=WEEKDAYS[d.getDay()];const ms=typeof lm==='string'?lm:lm+'월';document.getElementById('lunar').textContent=`음력 ${ms} ${ld}일 (${wd})`;}
+async function updateLunarDisplay(){
+  const d=getOffsetDate(selectedDateOffset);
+  const wd=WEEKDAYS[d.getDay()];
+  const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  // 먼저 로컬 계산값으로 표시
+  const ldLocal=getLunarDay(d),lmLocal=getLunarMonth(d);
+  const msLocal=typeof lmLocal==='string'?lmLocal:lmLocal+'월';
+  document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd})`;
+  // API로 정확한 값 업데이트
+  const moonData=await fetchMoonData(ds);
+  if(moonData){
+    const lm=d.getMonth()+1; // 양력 월 기준 표시 유지
+    document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) ${moonData.icon}`;
+  }
+}
 function updateDateNav(){const d=getOffsetDate(selectedDateOffset);document.getElementById('date-solar').textContent=`${d.getMonth()+1}/${d.getDate()}`;document.getElementById('date-label').textContent=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;}
 function updateClock(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
 setInterval(updateClock,1000);updateClock();
@@ -2419,7 +2420,11 @@ function renderTide(data,name,isToday){
     const futureLd=getLunarDay(sel);
     const futureLm=getLunarMonth(sel);
     const ms=typeof futureLm==='string'?futureLm:futureLm+'월';
-    drawMoon(futureLd);
+    // 달 API로 정확한 모양
+    const selDs=sel.getFullYear()+'-'+String(sel.getMonth()+1).padStart(2,'0')+'-'+String(sel.getDate()).padStart(2,'0');
+    fetchMoonData(selDs).then(md=>{
+      drawMoon(md ? ageToLunarDay(md.age) : futureLd);
+    });
     const moonEl=document.getElementById('sky-moon');
     if(moonEl){
       moonEl.style.position='absolute';
@@ -3227,6 +3232,50 @@ function renderFavGrid(){
 }
 
 /* ═══ 인증 ═══ */
+/* ═══ 달 API 캐시 ═══ */
+const moonCache={};  // 'YYYY-MM-DD' → {age, phase, icon}
+const moonMonthCache={}; // 'YYYY-M' → {1:{...}, 2:{...}, ...}
+
+async function fetchMoonData(dateStr){
+  if(moonCache[dateStr]) return moonCache[dateStr];
+  // 월 캐시에서 먼저 확인
+  const [y,m,d]=dateStr.split('-');
+  const monthKey=y+'-'+parseInt(m);
+  if(moonMonthCache[monthKey] && moonMonthCache[monthKey][parseInt(d)]){
+    moonCache[dateStr]=moonMonthCache[monthKey][parseInt(d)];
+    return moonCache[dateStr];
+  }
+  try{
+    const res=await fetch('https://d5.co.kr/wp-json/d5-moon/v1/date/'+dateStr);
+    const data=await res.json();
+    if(data.status==='success'){
+      const m={age:data.moon.age, phase:data.moon.phase, icon:data.moon.icon, illumination:data.moon.illumination};
+      moonCache[dateStr]=m;
+      return m;
+    }
+  }catch(e){console.warn('달 API 실패',e);}
+  return null;
+}
+
+async function fetchMoonMonth(year,month){
+  const key=year+'-'+month;
+  if(moonMonthCache[key]) return moonMonthCache[key];
+  try{
+    const res=await fetch('https://d5.co.kr/wp-json/d5-moon/v1/month/'+year+'/'+month);
+    const data=await res.json();
+    if(data.status==='success'){
+      const map={};
+      data.days.forEach(d=>{ map[d.day]={age:d.moon.age, phase:d.moon.phase, icon:d.moon.icon}; });
+      moonMonthCache[key]=map;
+      return map;
+    }
+  }catch(e){console.warn('달 월별 API 실패',e);}
+  return null;
+}
+
+// API age → drawMoon용 lunarDay 변환 (age 0~29 → 1~30)
+function ageToLunarDay(age){ return age===0?30:age; }
+
 let currentUser=null;
 let authTab='login';
 

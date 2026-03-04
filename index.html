@@ -2277,34 +2277,46 @@ function calcLive(data){
 }
 
 function blendTides(d1,d2,w1,w2,tc,isToday){
-  const t1=d1.filter(d=>!d.isCurrent),t2=d2.filter(d=>!d.isCurrent),cur=d1.find(d=>d.isCurrent);
-  const used=new Set(),bl=[];
+  const t1=d1.filter(d=>!d.isCurrent),t2=d2.filter(d=>!d.isCurrent),cur=d1.find(d=>d.isCurrent)||d2.find(d=>d.isCurrent);
+  const used1=new Set(),used2=new Set(),bl=[];
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
-  // type 기준 + 3시간(180분) 이내 가장 가까운 항목으로 매칭
-  // → 같은 날 00:09 만조가 11:24 만조랑 엮이는 현상 방지
   const MAX_GAP=180;
+  function pushResult(item,bm,blendedLevel){
+    if(!isToday){bl.push({...item,time:minsToTime(bm),mins:bm,level:blendedLevel,date:ts});return;}
+    let date=ts,iy=false,in2=false;
+    if(bm<0){date=ps;iy=true;}else if(bm>=1440){date=ns;in2=true;}
+    bl.push({...item,time:minsToTime(bm),mins:bm,level:blendedLevel,date,isYesterday:iy,isNextDay:in2});
+  }
+  // d1 기준으로 d2 매칭
   t1.forEach(a=>{
     const candidates=t2.filter(b=>{
       const key=b.time+(b.date||ts);
-      return b.type===a.type && !used.has(key) && Math.abs(toMins(b)-toMins(a))<=MAX_GAP;
+      return b.type===a.type && !used2.has(key) && Math.abs(toMins(b)-toMins(a))<=MAX_GAP;
     }).sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)));
     const m=candidates[0];
-    if(!m)return;
-    used.add(m.time+(m.date||ts));
-    const bm=Math.round(toMins(a)*w1+toMins(m)*w2)+tc;
-    const blendedLevel=Math.round(a.level*w1+m.level*w2);
-    if(!isToday){
-      bl.push({...a,time:minsToTime(bm),mins:bm,level:blendedLevel,date:ts});
-      return;
+    const aKey=a.time+(a.date||ts);
+    used1.add(aKey);
+    if(m){
+      used2.add(m.time+(m.date||ts));
+      const bm=Math.round(toMins(a)*w1+toMins(m)*w2)+tc;
+      pushResult(a,bm,Math.round(a.level*w1+m.level*w2));
+    }else{
+      // 매칭 실패: d1 데이터만으로 시간보정 후 포함
+      pushResult(a,toMins(a)+tc,a.level);
     }
-    let date=ts,iy=false,in2=false;
-    if(bm<0){date=ps;iy=true;}else if(bm>=1440){date=ns;in2=true;}
-    bl.push({...a,time:minsToTime(bm),mins:bm,level:blendedLevel,date,isYesterday:iy,isNextDay:in2});
+  });
+  // d2에만 있는 미매칭 조석도 포함
+  t2.forEach(b=>{
+    const key=b.time+(b.date||ts);
+    if(used2.has(key))return;
+    const bm=toMins(b)+tc;
+    pushResult(b,bm,b.level);
   });
   bl.sort((a,b)=>a.mins-b.mins);
   if(isToday&&cur){const nm=toMins(cur);let lv=cur.level;for(let i=0;i<bl.length;i++){if(nm<bl[i].mins){if(i>0){const p=bl[i-1],n=bl[i];lv=Math.round(p.level+(n.level-p.level)*(nm-p.mins)/(n.mins-p.mins));}break;}}const idx=bl.findIndex(t=>t.mins>nm);const c={...cur,level:lv,date:ts};if(idx===-1)bl.push(c);else bl.splice(idx,0,c);}
   return bl;
 }
+
 function scaleTides(data,scale,tc,isToday){
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
   return data.map(item=>{

@@ -172,13 +172,13 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* ══ 돛단배 ══ */
 #sailboat{
-  position:fixed;z-index:15;
+  position:fixed;z-index:8;
   pointer-events:auto;
   cursor:pointer;
   transform:translate(-50%,-52%);
   transition:top 5s cubic-bezier(.25,.46,.45,.94),opacity 1.5s ease;
   opacity:0;
-  animation:boatSail var(--sail-dur,28s) ease-in-out infinite;
+  animation:boatSail var(--sail-dur,34s) ease-in-out infinite;
 }
 @keyframes boatSail{
   0%  {left:8%}
@@ -197,7 +197,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   25%{transform:translateY(-3px) rotate(calc(var(--bob-tilt,0deg) + var(--tilt-extra,1deg)))}
   75%{transform:translateY(2px) rotate(calc(var(--bob-tilt,0deg) - var(--tilt-extra,1deg)))}
 }
-@keyframes boatDrift{}
+
 
 /* ══════════════════════════════════
    앱 레이아웃
@@ -496,8 +496,15 @@ html.large-text .future-val{font-size:3.6rem}
 /* ══════════════════════════════════
    바텀 시트
 ══════════════════════════════════ */
-.sheet-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-.sheet-overlay.open{opacity:1;pointer-events:auto}
+
+.sheet-overlay,#auth-overlay,#log-overlay,#loglist-overlay,#myinfo-overlay,#terms-overlay{
+position:fixed;inset:0;background:rgba(0,0,0,.7);
+opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
+}
+#auth-overlay,#log-overlay,#loglist-overlay,#myinfo-overlay{z-index:300}
+#terms-overlay{z-index:350}
+.sheet-overlay{z-index:200}
+.sheet-overlay.open,#auth-overlay.open,#log-overlay.open,#loglist-overlay.open,#myinfo-overlay.open,#terms-overlay.open{opacity:1;pointer-events:auto}
 .sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:201;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0a1628,#060f1e);
@@ -507,7 +514,8 @@ html.large-text .future-val{font-size:3.6rem}
   padding-bottom:env(safe-area-inset-bottom);
 }
 .sheet.open{transform:translateY(0)}
-.sheet-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+
+.sheet-handle,.auth-handle,.log-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
 .sheet-step{padding:16px 18px 22px}
 .sheet-title{font-size:.55rem;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:14px}
 .region-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -568,8 +576,7 @@ html.large-text .future-val{font-size:3.6rem}
 .cal-day.selected .cal-tide-badge{background:rgba(4,13,24,.25);color:rgba(4,13,24,.8)}
 
 /* ══ 로그인 시트 ══ */
-#auth-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-#auth-overlay.open{opacity:1;pointer-events:auto}
+
 #auth-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
@@ -578,7 +585,7 @@ html.large-text .future-val{font-size:3.6rem}
   padding-bottom:env(safe-area-inset-bottom);
 }
 #auth-sheet.open{transform:translateY(0)}
-.auth-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+
 .auth-body{padding:20px 24px 28px;display:flex;flex-direction:column;gap:14px}
 .auth-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:#fff;text-align:center}
 .auth-sub{font-size:.6rem;color:rgba(255,255,255,.3);text-align:center;margin-top:-8px;line-height:1.6}
@@ -595,17 +602,19 @@ html.large-text .future-val{font-size:3.6rem}
 }
 .auth-input:focus{border-color:rgba(0,229,195,.4)}
 .auth-input::placeholder{color:rgba(255,255,255,.2)}
-.auth-btn{
+
+
+
+
+.auth-btn,.log-save-btn{
   width:100%;padding:13px;border-radius:12px;
-  background:linear-gradient(135deg,rgba(0,229,195,.25),rgba(0,180,216,.2));
-  border:1px solid rgba(0,229,195,.35);
-  color:var(--accent);font-size:.78rem;font-weight:700;
-  cursor:pointer;font-family:'Noto Sans KR',sans-serif;
-  transition:all .2s;letter-spacing:.5px;
+  background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));
+  border:1px solid rgba(0,229,195,.3);color:var(--accent);
+  font-size:.78rem;font-weight:700;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;transition:all .2s;
 }
-.auth-btn:active{transform:scale(.97)}
-
-
+.auth-btn{background:linear-gradient(135deg,rgba(0,229,195,.25),rgba(0,180,216,.2));border-color:rgba(0,229,195,.35);letter-spacing:.5px}
+.auth-btn:active,.log-save-btn:active{transform:scale(.97)}
 .auth-err{font-size:.58rem;color:#ff6b6b;text-align:center;min-height:1em}
 .auth-switch{font-size:.58rem;color:rgba(255,255,255,.25);text-align:center;cursor:pointer}
 .auth-switch span{color:var(--accent);font-weight:700}
@@ -619,8 +628,7 @@ html.large-text .future-val{font-size:3.6rem}
 #level-big:active{opacity:.6}
 
 /* 기록 입력 시트 */
-#log-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-#log-overlay.open{opacity:1;pointer-events:auto}
+
 #log-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
@@ -629,7 +637,7 @@ html.large-text .future-val{font-size:3.6rem}
   padding-bottom:env(safe-area-inset-bottom);
 }
 #log-sheet.open{transform:translateY(0)}
-.log-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+
 .log-body{padding:18px 20px 24px;display:flex;flex-direction:column;gap:12px}
 .log-snapshot{
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
@@ -652,18 +660,11 @@ html.large-text .future-val{font-size:3.6rem}
 }
 #log-memo:focus{border-color:rgba(0,229,195,.4)}
 #log-memo::placeholder{color:rgba(255,255,255,.18)}
-.log-save-btn{
-  width:100%;padding:13px;border-radius:12px;
-  background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));
-  border:1px solid rgba(0,229,195,.3);color:var(--accent);
-  font-size:.78rem;font-weight:700;cursor:pointer;
-  font-family:'Noto Sans KR',sans-serif;transition:all .2s;
-}
-.log-save-btn:active{transform:scale(.97)}
+
+
 
 /* 기록 목록 시트 */
-#loglist-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-#loglist-overlay.open{opacity:1;pointer-events:auto}
+
 #loglist-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
@@ -799,8 +800,7 @@ html.large-text .future-val{font-size:3.6rem}
 .hdr-left{cursor:pointer}
 
 
-#myinfo-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-#myinfo-overlay.open{opacity:1;pointer-events:auto}
+
 #myinfo-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
@@ -860,7 +860,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 }
 #sailboat.jumping{
   animation:boatJump .55s cubic-bezier(.33,1.4,.68,1) forwards,
-            boatSail var(--sail-dur,28s) ease-in-out infinite;
+            boatSail var(--sail-dur,34s) ease-in-out infinite;
   transform-origin:center bottom;
 }
 
@@ -921,8 +921,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 @keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.65}}
 
 
-#terms-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-#terms-overlay.open{opacity:1;pointer-events:auto}
+
 #terms-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:351;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
@@ -1425,7 +1424,7 @@ const TIDE_DATA={
   '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
   '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
   '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'수영해도 이동이 생겨요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
   '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
   '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
   '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },
@@ -1985,25 +1984,25 @@ function updateSailboat(windSpeed, windDir){
 
   if(windSpeed<3){
     // 잔잔 — 돛이 거의 안 부풂, 축 늘어짐
-    bobDur='5.5s';tilt='0deg';tiltExtra='0.6deg';sailDur='38s';
+    bobDur='5.5s';tilt='0deg';tiltExtra='0.6deg';sailDur='46s';
     sailPath=`M28,8 Q${28+side*4},20 ${28+side*3},32 L28,32 Z`;
     sailOpacity='.28';sailStroke='rgba(255,255,255,.2)';
     waveDur1='4.5s';waveDur2='6.5s';waveDur3='9s';waveAmp='0.7';waveShift='-4%';
   }else if(windSpeed<5){
     // 약한 바람
-    bobDur='4s';tilt=`${side*1.5}deg`;tiltExtra='1deg';sailDur='28s';
+    bobDur='4s';tilt=`${side*1.5}deg`;tiltExtra='1deg';sailDur='34s';
     sailPath=`M28,7 Q${28+side*9},16 ${28+side*7},32 L28,32 Z`;
     sailOpacity='.45';sailStroke='rgba(255,255,255,.28)';
     waveDur1='3.2s';waveDur2='4.8s';waveDur3='6.5s';waveAmp='0.9';waveShift='-5%';
   }else if(windSpeed<8){
     // 보통 — 돛 제법 팽팽
-    bobDur='3s';tilt=`${side*2.5}deg`;tiltExtra='1.8deg';sailDur='20s';
+    bobDur='3s';tilt=`${side*2.5}deg`;tiltExtra='1.8deg';sailDur='24s';
     sailPath=`M28,7 Q${28+side*14},15 ${28+side*10},32 L28,32 Z`;
     sailOpacity='.62';sailStroke='rgba(255,255,255,.35)';
     waveDur1='2.2s';waveDur2='3.3s';waveDur3='4.8s';waveAmp='1.15';waveShift='-7%';
   }else{
     // 강풍 — 돛 최대 팽창, 배 기울기
-    bobDur='1.6s';tilt=`${side*5}deg`;tiltExtra='3deg';sailDur='9s';
+    bobDur='1.6s';tilt=`${side*5}deg`;tiltExtra='3deg';sailDur='11s';
     sailPath=`M28,6 Q${28+side*20},13 ${28+side*14},32 L28,32 Z`;
     sailOpacity='.82';sailStroke='rgba(255,255,255,.5)';
     waveDur1='1.4s';waveDur2='2.1s';waveDur3='3s';waveAmp='1.4';waveShift='-10%';
@@ -3018,6 +3017,18 @@ async function submitAuth(){
 function onAuthSuccess(user){
   currentUser=user;
   closeAuth();
+  // 로그인 전 저장된 기록(tidelog_undefined) → 실제 user_id로 마이그레이션
+  try{
+    const badKey='tidelog_undefined';
+    const orphan=localStorage.getItem(badKey);
+    if(orphan){
+      const realKey='tidelog_'+user.id;
+      const existing=JSON.parse(localStorage.getItem(realKey)||'[]');
+      const migrated=JSON.parse(orphan);
+      localStorage.setItem(realKey,JSON.stringify([...migrated,...existing].slice(0,200)));
+      localStorage.removeItem(badKey);
+    }
+  }catch(e){}
   const name=user.user_metadata?.name||user.email.split('@')[0];
   const sub=document.getElementById('hdr-sub');
   if(sub)sub.textContent=name+'님 환영해요';

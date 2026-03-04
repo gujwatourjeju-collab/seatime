@@ -1017,11 +1017,11 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 <!-- OCEAN -->
 <div id="ocean">
   <div id="ocean-sky">
-    <div id="sky-moon"></div>
     <div id="future-lunar-label"></div>
   </div>
 <div id="zen-hint">바다를 탭하면 관상 모드</div>
   <div id="sky-objects">
+    <div id="sky-moon"></div>
     <div id="sky-sun"><div class="sun-rays"></div></div>
     <div id="rain-container"></div>
   </div>
@@ -2367,7 +2367,7 @@ function renderTide(data,name,isToday){
     // 달 API로 정확한 모양
     const selDs=sel.getFullYear()+'-'+String(sel.getMonth()+1).padStart(2,'0')+'-'+String(sel.getDate()).padStart(2,'0');
     fetchMoonData(selDs).then(md=>{
-      drawMoon(futureLd);
+      drawMoon(md ? md.icon : '🌕');
     });
     const moonEl=document.getElementById('sky-moon');
     if(moonEl){

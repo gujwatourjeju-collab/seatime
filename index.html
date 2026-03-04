@@ -2278,20 +2278,23 @@ function calcLive(data){
 
 function blendTides(d1,d2,w1,w2,tc,isToday){
   const t1=d1.filter(d=>!d.isCurrent),t2=d2.filter(d=>!d.isCurrent),cur=d1.find(d=>d.isCurrent);
+  // 🔍 디버그 로그 — 콘솔에서 확인
+  console.log('▶ blendTides isToday='+isToday);
+  console.log('  DT_0004(제주) raw:', JSON.stringify(t1.map(d=>({type:d.type,time:d.time,level:d.level,date:d.date}))));
+  console.log('  DT_0022(성산포) raw:', JSON.stringify(t2.map(d=>({type:d.type,time:d.time,level:d.level,date:d.date}))));
   const used=new Set(),bl=[];
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
   t1.forEach(a=>{
-    // date 필드 없을 수 있음(미래 API 응답) → type+시간 근접성으로만 매칭
     const aDate=a.date||ts;
     const m=t2.filter(b=>{
       const bDate=b.date||ts;
       return b.type===a.type&&!used.has(b.time+bDate);
     }).sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)))[0];
-    if(!m)return;
+    if(!m){console.warn('  ❌ 매칭 실패:', a.type, a.time);return;}
     const mDate=m.date||ts;
     used.add(m.time+mDate);
     const bm=Math.round(toMins(a)*w1+toMins(m)*w2)+tc;
-    // 오늘이 아닐 때는 자정 경계 처리 안 함 — 그냥 당일 데이터로 처리
+    console.log(`  ✅ ${a.type} ${a.time}(${a.level}) + ${m.time}(${m.level}) → ${minsToTime(bm)} ${Math.round(a.level*w1+m.level*w2)}cm`);
     if(!isToday){
       bl.push({...a,time:minsToTime(bm),mins:bm,level:Math.round(a.level*w1+m.level*w2),date:ts});
       return;
@@ -2301,6 +2304,7 @@ function blendTides(d1,d2,w1,w2,tc,isToday){
     bl.push({...a,time:minsToTime(bm),mins:bm,level:Math.round(a.level*w1+m.level*w2),date,isYesterday:iy,isNextDay:in2});
   });
   bl.sort((a,b)=>a.mins-b.mins);
+  console.log('  결과:', JSON.stringify(bl.map(d=>({type:d.type,time:d.time,level:d.level}))));
   if(isToday&&cur){const nm=toMins(cur);let lv=cur.level;for(let i=0;i<bl.length;i++){if(nm<bl[i].mins){if(i>0){const p=bl[i-1],n=bl[i];lv=Math.round(p.level+(n.level-p.level)*(nm-p.mins)/(n.mins-p.mins));}break;}}const idx=bl.findIndex(t=>t.mins>nm);const c={...cur,level:lv,date:ts};if(idx===-1)bl.push(c);else bl.splice(idx,0,c);}
   return bl;
 }

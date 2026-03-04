@@ -631,7 +631,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 /* 기록 입력 시트 */
 
 #log-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -667,7 +667,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 /* 기록 목록 시트 */
 
 #loglist-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -822,6 +822,12 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 
 
+
+
+/* 미래 날짜 달 중앙 표시 */
+#future-moon-wrap{display:none;flex-direction:column;align-items:center;gap:10px;padding:20px 0 10px;}
+#future-moon-wrap.show{display:flex;}
+#future-lunar-label{font-size:.75rem;color:rgba(255,255,255,.45);font-weight:500;letter-spacing:.5px;}
 
 /* ═══ 관상 모드 ═══ */
 #zen-hint{
@@ -1137,6 +1143,10 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     </div>
 
     <div id="hero-inner">
+      <div id="future-moon-wrap">
+        <div id="future-moon-svg"></div>
+        <div id="future-lunar-label">음력 --월 --일</div>
+      </div>
       <div class="hero-top-row">
         <span class="tide-badge" id="tide-badge" style="display:none"></span>
         <div class="station-pill" id="station-pill"></div><span id="fav-star" onclick="toggleFav()">☆</span>
@@ -1265,6 +1275,10 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       </div>
     </div>
     <div>
+      <div class="log-memo-label">포인트명 <span style="font-size:11px;color:rgba(255,255,255,.35);font-weight:400;">(선택)</span></div>
+      <input id="log-point" type="text" placeholder="예) 방파제 끝, 동쪽 갯바위..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 14px;font-size:.75rem;color:#fff;font-family:'Noto Sans KR',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s;" onfocus="this.style.borderColor='rgba(0,229,195,.4)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+    </div>
+    <div>
       <div class="log-memo-label">메모</div>
       <textarea id="log-memo" placeholder="오늘 바다 상태, 낚시 결과, 특이사항..."></textarea>
     </div>
@@ -1279,6 +1293,13 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   <div class="loglist-header">
     <div class="loglist-title">출조 기록</div>
     <button class="loglist-close" onclick="closeLogList()">✕</button>
+  </div>
+  <div style="padding:8px 16px;display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)">
+    <select id="loglist-year" onchange="renderLogList()" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:#fff;font-size:.7rem;font-family:'Noto Sans KR',sans-serif;outline:none"></select>
+    <select id="loglist-month" onchange="renderLogList()" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:#fff;font-size:.7rem;font-family:'Noto Sans KR',sans-serif;outline:none">
+      <option value="">전체</option>
+      <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+    </select>
   </div>
   <div id="loglist-body"></div>
 </div>
@@ -2328,8 +2349,12 @@ function renderTide(data,name,isToday){
     };
     // 조류 인포 (오늘만)
     renderCurrentInfo(tn);
+    // 오늘 전환 시 복원
+    const ub2=document.getElementById('unit-btn');if(ub2)ub2.style.display='';
+    document.getElementById('sky-objects').style.opacity='';
+    const fmw2=document.getElementById('future-moon-wrap');if(fmw2)fmw2.classList.remove('show');
   }else{
-    // 미래 날짜 — 수위/바다/게이지/배 숨김
+    // 미래 날짜 — 수위/바다/게이지/배/날씨 숨김
     document.querySelector('.tide-status-row').style.display='none';
     document.getElementById('gauge-rail').style.display='none';
     document.getElementById('gauge-dot').style.display='none';
@@ -2340,9 +2365,31 @@ function renderTide(data,name,isToday){
     const sb=document.getElementById('sailboat');if(sb){sb.classList.remove('show');sb.style.display='none';}
     const lb=document.getElementById('level-big');lb.textContent='';
     const lu=document.getElementById('level-unit');if(lu)lu.textContent='';
+    const ub=document.getElementById('unit-btn');if(ub)ub.style.display='none';
+    // 날씨 그래픽 숨김
+    document.getElementById('sky-objects').style.opacity='0';
+    document.getElementById('sky-moon').style.opacity='0';
     document.getElementById('tide-panel').style.marginTop='0';
     document.getElementById('hero').style.flex='0 0 auto';
-    document.getElementById('hero').style.paddingTop='40px';
+    document.getElementById('hero').style.paddingTop='20px';
+    // 달 + 음력 표시
+    const fmw=document.getElementById('future-moon-wrap');
+    const fms=document.getElementById('future-moon-svg');
+    const fml=document.getElementById('future-lunar-label');
+    if(fmw&&fms&&fml){
+      const futureLd=getLunarDay(sel);
+      const futureLm=getLunarMonth(sel);
+      const ms=typeof futureLm==='string'?futureLm:futureLm+'월';
+      // drawMoon을 임시 크기로 그려서 복사
+      drawMoon(futureLd);
+      const origMoonEl=document.getElementById('sky-moon');
+      fms.innerHTML=origMoonEl.innerHTML;
+      // SVG 크기 키우기
+      const svg=fms.querySelector('svg');
+      if(svg){svg.setAttribute('width','100');svg.setAttribute('height','100');svg.setAttribute('viewBox','0 0 80 80');}
+      fml.textContent=`음력 ${ms} ${futureLd}일`;
+      fmw.classList.add('show');
+    }
     // 미래에도 조류 카드 표시
     renderCurrentInfo(tn);
   }
@@ -2640,6 +2687,7 @@ function openLogSheet(){
   document.getElementById('log-snap-tags').innerHTML=
     tags.map(t=>`<span class="log-snap-tag">${t}</span>`).join('');
   document.getElementById('log-memo').value='';
+  document.getElementById('log-point').value='';
 
   document.getElementById('log-overlay').classList.add('open');
   document.getElementById('log-sheet').classList.add('open');
@@ -2695,7 +2743,8 @@ function clearPhoto(){
 async function saveLog(){
   if(!logSnapshot||!currentUser)return;
   const memo=document.getElementById('log-memo').value.trim();
-  const entry={...logSnapshot,memo,user_id:currentUser.id};
+  const point=document.getElementById('log-point').value.trim();
+  const entry={...logSnapshot,memo,point,user_id:currentUser.id};
   const btn=document.querySelector('.log-save-btn');
   btn.textContent='저장 중...';btn.disabled=true;
   // 사진 업로드 (있으면)
@@ -2748,11 +2797,31 @@ async function renderLogList(){
   try{
     const {data,error}=await supabaseClient.from('tide_logs')
       .select('*').eq('user_id',currentUser.id)
-      .order('saved_at',{ascending:false}).limit(100);
+      .order('saved_at',{ascending:false}).limit(200);
     if(!error&&data&&data.length>0) logs=data;
   }catch(e){/* 오프라인 — 로컬 사용 */}
-  if(!logs.length){body.innerHTML='<div class="log-empty">아직 기록이 없어요 🌊<br>수위 숫자를 눌러 첫 기록을 남겨보세요</div>';return;}
-  body.innerHTML=logs.map((l,i)=>{
+
+  // 년도 셀렉트 초기화
+  const years=[...new Set(logs.map(l=>{const d=new Date(l.saved_at);return isNaN(d)?null:d.getFullYear();}).filter(Boolean))].sort((a,b)=>b-a);
+  const ySel=document.getElementById('loglist-year');
+  const curY=ySel.value;
+  ySel.innerHTML='<option value="">전체 년도</option>'+years.map(y=>`<option value="${y}">${y}년</option>`).join('');
+  if(curY)ySel.value=curY;
+
+  // 필터 적용
+  const filterY=ySel.value;
+  const filterM=document.getElementById('loglist-month').value;
+  let filtered=logs.filter(l=>{
+    if(!filterY&&!filterM)return true;
+    const d=new Date(l.saved_at);
+    if(isNaN(d))return true;
+    if(filterY&&String(d.getFullYear())!==filterY)return false;
+    if(filterM&&String(d.getMonth()+1)!==filterM)return false;
+    return true;
+  });
+
+  if(!filtered.length){body.innerHTML='<div class="log-empty">해당 기간에 기록이 없어요 🌊</div>';return;}
+  body.innerHTML=filtered.map((l,i)=>{
     const tags=[l.tide_name,l.status,l.current].filter(Boolean);
     return `<div class="log-card">
       <div class="log-card-top">
@@ -2761,7 +2830,7 @@ async function renderLogList(){
           <div class="log-card-tags">${tags.map(t=>`<span class="log-card-tag">${t}</span>`).join('')}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-          <div class="log-card-info">${l.station||''}<br>${l.date||''} ${l.time||''}</div>
+          <div class="log-card-info">${l.station||''}${l.point?' · '+l.point:''}<br>${l.date||''} ${l.time||''}</div>
           <button class="log-card-del" onclick="deleteLog(${i},event)">삭제</button>
         </div>
       </div>
@@ -2791,6 +2860,7 @@ async function deleteLog(idx,e){
   }catch(e2){/* 오프라인 */}
   await renderLogList();
 }
+
 
 
 

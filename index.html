@@ -37,7 +37,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 ══════════════════════════════════ */
 #splash{
   position:fixed;inset:0;z-index:9999;
-  background:#030810;
+  background:#071220;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;
   transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
@@ -47,8 +47,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .sp-grid{
   position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(0,229,195,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,229,195,.04) 1px,transparent 1px);
+    linear-gradient(rgba(0,229,195,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,195,.07) 1px,transparent 1px);
   background-size:40px 40px;
   mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 40%,transparent 100%);
   animation:gridPulse 4s ease-in-out infinite;
@@ -92,10 +92,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 @keyframes spFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .sp-eyebrow{font-size:.48rem;font-weight:300;letter-spacing:5px;color:rgba(255,255,255,.2);text-transform:none;margin-bottom:14px}
 .sp-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:10px;background:linear-gradient(135deg,rgba(255,255,255,.9) 30%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
-.sp-sub{font-size:.5rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:2px;margin-top:12px}
+.sp-sub{font-size:.55rem;font-weight:400;color:rgba(255,255,255,.55);letter-spacing:2px;margin-top:12px}
 #splash-status{
   margin-top:32px;font-family:'DM Mono',monospace;font-size:.55rem;font-weight:300;
-  letter-spacing:3px;color:rgba(0,229,195,.4);min-height:1em;
+  letter-spacing:3px;color:rgba(0,229,195,.75);min-height:1em;
 }
 
 /* ══════════════════════════════════
@@ -501,13 +501,14 @@ html.large-text .future-val{font-size:3.6rem}
 position:fixed;inset:0;background:rgba(0,0,0,.7);
 opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
-#auth-overlay,#log-overlay,#loglist-overlay,#myinfo-overlay{z-index:300}
+#auth-overlay,#log-overlay,#loglist-overlay,#myinfo-overlay{z-index:409}
 #terms-overlay{z-index:350}
 .sheet-overlay{z-index:200}
 .sheet-overlay.open,#auth-overlay.open,#log-overlay.open,#loglist-overlay.open,#myinfo-overlay.open,#terms-overlay.open{opacity:1;pointer-events:auto}
 .sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:201;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0a1628,#060f1e);
+  background:linear-gradient(180deg,rgba(10,22,40,.82),rgba(6,15,30,.88));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-radius:24px 24px 0 0;
   border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -578,7 +579,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 /* ══ 로그인 시트 ══ */
 
 #auth-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:301;max-width:480px;margin:0 auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:linear-gradient(180deg,#0d1e38,#060f1e);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
@@ -1252,6 +1253,18 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       <div class="log-snap-tags" id="log-snap-tags"></div>
     </div>
     <div>
+      <div class="log-memo-label">사진 <span style="font-size:11px;color:rgba(255,255,255,.35);font-weight:400;">(선택, 자동 압축)</span></div>
+      <label id="log-photo-label" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:12px;border:1px dashed rgba(0,229,195,.3);color:rgba(0,229,195,.6);font-size:13px;cursor:pointer;box-sizing:border-box;margin-bottom:12px;transition:all .2s;">
+        📷 사진 추가
+        <input type="file" id="log-photo-input" accept="image/*" style="display:none;" onchange="handlePhotoSelect(this)">
+      </label>
+      <div id="log-photo-preview" style="display:none;position:relative;margin-bottom:12px;">
+        <img id="log-photo-img" style="width:100%;border-radius:12px;max-height:180px;object-fit:cover;" />
+        <button onclick="clearPhoto()" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px;line-height:1;">✕</button>
+        <div id="log-photo-size" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:rgba(255,255,255,.7);font-size:10px;padding:2px 6px;border-radius:6px;"></div>
+      </div>
+    </div>
+    <div>
       <div class="log-memo-label">메모</div>
       <textarea id="log-memo" placeholder="오늘 바다 상태, 낚시 결과, 특이사항..."></textarea>
     </div>
@@ -1396,12 +1409,31 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       <div class="auth-label">휴대폰 번호</div>
       <input class="auth-input" id="auth-phone" type="tel" placeholder="010-0000-0000" autocomplete="tel">
     </div>
+    <div id="auth-remember-wrap" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <input type="checkbox" id="auth-remember" style="accent-color:#00e5c3;width:14px;height:14px;cursor:pointer;">
+      <label for="auth-remember" style="font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;">이메일 저장</label>
+    </div>
     <div class="auth-err" id="auth-err"></div>
     <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">로그인</button>
-
+    <button id="auth-forgot-btn" onclick="openForgotPw()" style="display:none;background:none;border:none;color:rgba(0,229,195,.5);font-size:12px;cursor:pointer;margin-top:8px;width:100%;text-align:center;font-family:'Noto Sans KR',sans-serif;">비밀번호를 잊으셨나요?</button>
     <div class="auth-switch" id="auth-switch-text" onclick="switchAuthTab('signup')">계정이 없으신가요? <span>회원가입</span></div>
+
+    <!-- 비밀번호 찾기 뷰 (auth-sheet 내부) -->
+    <div id="forgot-view" style="display:none;margin-top:4px;">
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin:16px 0;"></div>
+      <div class="auth-label" style="font-size:13px;margin-bottom:12px;color:rgba(255,255,255,.7);">🔑 비밀번호 찾기</div>
+      <div class="auth-sub" style="margin-bottom:14px;font-size:12px;">가입한 이메일로 재설정 링크를 보내드려요</div>
+      <div class="auth-field">
+        <div class="auth-label">이메일</div>
+        <input class="auth-input" id="forgot-email" type="email" placeholder="hello@sea.com" autocomplete="email">
+      </div>
+      <div class="auth-err" id="forgot-err"></div>
+      <button class="auth-btn" onclick="submitForgotPw()" style="margin-top:4px;">재설정 링크 보내기</button>
+      <div class="auth-switch" onclick="closeForgotPw()" style="margin-top:10px;">← 로그인으로 돌아가기</div>
+    </div>
   </div>
 </div>
+
 
 
 <button id="refresh-btn" onclick="refresh()">
@@ -1530,7 +1562,8 @@ function getTimeOfDay(){
 }
 
 function getWeatherCat(wc){
-  if(wc===0||wc===1)return 'clear';
+  if(wc===0)return 'clear';
+  if(wc===1)return 'mostlyclear';
   if(wc===2)return 'partly';
   if(wc===3||wc===45||wc===48)return 'cloudy';
   if(wc>=51&&wc<=55)return 'drizzle';
@@ -1543,6 +1576,7 @@ function getWeatherCat(wc){
 const SKY_PAL={
   dawn:{
     clear:  {sky:'linear-gradient(180deg,#1a0a2e 0%,#4a1a5e 18%,#c45a2a 45%,#e8904a 70%,#f0b870 100%)',wt:'rgba(230,120,70,.18)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#1a0a2e 0%,#4a1a5e 18%,#c45a2a 45%,#e8904a 70%,#f0b870 100%)',wt:'rgba(230,120,70,.18)'},
     partly: {sky:'linear-gradient(180deg,#1e0e32 0%,#4e2060 18%,#a84e28 45%,#d07838 70%,#e8a060 100%)',wt:'rgba(200,100,55,.15)'},
     cloudy: {sky:'linear-gradient(180deg,#28203a 0%,#403050 30%,#706058 60%,#908070 100%)',wt:'rgba(110,90,80,.12)'},
     drizzle:{sky:'linear-gradient(180deg,#1e1828 0%,#382840 30%,#584848 60%,#706860 100%)',wt:'rgba(90,80,75,.1)'},
@@ -1552,6 +1586,7 @@ const SKY_PAL={
   },
   morning:{
     clear:  {sky:'linear-gradient(180deg,#0a2a5a 0%,#1a5a8a 25%,#3a8ab8 55%,#68b4d8 80%,#90cce8 100%)',wt:'rgba(90,170,215,.2)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#0a2a5a 0%,#1a5a8a 25%,#3a8ab8 55%,#68b4d8 80%,#90cce8 100%)',wt:'rgba(90,170,215,.2)'},
     partly: {sky:'linear-gradient(180deg,#0e2e5e 0%,#1e5a88 25%,#3a7aaa 55%,#60a4c8 80%,#82bcd8 100%)',wt:'rgba(80,150,195,.17)'},
     cloudy: {sky:'linear-gradient(180deg,#1a2a3e 0%,#283848 30%,#485868 60%,#687888 100%)',wt:'rgba(70,100,125,.14)'},
     drizzle:{sky:'linear-gradient(180deg,#161e2c 0%,#222c3a 30%,#384858 60%,#506070 100%)',wt:'rgba(60,90,115,.11)'},
@@ -1561,6 +1596,7 @@ const SKY_PAL={
   },
   day:{
     clear:  {sky:'linear-gradient(180deg,#062040 0%,#0a3a6e 25%,#1468a8 55%,#3090cc 80%,#58b4e2 100%)',wt:'rgba(70,150,205,.22)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#062040 0%,#0a3a6e 25%,#1468a8 55%,#3090cc 80%,#58b4e2 100%)',wt:'rgba(70,150,205,.22)'},
     partly: {sky:'linear-gradient(180deg,#0a2846 0%,#123860 25%,#1c5a8a 55%,#2e7eae 80%,#50a4cc 100%)',wt:'rgba(62,130,185,.18)'},
     cloudy: {sky:'linear-gradient(180deg,#141e2e 0%,#1e2c40 30%,#304050 60%,#485868 100%)',wt:'rgba(55,82,115,.15)'},
     drizzle:{sky:'linear-gradient(180deg,#101820 0%,#182430 30%,#283444 60%,#3a4858 100%)',wt:'rgba(44,72,106,.12)'},
@@ -1570,6 +1606,7 @@ const SKY_PAL={
   },
   dusk:{
     clear:  {sky:'linear-gradient(180deg,#0a1830 0%,#2a2050 18%,#8a3828 42%,#d06030 62%,#e89050 82%,#f0b870 100%)',wt:'rgba(215,95,45,.2)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#0a1830 0%,#2a2050 18%,#8a3828 42%,#d06030 62%,#e89050 82%,#f0b870 100%)',wt:'rgba(215,95,45,.2)'},
     partly: {sky:'linear-gradient(180deg,#0e1c34 0%,#2e2454 18%,#783020 42%,#b85028 62%,#d07840 82%,#e0a060 100%)',wt:'rgba(182,82,36,.17)'},
     cloudy: {sky:'linear-gradient(180deg,#1a1828 0%,#2a2438 25%,#504040 50%,#705850 75%,#887868 100%)',wt:'rgba(102,74,64,.13)'},
     drizzle:{sky:'linear-gradient(180deg,#141220 0%,#201c2c 25%,#383030 50%,#504040 75%,#604e48 100%)',wt:'rgba(74,55,55,.11)'},
@@ -1579,6 +1616,7 @@ const SKY_PAL={
   },
   evening:{
     clear:  {sky:'linear-gradient(180deg,#050a18 0%,#0a1428 20%,#0e1e3a 50%,#122854 75%,#183060 100%)',wt:'rgba(18,45,96,.17)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#050a18 0%,#0a1428 20%,#0e1e3a 50%,#122854 75%,#183060 100%)',wt:'rgba(18,45,96,.17)'},
     partly: {sky:'linear-gradient(180deg,#060c1a 0%,#0c1630 20%,#101e3a 50%,#142650 75%,#1a2e5c 100%)',wt:'rgba(15,40,86,.15)'},
     cloudy: {sky:'linear-gradient(180deg,#0a0c14 0%,#101420 30%,#181e2c 60%,#20283a 100%)',wt:'rgba(18,27,55,.12)'},
     drizzle:{sky:'linear-gradient(180deg,#080a0e 0%,#0e101a 30%,#141820 60%,#1c2028 100%)',wt:'rgba(13,22,46,.1)'},
@@ -1588,6 +1626,7 @@ const SKY_PAL={
   },
   night:{
     clear:  {sky:'linear-gradient(180deg,#020408 0%,#04080e 20%,#060c16 50%,#0a1020 75%,#0e1628 100%)',wt:'rgba(8,18,46,.14)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#020408 0%,#04080e 20%,#060c16 50%,#0a1020 75%,#0e1628 100%)',wt:'rgba(8,18,46,.14)'},
     partly: {sky:'linear-gradient(180deg,#030408 0%,#060810 20%,#080c18 50%,#0c121e 75%,#101826 100%)',wt:'rgba(7,16,42,.12)'},
     cloudy: {sky:'linear-gradient(180deg,#050506 0%,#08080c 30%,#0c0c14 60%,#12121c 100%)',wt:'rgba(8,8,27,.1)'},
     drizzle:{sky:'linear-gradient(180deg,#040406 0%,#060608 30%,#08080e 60%,#0e0e14 100%)',wt:'rgba(6,6,22,.09)'},
@@ -1706,36 +1745,78 @@ function drawMoon(lunarDay){
   const el=document.getElementById('sky-moon');
   if(!el)return;
   const phase=getMoonPhase(lunarDay);
-  const size=52;
-  const r=size/2;
-  // SVG로 달 모양 그리기
+  const size=52, r=size/2, ri=r-2; // ri = 달 반지름
+  const fill='rgba(255,248,210,.92)';
+  const shadow='rgba(8,18,40,1)';
   let moonPath='';
+
   if(phase.type==='full'){
-    moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,220,${0.82+phase.illum*.15})"/>`;
+    // 보름달: 단순 원
+    moonPath=`<circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}"/>`;
+
   }else if(phase.type==='half'){
+    // 반달: 원 + 지름선으로 반 자르기 (clip-path 활용)
+    const id='hc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
-      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 0,1 ${r},${size-2} A${r-2},${r-2} 0 0,0 ${r},2 Z" fill="rgba(255,248,200,.85)"/>
-      <path d="M${r},2 A${r-2},${r-2} 0 0,0 ${r},${size-2} Z" fill="rgba(255,255,255,.05)"/>`;
+      // 오른쪽 반 밝음 (상현)
+      moonPath=`<defs><clipPath id="${id}"><rect x="${r}" y="0" width="${r}" height="${size}"/></clipPath></defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }else{
-      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 0,0 ${r},${size-2} A${r-2},${r-2} 0 0,1 ${r},2 Z" fill="rgba(255,248,200,.85)"/>`;
+      // 왼쪽 반 밝음 (하현)
+      moonPath=`<defs><clipPath id="${id}"><rect x="0" y="0" width="${r}" height="${size}"/></clipPath></defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }
+
   }else if(phase.type==='crescent'){
-    const ox=phase.dir==='right'?(r-2)*(.9-phase.illum*1.1):(-(r-2)*(.9-phase.illum*1.1));
-    const cx=r+ox, cy=r;
+    // 초승달/그믐달: 두 원의 교집합
+    // illum 0.04~0.38 → 그림자 원의 중심 오프셋
+    const illum=phase.illum;
+    const offset=ri*(1-illum*2.2); // 그림자 원 중심 이동량
+    const id='cc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
-      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 1,1 ${r},${size-2}
-        A${r-4},${r-4} 0 1,0 ${r},2 Z" fill="rgba(255,248,200,.88)"/>`;
+      // 오른쪽 초승달: 달 원에서 왼쪽으로 치우친 그림자 원 제거
+      moonPath=`<defs>
+        <mask id="${id}">
+          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+          <circle cx="${r-offset}" cy="${r}" r="${ri}" fill="black"/>
+        </mask>
+      </defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
-      moonPath=`<path d="M${r},2 A${r-2},${r-2} 0 1,0 ${r},${size-2}
-        A${r-4},${r-4} 0 1,1 ${r},2 Z" fill="rgba(255,248,200,.88)"/>`;
+      // 왼쪽 그믐달
+      moonPath=`<defs>
+        <mask id="${id}">
+          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+          <circle cx="${r+offset}" cy="${r}" r="${ri}" fill="black"/>
+        </mask>
+      </defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }
-  }else{ // gibbous
+
+  }else{ // gibbous (볼록달)
+    const illum=phase.illum; // 0.55~0.98
+    const offset=ri*(1-illum)*1.8; // illum 높을수록 그림자 작음
+    const id='gc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
-      moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
-      <ellipse cx="${r-(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+      // 오른쪽 볼록 (상현 → 보름 사이): 왼쪽에 그림자 조금
+      moonPath=`<defs>
+        <mask id="${id}">
+          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+          <circle cx="${r-offset}" cy="${r}" r="${ri*0.85}" fill="black"/>
+        </mask>
+      </defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
-      moonPath=`<circle cx="${r}" cy="${r}" r="${r-2}" fill="rgba(255,248,210,.85)"/>
-      <ellipse cx="${r+(r-2)*.3}" cy="${r}" rx="${(r-2)*.55}" ry="${r-2}" fill="rgba(15,25,50,.7)"/>`;
+      // 왼쪽 볼록 (보름 → 하현 사이)
+      moonPath=`<defs>
+        <mask id="${id}">
+          <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
+          <circle cx="${r+offset}" cy="${r}" r="${ri*0.85}" fill="black"/>
+        </mask>
+      </defs>
+      <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }
   }
   el.innerHTML=`<svg class="moon-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${moonPath}</svg>`;
@@ -1813,9 +1894,9 @@ function animateSun(wc){
   const sun=document.getElementById('sky-sun');
   if(!sun)return;
 
-  const isClear=wc<=1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48);
+  const isClear=wc===0,isMostlyClear=wc===1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48);
   const visible=wc<=3||(wc>=45&&wc<=48);
-  const opBase=isClear?1:isPartly?.55:isCloudy?.12:0;
+  const opBase=isClear?1:isMostlyClear?.88:isPartly?.55:isCloudy?.12:0;
 
   function frame(){
     const pos=getSunPosition();
@@ -1857,7 +1938,7 @@ function updateSkyObjects(wc,windSpd){
   const isClear=wc<=1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48),isDrizzle=wc>=51&&wc<=55,isRain=wc>=61&&wc<=65,isHeavy=wc>=80&&wc<=82,isStorm=wc>=95;
   animateSun(wc);
   const ws=windSpd||currentWindSpeed||0;
-  const baseDur=Math.max(5,40-ws*2.2);
+  const baseDur=Math.max(8,40-ws*2.0);
   function mkC(top,w,h,op,df){
     const el=document.createElement('div');
     el.className='sky-cloud';
@@ -1874,16 +1955,45 @@ function updateSkyObjects(wc,windSpd){
       const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
       e.setAttribute('cx',b[0].toFixed(1));e.setAttribute('cy',b[1].toFixed(1));
       e.setAttribute('rx',b[2].toFixed(1));e.setAttribute('ry',b[3].toFixed(1));
-      e.setAttribute('fill','rgba(220,235,255,'+op+')');
+      const cloudFill=isStorm||isHeavy?'rgba(140,155,175,'+op+')':isRain||isDrizzle?'rgba(180,195,215,'+op+')':isCloudy?'rgba(200,215,235,'+op+')':isPartly?'rgba(218,232,252,'+op+')':'rgba(230,242,255,'+op+')';
+      e.setAttribute('fill',cloudFill);
       svg.appendChild(e);
     });
     el.appendChild(svg);sky.insertBefore(el,rain);
     setTimeout(function(){el.style.opacity=op;},100+Math.random()*300);
   }
   var r=Math.random;
-  if(isPartly){mkC((4+r()*8)+'%',160,52,.2,.15);mkC((10+r()*8)+'%',110,36,.14,.6);}
-  else if(isCloudy){mkC((2+r()*5)+'%',220,68,.25,0);mkC((8+r()*5)+'%',180,56,.2,.3);mkC((5+r()*6)+'%',150,48,.16,.6);mkC((14+r()*4)+'%',130,42,.13,.82);}
-  else if(isDrizzle||isRain||isHeavy||isStorm){mkC((1+r()*3)+'%',280,80,.35,0);mkC((5+r()*4)+'%',240,70,.3,.22);mkC((3+r()*4)+'%',220,65,.26,.48);mkC((8+r()*4)+'%',200,58,.22,.72);mkC((2+r()*3)+'%',260,75,.28,.9);}
+  if(isClear){
+    // 맑음(wc=0): 구름 거의 없음, 아주 희미하게 1개
+    if(r()>.5) mkC((3+r()*8)+'%',120,30,.05,.3);
+  }
+  else if(isMostlyClear){
+    // 대체로 맑음(wc=1): 얇은 구름 1~2개
+    mkC((4+r()*7)+'%',150,40,.10,.2);
+    if(r()>.3) mkC((13+r()*5)+'%',110,32,.07,.65);
+  }
+  else if(isPartly){
+    // 구름 조금: 해/달 주변에 자연스럽게
+    mkC((4+r()*8)+'%',180,56,.28,.1);
+    mkC((10+r()*8)+'%',140,44,.22,.45);
+    mkC((6+r()*6)+'%',120,38,.16,.75);
+  }
+  else if(isCloudy){
+    // 흐림: 구름 많고 두껍게
+    mkC((2+r()*4)+'%',240,72,.42,0);
+    mkC((7+r()*4)+'%',200,62,.36,.25);
+    mkC((4+r()*5)+'%',170,54,.3,.52);
+    mkC((12+r()*4)+'%',150,46,.24,.78);
+    mkC((1+r()*3)+'%',190,58,.32,.9);
+  }
+  else if(isDrizzle||isRain||isHeavy||isStorm){
+    // 비/폭풍: 두껍고 어두운 구름
+    mkC((1+r()*3)+'%',300,85,.52,0);
+    mkC((4+r()*3)+'%',260,75,.46,.2);
+    mkC((2+r()*4)+'%',240,68,.4,.45);
+    mkC((7+r()*3)+'%',220,62,.36,.68);
+    mkC((1+r()*2)+'%',280,78,.44,.88);
+  }
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
   for(let i=0;i<rc;i++){const d=document.createElement('div');d.className='raindrop';d.style.cssText=`left:${Math.random()*105}%;height:${10+Math.random()*18}px;--rd:${.5+Math.random()*.5}s;--rdelay:${-Math.random()*2}s;opacity:${.4+Math.random()*.4}`;rain.appendChild(d);}
@@ -2541,23 +2651,78 @@ function closeLogSheet(){
   document.getElementById('log-sheet').classList.remove('open');
 }
 
+
+let selectedPhotoBlob = null;
+
+function handlePhotoSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // Canvas로 리사이즈 (최대 1200px, 품질 80%)
+      const MAX = 1200;
+      let w = img.width, h = img.height;
+      if(w > MAX || h > MAX){
+        if(w > h){ h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        selectedPhotoBlob = blob;
+        const url = URL.createObjectURL(blob);
+        document.getElementById('log-photo-img').src = url;
+        document.getElementById('log-photo-preview').style.display = 'block';
+        document.getElementById('log-photo-label').style.display = 'none';
+        const kb = Math.round(blob.size / 1024);
+        document.getElementById('log-photo-size').textContent = kb + 'KB';
+      }, 'image/jpeg', 0.8);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto(){
+  selectedPhotoBlob = null;
+  document.getElementById('log-photo-input').value = '';
+  document.getElementById('log-photo-preview').style.display = 'none';
+  document.getElementById('log-photo-label').style.display = 'flex';
+}
 async function saveLog(){
   if(!logSnapshot||!currentUser)return;
   const memo=document.getElementById('log-memo').value.trim();
   const entry={...logSnapshot,memo,user_id:currentUser.id};
   const btn=document.querySelector('.log-save-btn');
   btn.textContent='저장 중...';btn.disabled=true;
-  // localStorage에 항상 저장 (오프라인 포함)
+  // 사진 업로드 (있으면)
+  if(selectedPhotoBlob){
+    try{
+      const ext='jpg';
+      const path=currentUser.id+'/'+Date.now()+'.'+ext;
+      const {data,error}=await supabaseClient.storage.from('photo').upload(path, selectedPhotoBlob, {contentType:'image/jpeg',upsert:false});
+      if(!error){
+        const {data:urlData}=supabaseClient.storage.from('photo').getPublicUrl(path);
+        entry.photo_url=urlData.publicUrl;
+      }
+    }catch(e){console.warn('사진 업로드 실패',e);}
+  }
+  // localStorage에 항상 저장
   const key='tidelog_'+currentUser.id;
   const logs=JSON.parse(localStorage.getItem(key)||'[]');
   logs.unshift(entry);
   localStorage.setItem(key,JSON.stringify(logs.slice(0,200)));
-  // Supabase에도 시도 (실패해도 무관)
+  // Supabase에도 시도
   try{
     const {error}=await supabaseClient.from('tide_logs').insert(entry);
     if(error)console.warn('Supabase 저장 실패, 로컬에만 저장됨:',error.message);
   }catch(e){console.warn('Supabase 오프라인');}
   btn.textContent='✓ 저장됐어요';
+  // 사진 초기화
+  clearPhoto();
   setTimeout(()=>{closeLogSheet();btn.textContent='기록 저장';btn.disabled=false;},800);
 }
 
@@ -2602,7 +2767,8 @@ async function renderLogList(){
       </div>
       ${l.tide_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
       ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
-      ${l.memo?`<div class="log-card-memo">${l.memo}</div>`:''}
+      ${(l.photo_url?`<img src="${l.photo_url}" style="width:100%;border-radius:10px;margin-bottom:6px;max-height:160px;object-fit:cover;" loading="lazy">`:'')+(l.memo?`<div class="log-card-memo">${l.memo}</div>`:'')}
+
     </div>`;
   }).join('');
 }
@@ -2956,6 +3122,75 @@ function openAuth(){
   document.getElementById('auth-overlay').classList.add('open');
   document.getElementById('auth-sheet').classList.add('open');
   document.getElementById('auth-err').textContent='';
+  // 로그인 탭일 때만 remember/forgot 표시
+  const isLogin=(authTab==='login');
+  document.getElementById('auth-remember-wrap').style.display=isLogin?'flex':'none';
+  document.getElementById('auth-forgot-btn').style.display=isLogin?'block':'none';
+}
+
+// 모바일 키보드 올라올 때 auth-sheet 위로 올리기
+function setupKeyboardHandler(){
+  const inputs=document.querySelectorAll('#auth-sheet input, #forgot-sheet input');
+  inputs.forEach(input=>{
+    input.addEventListener('focus',()=>{
+      setTimeout(()=>{
+        const sheet=input.closest('#auth-sheet,#forgot-sheet');
+        if(sheet) sheet.scrollIntoView({behavior:'smooth',block:'end'});
+        // iOS Safari visualViewport 대응
+        if(window.visualViewport){
+          const vv=window.visualViewport;
+          const bottom=window.innerHeight-vv.height-vv.offsetTop;
+          if(bottom>50){
+            sheet.style.bottom=bottom+'px';
+          }
+        }
+      },300);
+    });
+    input.addEventListener('blur',()=>{
+      const sheet=input.closest('#auth-sheet,#forgot-sheet');
+      if(sheet) sheet.style.bottom='0';
+    });
+  });
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',()=>{
+      const vv=window.visualViewport;
+      const bottom=window.innerHeight-vv.height-vv.offsetTop;
+      ['auth-sheet','forgot-sheet'].forEach(id=>{
+        const sheet=document.getElementById(id);
+        if(sheet&&sheet.classList.contains('open')){
+          sheet.style.bottom=(bottom>50?bottom:0)+'px';
+        }
+      });
+    });
+  }
+}
+
+function openForgotPw(){
+  const email=document.getElementById('auth-email').value.trim();
+  if(email) document.getElementById('forgot-email').value=email;
+  document.getElementById('forgot-err').textContent='';
+  document.getElementById('forgot-view').style.display='block';
+  document.getElementById('auth-forgot-btn').style.display='none';
+  // 스크롤 내려서 보이게
+  setTimeout(()=>{
+    document.getElementById('forgot-view').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
+}
+function closeForgotPw(){
+  document.getElementById('forgot-view').style.display='none';
+  document.getElementById('auth-forgot-btn').style.display='block';
+  document.getElementById('forgot-err').textContent='';
+}
+async function submitForgotPw(){
+  const email=document.getElementById('forgot-email').value.trim();
+  const err=document.getElementById('forgot-err');
+  if(!email){err.textContent='이메일을 입력해주세요';return;}
+  err.textContent='전송 중...';err.style.color='rgba(0,229,195,.7)';
+  const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{
+    redirectTo: window.location.origin+window.location.pathname
+  });
+  if(error){err.textContent='오류가 발생했어요: '+error.message;err.style.color='#ff6b6b';}
+  else{err.textContent='📧 이메일을 확인해주세요!';err.style.color='rgba(0,229,195,.9)';}
 }
 function closeAuth(){
   document.getElementById('auth-overlay').classList.remove('open');
@@ -2993,6 +3228,12 @@ async function submitAuth(){
     let result;
     if(authTab==='login'){
       result=await supabaseClient.auth.signInWithPassword({email,password:pw});
+      // 이메일 저장 처리
+      if(document.getElementById('auth-remember').checked){
+        localStorage.setItem('bada_saved_email',email);
+      }else{
+        localStorage.removeItem('bada_saved_email');
+      }
     }else{
       const name=document.getElementById('auth-name').value.trim();
     const phone=document.getElementById('auth-phone').value.trim();

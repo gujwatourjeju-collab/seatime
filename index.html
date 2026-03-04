@@ -1777,15 +1777,16 @@ async function updateMoon(tod, wcat, lunarDay){
     return;
   }
 
-  // 위치 설정
-  el.style.cssText='position:absolute;transition:opacity 2s ease;'+posStyle;
-
-  // 달 API로 정확한 age
+  // 위치 설정 (cssText 쓰면 기존 스타일 날아가므로 개별 설정)
   const d=getOffsetDate(selectedDateOffset);
   const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const moonData=await fetchMoonData(ds);
   drawMoon(moonData ? moonData.icon : '🌕');
-
+  // 위치/opacity는 drawMoon 완료 후 설정
+  el.style.position='absolute';
+  el.style.transition='opacity 2s ease';
+  const posParts=posStyle.split(';').filter(Boolean);
+  posParts.forEach(p=>{const[k,v]=p.split(':');if(k&&v)el.style[k.trim()]=v.trim();});
   el.style.opacity=String(baseOp);
 }
 
@@ -3182,17 +3183,10 @@ const moonMonthCache={}; // 'YYYY-M' → {1:{...}, 2:{...}, ...}
 
 async function fetchMoonData(dateStr){
   if(moonCache[dateStr]) return moonCache[dateStr];
-  // 월 캐시에서 먼저 확인
-  const [y,m,d]=dateStr.split('-');
-  const monthKey=y+'-'+parseInt(m);
-  if(moonMonthCache[monthKey] && moonMonthCache[monthKey][parseInt(d)]){
-    moonCache[dateStr]=moonMonthCache[monthKey][parseInt(d)];
-    return moonCache[dateStr];
-  }
   try{
     const res=await fetch('https://d5.co.kr/wp-json/d5-moon/v1/phase/'+dateStr);
     const data=await res.json();
-    if(data.status==='success'){
+    if(data.status==='success'&&data.phase&&data.phase.icon){
       const m={age:data.phase.age, phase:data.phase.name, phase_en:data.phase.name_en, icon:data.phase.icon, illumination:data.phase.illumination};
       moonCache[dateStr]=m;
       return m;

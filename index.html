@@ -1955,7 +1955,7 @@ function updateSkyObjects(wc,windSpd){
   const sky=document.getElementById('sky-objects');
   sky.querySelectorAll('.sky-cloud').forEach(c=>c.remove());
   rain.innerHTML='';
-  const isClear=wc<=1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48),isDrizzle=wc>=51&&wc<=55,isRain=wc>=61&&wc<=65,isHeavy=wc>=80&&wc<=82,isStorm=wc>=95;
+  const isClear=wc===0,isMostlyClear=wc===1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48),isDrizzle=wc>=51&&wc<=55,isRain=wc>=61&&wc<=65,isHeavy=wc>=80&&wc<=82,isStorm=wc>=95;
   animateSun(wc);
   const ws=windSpd||currentWindSpeed||0;
   const baseDur=Math.max(8,40-ws*2.0);
@@ -2278,33 +2278,30 @@ function calcLive(data){
 
 function blendTides(d1,d2,w1,w2,tc,isToday){
   const t1=d1.filter(d=>!d.isCurrent),t2=d2.filter(d=>!d.isCurrent),cur=d1.find(d=>d.isCurrent);
-  // 🔍 디버그 로그 — 콘솔에서 확인
-  console.log('▶ blendTides isToday='+isToday);
-  console.log('  DT_0004(제주) raw:', JSON.stringify(t1.map(d=>({type:d.type,time:d.time,level:d.level,date:d.date}))));
-  console.log('  DT_0022(성산포) raw:', JSON.stringify(t2.map(d=>({type:d.type,time:d.time,level:d.level,date:d.date}))));
   const used=new Set(),bl=[];
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
+  // type 기준 + 3시간(180분) 이내 가장 가까운 항목으로 매칭
+  // → 같은 날 00:09 만조가 11:24 만조랑 엮이는 현상 방지
+  const MAX_GAP=180;
   t1.forEach(a=>{
-    const aDate=a.date||ts;
-    const m=t2.filter(b=>{
-      const bDate=b.date||ts;
-      return b.type===a.type&&!used.has(b.time+bDate);
-    }).sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)))[0];
-    if(!m){console.warn('  ❌ 매칭 실패:', a.type, a.time);return;}
-    const mDate=m.date||ts;
-    used.add(m.time+mDate);
+    const candidates=t2.filter(b=>{
+      const key=b.time+(b.date||ts);
+      return b.type===a.type && !used.has(key) && Math.abs(toMins(b)-toMins(a))<=MAX_GAP;
+    }).sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)));
+    const m=candidates[0];
+    if(!m)return;
+    used.add(m.time+(m.date||ts));
     const bm=Math.round(toMins(a)*w1+toMins(m)*w2)+tc;
-    console.log(`  ✅ ${a.type} ${a.time}(${a.level}) + ${m.time}(${m.level}) → ${minsToTime(bm)} ${Math.round(a.level*w1+m.level*w2)}cm`);
+    const blendedLevel=Math.round(a.level*w1+m.level*w2);
     if(!isToday){
-      bl.push({...a,time:minsToTime(bm),mins:bm,level:Math.round(a.level*w1+m.level*w2),date:ts});
+      bl.push({...a,time:minsToTime(bm),mins:bm,level:blendedLevel,date:ts});
       return;
     }
-    let date,iy=false,in2=false;
-    if(bm<0){date=ps;iy=true;}else if(bm>=1440){date=ns;in2=true;}else{date=ts;}
-    bl.push({...a,time:minsToTime(bm),mins:bm,level:Math.round(a.level*w1+m.level*w2),date,isYesterday:iy,isNextDay:in2});
+    let date=ts,iy=false,in2=false;
+    if(bm<0){date=ps;iy=true;}else if(bm>=1440){date=ns;in2=true;}
+    bl.push({...a,time:minsToTime(bm),mins:bm,level:blendedLevel,date,isYesterday:iy,isNextDay:in2});
   });
   bl.sort((a,b)=>a.mins-b.mins);
-  console.log('  결과:', JSON.stringify(bl.map(d=>({type:d.type,time:d.time,level:d.level}))));
   if(isToday&&cur){const nm=toMins(cur);let lv=cur.level;for(let i=0;i<bl.length;i++){if(nm<bl[i].mins){if(i>0){const p=bl[i-1],n=bl[i];lv=Math.round(p.level+(n.level-p.level)*(nm-p.mins)/(n.mins-p.mins));}break;}}const idx=bl.findIndex(t=>t.mins>nm);const c={...cur,level:lv,date:ts};if(idx===-1)bl.push(c);else bl.splice(idx,0,c);}
   return bl;
 }

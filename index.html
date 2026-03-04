@@ -1551,8 +1551,8 @@ function calcSunTimes(lat,lng,date){
   if(cosH<-1)return{rise:0,set:24};
   const H=Math.acos(cosH)/rad;
   const noonUTC=12-lng/15;
-  const riseKST=((noonUTC-H/15+9)%24+24)%24;
-  const setKST=((noonUTC+H/15+9)%24+24)%24;
+  const riseKST=(noonUTC-H/15+9+48)%24;
+  const setKST=(noonUTC+H/15+9+48)%24;
   return{rise:riseKST,set:setKST};
 }
 
@@ -1560,17 +1560,14 @@ let cachedSunTimes=null,cachedSunDate='';
 function getSunTimes(){
   const s=currentStation?STATIONS[currentStation]:null;
   const lat=s?s.lat:33.5,lng=s?s.lng:126.5;
-  const targetDate=getOffsetDate(selectedDateOffset);
-  const dateKey=targetDate.toDateString()+(s?s.obs||s.obs1:'');
+  const today=new Date(),dateKey=today.toDateString();
   if(cachedSunTimes&&cachedSunDate===dateKey)return cachedSunTimes;
-  cachedSunTimes=calcSunTimes(lat,lng,targetDate);
+  cachedSunTimes=calcSunTimes(lat,lng,today);
   cachedSunDate=dateKey;
   return cachedSunTimes;
 }
 
 function getTimeOfDay(){
-  // 미래 날짜 보기 중에는 저녁 시간대로 고정 (달 표시 위해)
-  if(selectedDateOffset>0) return 'evening';
   const now=new Date();
   const h=now.getHours()+now.getMinutes()/60;
   const {rise,set}=getSunTimes();
@@ -1743,55 +1740,63 @@ function updateStars(tod,wcat){
 
 function getMoonPhase(lunarDay){
   // 음력 1일=삭(신월), 15일=보름
-  // illumination fraction을 코사인 기반으로 정확하게 계산
+  // 1~2: 삭 직후 초승 (오른쪽 가는 초승)
+  // 3~6: 초승달 (오른쪽)
+  // 7~8: 상현 반달 (오른쪽)
+  // 9~14: 상현 볼록달 (오른쪽)
+  // 15~16: 보름달
+  // 17~22: 하현 볼록달 (왼쪽)
+  // 23~24: 하현 반달 (왼쪽)
+  // 25~29: 그믐 초승 (왼쪽)
+  // 30: 삭 (매우 가는 왼쪽)
   const d=lunarDay;
-  const angle=(d-1)/29.5*Math.PI*2; // 0~2π (삭~다음삭)
-  const illum=(1-Math.cos(angle))/2; // 0(삭)→1(보름)→0(삭)
-  if(d<=1||d>=30)return{type:'crescent',dir:'right',illum:0.02};
-  if(illum<0.02)return{type:'crescent',dir:d<15?'right':'left',illum:0.02};
-  if(illum>=0.98)return{type:'full',dir:'none',illum:1};
-  if(d<15){
-    // 상현 (초승→보름): 오른쪽이 밝음
-    if(illum<0.45)return{type:'crescent',dir:'right',illum};
-    if(illum<0.55)return{type:'half',dir:'right',illum:0.5};
-    return{type:'gibbous',dir:'right',illum};
-  }else{
-    // 하현 (보름→그믐): 왼쪽이 밝음
-    if(illum>0.55)return{type:'gibbous',dir:'left',illum};
-    if(illum>0.45)return{type:'half',dir:'left',illum:0.5};
-    return{type:'crescent',dir:'left',illum};
-  }
+  if(d<=2)return{type:'crescent',dir:'right',illum:.05+(d-1)*.03};
+  if(d<=6)return{type:'crescent',dir:'right',illum:.08+(d-3)*.07};
+  if(d<=8)return{type:'half',dir:'right',illum:.5};
+  if(d<=14)return{type:'gibbous',dir:'right',illum:.6+(d-9)*.07};
+  if(d<=16)return{type:'full',dir:'none',illum:1};
+  if(d<=22)return{type:'gibbous',dir:'left',illum:.95-(d-17)*.07};
+  if(d<=24)return{type:'half',dir:'left',illum:.5};
+  if(d<=29)return{type:'crescent',dir:'left',illum:.28-(d-25)*.05};
+  return{type:'crescent',dir:'left',illum:.03};
 }
 
 function drawMoon(lunarDay){
   const el=document.getElementById('sky-moon');
   if(!el)return;
   const phase=getMoonPhase(lunarDay);
-  const size=52, r=size/2, ri=r-2;
+  const size=52, r=size/2, ri=r-2; // ri = 달 반지름
   const fill='rgba(255,248,210,.92)';
+  const shadow='rgba(8,18,40,1)';
   let moonPath='';
 
   if(phase.type==='full'){
+    // 보름달: 단순 원
     moonPath=`<circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}"/>`;
 
   }else if(phase.type==='half'){
+    // 반달: 원 + 지름선으로 반 자르기 (clip-path 활용)
     const id='hc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
+      // 오른쪽 반 밝음 (상현)
       moonPath=`<defs><clipPath id="${id}"><rect x="${r}" y="0" width="${r}" height="${size}"/></clipPath></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }else{
+      // 왼쪽 반 밝음 (하현)
       moonPath=`<defs><clipPath id="${id}"><rect x="0" y="0" width="${r}" height="${size}"/></clipPath></defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="rgba(255,255,255,.04)"/>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" clip-path="url(#${id})"/>`;
     }
 
   }else if(phase.type==='crescent'){
-    // illum: 0~0.45. 그림자 원 중심 오프셋을 기하학적으로 정확하게 계산
-    // 밝은 면 비율 = illum → 그림자 원이 ri*(1-2*illum) 만큼 이동
-    const offset=Math.max(0, ri*(1-2*phase.illum));
+    // 초승달/그믐달: 두 원의 교집합
+    // illum 0.04~0.38 → 그림자 원의 중심 오프셋
+    const illum=phase.illum;
+    const offset=ri*(1-illum*2.2); // 그림자 원 중심 이동량
     const id='cc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
+      // 오른쪽 초승달: 달 원에서 왼쪽으로 치우친 그림자 원 제거
       moonPath=`<defs>
         <mask id="${id}">
           <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
@@ -1800,6 +1805,7 @@ function drawMoon(lunarDay){
       </defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
+      // 왼쪽 그믐달
       moonPath=`<defs>
         <mask id="${id}">
           <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
@@ -1809,11 +1815,12 @@ function drawMoon(lunarDay){
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }
 
-  }else{ // gibbous
-    // illum: 0.55~0.98. 그림자 원이 작아질수록 달이 가득 참
-    const offset=Math.max(0, ri*(2*phase.illum-1));
+  }else{ // gibbous (볼록달)
+    const illum=phase.illum; // 0.55~0.98
+    const offset=ri*(1-illum)*1.8; // illum 높을수록 그림자 작음
     const id='gc'+Math.random().toString(36).slice(2,6);
     if(phase.dir==='right'){
+      // 오른쪽 볼록 (상현 → 보름 사이): 왼쪽에 그림자 조금
       moonPath=`<defs>
         <mask id="${id}">
           <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
@@ -1822,6 +1829,7 @@ function drawMoon(lunarDay){
       </defs>
       <circle cx="${r}" cy="${r}" r="${ri}" fill="${fill}" mask="url(#${id})"/>`;
     }else{
+      // 왼쪽 볼록 (보름 → 하현 사이)
       moonPath=`<defs>
         <mask id="${id}">
           <circle cx="${r}" cy="${r}" r="${ri}" fill="white"/>
@@ -2273,16 +2281,18 @@ function blendTides(d1,d2,w1,w2,tc,isToday){
   const used=new Set(),bl=[];
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
   t1.forEach(a=>{
-    // 같은 날짜 + 같은 type 우선 매칭, 없으면 date 무시하고 type만으로 fallback
-    let m=t2.filter(b=>b.type===a.type&&!used.has(b.time+(b.date||''))&&(b.date===a.date||!b.date||!a.date))
-            .sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)))[0];
+    // date 필드가 없을 수 있으므로(미래 날짜) 날짜 무관하게 type+시간 근접성으로 매칭
+    const aKey=a.time+(a.date||ts);
+    const m=t2.filter(b=>{
+      const bKey=b.time+(b.date||ts);
+      return b.type===a.type&&!used.has(bKey);
+    }).sort((a2,b2)=>Math.abs(toMins(a2)-toMins(a))-Math.abs(toMins(b2)-toMins(a)))[0];
     if(!m)return;
-    used.add(m.time+(m.date||''));
+    const mKey=m.time+(m.date||ts);
+    used.add(mKey);
     const bm=Math.round(toMins(a)*w1+toMins(m)*w2)+tc;
     let date,iy=false,in2=false;
-    if(bm<0){date=ps;iy=true;}
-    else if(bm>=1440){date=ns;in2=true;}
-    else{date=ts;}
+    if(bm<0){date=ps;iy=true;}else if(bm>=1440){date=ns;in2=true;}else{date=ts;}
     bl.push({...a,time:minsToTime(bm),mins:bm,level:Math.round(a.level*w1+m.level*w2),date,isYesterday:iy,isNextDay:in2});
   });
   bl.sort((a,b)=>a.mins-b.mins);
@@ -2297,8 +2307,7 @@ function scaleTides(data,scale,tc,isToday){
     if(item.isCurrent)return isToday?item:null;
     const nm=toMins(item)+tc;
     let date=ts,iy=false,in2=false;
-    if(nm<0){date=ps;iy=true;}
-    else if(nm>=1440){date=ns;in2=true;}
+    if(nm<0){date=ps;iy=true;}else if(nm>=1440){date=ns;in2=true;}
     return{...item,time:minsToTime(nm),mins:nm,level:Math.round(item.level*scale),date,isYesterday:iy,isNextDay:in2};
   }).filter(Boolean);
 }
@@ -2371,7 +2380,7 @@ function renderTide(data,name,isToday){
     if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:2;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
     const fml2=document.getElementById('future-lunar-label');if(fml2){fml2.style.display='none';fml2.textContent='';}
   }else{
-    // 미래 날짜 — 수위/바다/게이지/배/날씨 숨김
+    // 미래 날짜 — 수위/바다/게이지/배 숨김
     document.querySelector('.tide-status-row').style.display='none';
     document.getElementById('gauge-rail').style.display='none';
     document.getElementById('gauge-dot').style.display='none';
@@ -2380,38 +2389,44 @@ function renderTide(data,name,isToday){
     document.getElementById('ocean-water').style.opacity='0';
     document.getElementById('horizon').style.opacity='0';
     const sb=document.getElementById('sailboat');if(sb){sb.classList.remove('show');sb.style.display='none';}
-    const lb=document.getElementById('level-big');lb.textContent='';
-    const lu=document.getElementById('level-unit');if(lu)lu.textContent='';
     const ub=document.getElementById('unit-btn');if(ub)ub.style.display='none';
-    // 날씨 그래픽: 미래에도 날씨 코드가 있으면 표시, 없으면 기본 밤하늘
-    // sky-objects는 loadWeather에서 제어하므로 여기서 숨기지 않음
-    // 단, 오늘이 아닌 경우 태양 위치 애니메이션은 의미없으므로 숨김
-    const skyObj=document.getElementById('sky-objects');
-    if(skyObj)skyObj.style.opacity='1';
-    document.getElementById('sky-moon').style.opacity='0';
     document.getElementById('tide-panel').style.marginTop='0';
     document.getElementById('hero').style.flex='0 0 auto';
     document.getElementById('hero').style.paddingTop='20px';
-    // 달 + 음력 표시: sky-moon 직접 활용
+
+    // 미래 날짜 수위 표시: 당일 최고 만조 / 최저 간조
+    const lb=document.getElementById('level-big');
+    const lu=document.getElementById('level-unit');
+    if(dayMaxL>0&&dayMinL>=0){
+      lb.dataset.raw=dayMaxL;
+      lb.textContent=`${dayMinL}~${dayMaxL}`;
+      if(lu)lu.textContent='cm';
+    }else{
+      lb.textContent='';
+      if(lu)lu.textContent='';
+    }
+
+    // 달 표시: opacity만 조작해서 transition 유지 (cssText 덮어쓰기 금지)
     const futureLd=getLunarDay(sel);
     const futureLm=getLunarMonth(sel);
     const ms=typeof futureLm==='string'?futureLm:futureLm+'월';
-    // 미래 날짜는 getTimeOfDay()가 'evening'을 반환하므로 updateMoon이 달을 표시함
-    const tod=getTimeOfDay();
-    const wcat=currentWeatherCode!==undefined?getWeatherCat(currentWeatherCode):'clear';
-    updateMoon(tod,wcat,futureLd);
-    // opacity를 명시적으로 설정 (updateMoon이 clear/partly일 때만 표시)
+    drawMoon(futureLd);
     const moonEl=document.getElementById('sky-moon');
-    if(moonEl&&parseFloat(moonEl.style.opacity)>0){
+    if(moonEl){
       moonEl.style.position='absolute';
       moonEl.style.top='18%';
       moonEl.style.right='18%';
+      moonEl.style.zIndex='2';
+      moonEl.style.pointerEvents='none';
+      moonEl.style.opacity='0.92';
     }
     // 음력 레이블
-    let fml=document.getElementById('future-lunar-label');
+    const fml=document.getElementById('future-lunar-label');
     if(fml){fml.textContent=`음력 ${ms} ${futureLd}일`;fml.style.display='block';}
-    // 미래에도 조류 카드 표시
+    // 조류 카드 표시
     renderCurrentInfo(tn);
+    // 날씨 그래픽: loadWeather에서 updateSkyObjects를 호출하므로 여기서 숨기지 않음
+    // (sky-objects opacity는 loadWeather 완료 후 applyTheme→updateSkyObjects가 처리)
   }
 
   // 패널 타이틀
@@ -2447,7 +2462,7 @@ function showError(msg){document.getElementById('tide-list').innerHTML=`<div cla
 let wxCache={};
 async function loadWeather(lat,lng){
   try{
-    // 캐시 키에 날짜도 포함 (자정 이후 캐시 무효화)
+    // 캐시 키: 위치 + 오늘 날짜 (날짜별 API 데이터는 동일하므로 하루 캐시)
     const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
     let data=wxCache[cacheKey];
     if(!data){
@@ -2469,29 +2484,35 @@ async function loadWeather(lat,lng){
     const max=dailyDates.length;
     const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
 
-    // 오늘 날짜 기준으로 실제 daily 배열 인덱스를 찾음 (자정 넘겨도 정확)
-    let dailyIdx=selectedDateOffset;
-    if(selectedDateOffset!==0 && dailyDates.length>0){
-      const targetDate=dateToStr(getOffsetDate(selectedDateOffset));
-      const foundIdx=dailyDates.findIndex(d=>d===targetDate.replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3'));
-      if(foundIdx>=0)dailyIdx=foundIdx;
-    }
-
-    if(selectedDateOffset<0||dailyIdx>=max){
-      wi.style.display='none';
-      wx.textContent=selectedDateOffset<0?'과거 날씨 조회 불가':'예보 기간 초과';
+    if(selectedDateOffset<0){
+      wi.style.display='none';wx.textContent='과거 날씨 조회 불가';
       currentWeatherCode=0;
       if(currentStation)applyTheme(STATIONS[currentStation]?.region,0);
       updateSkyObjects(0);
       document.getElementById('weather').classList.add('show');
       return;
     }
+
     let wCode,wSpeed,wDir;
     if(selectedDateOffset===0){
       wCode=data.current.weather_code;
       wSpeed=data.current.wind_speed_10m;
       wDir=data.current.wind_direction_10m;
     }else{
+      // daily 배열에서 실제 날짜 문자열로 인덱스 찾기 (자정 경계 문제 방지)
+      const targetDateStr=dateToStr(getOffsetDate(selectedDateOffset));
+      const yyyy=targetDateStr.slice(0,4),mm=targetDateStr.slice(4,6),dd=targetDateStr.slice(6,8);
+      const targetISO=`${yyyy}-${mm}-${dd}`;
+      let dailyIdx=dailyDates.indexOf(targetISO);
+      if(dailyIdx<0)dailyIdx=selectedDateOffset; // fallback
+      if(dailyIdx>=max){
+        wi.style.display='none';wx.textContent='예보 기간 초과';
+        currentWeatherCode=0;
+        if(currentStation)applyTheme(STATIONS[currentStation]?.region,0);
+        updateSkyObjects(0);
+        document.getElementById('weather').classList.add('show');
+        return;
+      }
       wCode=data.daily.weather_code[dailyIdx];
       wSpeed=data.daily.wind_speed_10m_max[dailyIdx];
       wDir=data.daily.wind_direction_10m_dominant[dailyIdx];
@@ -2868,7 +2889,7 @@ async function renderLogList(){
   if(!filtered.length){body.innerHTML='<div class="log-empty">해당 기간에 기록이 없어요 🌊</div>';return;}
   body.innerHTML=filtered.map((l)=>{
     const tags=[l.tide_name,l.status,l.current].filter(Boolean);
-    const safeAt=(l.saved_at||'').replace(/'/g,"\\'");
+    const safeAt=(l.saved_at||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     return `<div class="log-card">
       <div class="log-card-top">
         <div>
@@ -2883,6 +2904,7 @@ async function renderLogList(){
       ${l.tide_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
       ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
       ${(l.photo_url?`<img src="${l.photo_url}" style="width:100%;border-radius:10px;margin-bottom:6px;max-height:160px;object-fit:cover;" loading="lazy">`:'')+(l.memo?`<div class="log-card-memo">${l.memo}</div>`:'')}
+
     </div>`;
   }).join('');
 }
@@ -2890,12 +2912,10 @@ async function renderLogList(){
 async function deleteLog(savedAt,e){
   e.stopPropagation();
   if(!confirm('이 기록을 삭제할까요?'))return;
-  // localStorage에서 삭제 (saved_at 기준)
   const key='tidelog_'+currentUser.id;
   const logs=JSON.parse(localStorage.getItem(key)||'[]');
   const newLogs=logs.filter(l=>l.saved_at!==savedAt);
   localStorage.setItem(key,JSON.stringify(newLogs));
-  // Supabase에서도 삭제 (saved_at + user_id로 정확히 특정)
   try{
     await supabaseClient.from('tide_logs').delete()
       .eq('user_id',currentUser.id).eq('saved_at',savedAt);

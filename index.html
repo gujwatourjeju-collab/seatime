@@ -2612,7 +2612,7 @@ function initCustomPointMap(){
   if(typeof kakao!=='undefined'&&kakao.maps){_buildMap();return;}
   // 동적 로드
   const script=document.createElement('script');
-  script.src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=60b696137987efe6fd91616450b1043f&libraries=services&autoload=false';
+  script.src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=03ab5a0a25e3564d598cc911ca994f0f&libraries=services&autoload=false';
   script.onload=function(){_buildMap();};
   script.onerror=function(){
     container.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:.6rem">카카오맵을 불러올 수 없어요</div>';

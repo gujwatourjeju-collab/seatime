@@ -219,13 +219,13 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           gradle wrapper --gradle-version 8.2
-          ./gradlew assembleRelease
+          ./gradlew bundleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: badangttae-apk
-          path: twa-project/app/build/outputs/apk/release/*.apk
+          name: badangttae-aab
+          path: twa-project/app/build/outputs/bundle/release/*.aab
 
       - name: Get signing fingerprint
         run: |

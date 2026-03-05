@@ -1163,7 +1163,6 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=60b696137987efe6fd91616450b1043f&libraries=services&autoload=false"></script>
 </head>
 <body>
 
@@ -2586,12 +2585,8 @@ function closeCustomPointMap(){
 
 function initCustomPointMap(){
   const container=document.getElementById('cpmap-container');
-  if(typeof kakao==='undefined'){
-    container.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:.6rem">카카오맵을 불러올 수 없어요</div>';
-    showToast('카카오맵 SDK 로드 실패');
-    return;
-  }
-  kakao.maps.load(function(){
+  function _buildMap(){
+    kakao.maps.load(function(){
   const center=new kakao.maps.LatLng(33.45,126.57);
   const opts={center,level:9};
   cpMapInstance=new kakao.maps.Map(container,opts);
@@ -2612,6 +2607,18 @@ function initCustomPointMap(){
     document.getElementById('cpmap-save-btn').disabled=false;
   });
   });
+  }
+  // SDK가 이미 로드됐으면 바로 빌드
+  if(typeof kakao!=='undefined'&&kakao.maps){_buildMap();return;}
+  // 동적 로드
+  const script=document.createElement('script');
+  script.src='https://dapi.kakao.com/v2/maps/sdk.js?appkey=60b696137987efe6fd91616450b1043f&libraries=services&autoload=false';
+  script.onload=function(){_buildMap();};
+  script.onerror=function(){
+    container.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.3);font-size:.6rem">카카오맵을 불러올 수 없어요</div>';
+    showToast('카카오맵 SDK 로드 실패');
+  };
+  document.head.appendChild(script);
 }
 
 async function saveCustomPoint(){

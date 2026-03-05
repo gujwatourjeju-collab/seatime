@@ -1278,7 +1278,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 <!-- APP -->
 <div id="app">
-  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.5.5</div>
+  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.5.6</div>
   <div id="header">
     <div class="hdr-left" onclick="openDrawer()">
       <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
@@ -1340,7 +1340,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       ">
         <span>📍</span> 관측소 선택하기
       </button>
-      <div style="font-size:.52rem;color:rgba(255,255,255,.18);font-weight:400">제주 · 서해 · 남해 · 동해 35개 관측소</div>
+      <div style="font-size:.52rem;color:rgba(255,255,255,.18);font-weight:400">제주 · 서해 · 남해 · 동해 34개 관측소</div>
       <div style="margin-top:12px;font-size:.5rem;color:rgba(255,255,255,.22);line-height:1.8;font-weight:400">
         🌊 실시간 물높이 · 간만조 시간<br>
         🎣 낚시·체험 적합도 안내<br>
@@ -1434,7 +1434,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       <div class="region-item" onclick="selectRegion('jeju')"><span class="region-emoji">🏝</span><div><div class="region-label">제주</div><div class="region-count">7개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('west')"><span class="region-emoji">🌊</span><div><div class="region-label">서해</div><div class="region-count">19개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('south')"><span class="region-emoji">🐬</span><div><div class="region-label">남해</div><div class="region-count">7개 관측소</div></div></div>
-      <div class="region-item" onclick="selectRegion('east')"><span class="region-emoji">🏔</span><div><div class="region-label">동해</div><div class="region-count">4개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('east')"><span class="region-emoji">🏔</span><div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div></div>
     </div>
   </div>
   <div class="sheet-step" id="step-station" style="display:none">
@@ -2454,7 +2454,7 @@ const STATIONS={
   '성산포':{type:'single',obs:'DT_0022',lat:33.4747,lng:126.927,region:'jeju'},
   '서귀포':{type:'single',obs:'DT_0061',lat:33.2468,lng:126.561,region:'jeju'},
   '모슬포':{type:'single',obs:'DT_0020',lat:33.2147,lng:126.251,region:'jeju'},
-  '한림':{type:'single',obs:'DT_0020',scale:1.00,timeCorr:+47,lat:33.41,lng:126.24,region:'jeju'},
+  '한림':{type:'single',obs:'DT_0004',scale:1.06,timeCorr:+21,lat:33.41,lng:126.24,region:'jeju'},
   '추자도':{type:'single',obs:'DT_0021',lat:33.9611,lng:126.889,region:'jeju'},
   '만대항':{type:'scale',obs:'DT_0050',scale:1.07,timeCorr:+3,lat:36.626,lng:126.309,region:'west'},
   '태안':{type:'single',obs:'DT_0050',lat:36.7445,lng:126.297,region:'west'},
@@ -2462,10 +2462,10 @@ const STATIONS={
   '보령':{type:'single',obs:'DT_0025',lat:36.4167,lng:126.483,region:'west'},
   '서천마량':{type:'single',obs:'DT_0051',lat:36.0833,lng:126.633,region:'west'},
   '군산':{type:'single',obs:'DT_0018',lat:35.9833,lng:126.717,region:'west'},
-  '법성포':{type:'single',obs:'DT_0068',scale:1.00,timeCorr:-5,lat:35.17,lng:126.47,region:'west'},
+  '법성포':{type:'single',obs:'DT_0068',scale:0.97,timeCorr:-5,lat:35.17,lng:126.47,region:'west'},
   '위도':{type:'single',obs:'DT_0068',lat:35.6167,lng:126.3,region:'west'},
   '어청도':{type:'single',obs:'DT_0037',lat:36.1167,lng:125.983,region:'west'},
-  '목포':{type:'single',obs:'DT_0035',scale:1.47,timeCorr:+5,lat:34.79,lng:126.38,region:'west'},
+  '목포':{type:'single',obs:'DT_0035',scale:1.50,timeCorr:+12,tcH:+28,tcL:-5,lat:34.79,lng:126.38,region:'west'},
   '흑산도':{type:'single',obs:'DT_0035',lat:34.6833,lng:125.433,region:'west'},
   '향화도':{type:'single',obs:'DT_0066',lat:35.8833,lng:126.517,region:'west'},
   '인천송도':{type:'single',obs:'DT_0052',lat:37.3833,lng:126.633,region:'west'},
@@ -2480,15 +2480,14 @@ const STATIONS={
   '마산':{type:'single',obs:'DT_0062',lat:35.2,lng:128.567,region:'south'},
   '가덕도':{type:'single',obs:'DT_0063',lat:35.0167,lng:128.817,region:'south'},
   '진해':{type:'single',obs:'DT_0054',lat:35.1,lng:128.7,region:'south'},
-  '여수':{type:'single',obs:'DT_0031',scale:1.08,timeCorr:-40,lat:34.7472,lng:127.7656,region:'south'},
+  '여수':{type:'single',obs:'DT_0031',scale:1.11,timeCorr:-40,lat:34.7472,lng:127.7656,region:'south'},
   '완도':{type:'single',obs:'DT_0031',scale:1.21,timeCorr:+38,lat:34.3155,lng:126.7596,region:'south'},
   '속초':{type:'single',obs:'DT_0012',lat:38.2,lng:128.6,region:'east'},
-  '포항':{type:'single',obs:'DT_0011',scale:0.95,timeCorr:-40,lat:36.0471,lng:129.3838,region:'east'},
-  '후포':{type:'single',obs:'DT_0011',lat:36.6833,lng:129.45,region:'east'},
+    '후포':{type:'single',obs:'DT_0011',lat:36.6833,lng:129.45,region:'east'},
   '울릉도':{type:'single',obs:'DT_0013',lat:37.5,lng:130.9,region:'east'},
 };
 const RI={jeju:{label:'제주',emoji:'🏝'},west:{label:'서해',emoji:'🌊'},south:{label:'남해',emoji:'🐬'},east:{label:'동해',emoji:'🏔'}};
-const EMOJI={김녕:'🏄',제주:'🌊',성산포:'🌅',서귀포:'🐬',모슬포:'⚓',한림:'🌊',추자도:'🏔',만대항:'🦀',태안:'🌾',안흥:'⛵',보령:'🏖',서천마량:'🎣',군산:'🌉',법성포:'🐚',위도:'🏝',어청도:'⚓',목포:'⛵',흑산도:'🌑',향화도:'🌿',인천송도:'🏙',강화대교:'🌁',덕적도:'🏔',굴업도:'🦅',대청도:'🔵',연평도:'🟡',장항:'🌊',통영:'🦪',거문도:'🏝',마산:'🐟',가덕도:'⚓',진해:'🌸',여수:'🌊',완도:'🏝',속초:'🌊',포항:'⚓',후포:'🎣',울릉도:'🌋'};
+const EMOJI={김녕:'🏄',제주:'🌊',성산포:'🌅',서귀포:'🐬',모슬포:'⚓',한림:'🌊',추자도:'🏔',만대항:'🦀',태안:'🌾',안흥:'⛵',보령:'🏖',서천마량:'🎣',군산:'🌉',법성포:'🐚',위도:'🏝',어청도:'⚓',목포:'⛵',흑산도:'🌑',향화도:'🌿',인천송도:'🏙',강화대교:'🌁',덕적도:'🏔',굴업도:'🦅',대청도:'🔵',연평도:'🟡',장항:'🌊',통영:'🦪',거문도:'🏝',마산:'🐟',가덕도:'⚓',진해:'🌸',여수:'🌊',완도:'🏝',속초:'🌊',후포:'🎣',울릉도:'🌋'};
 const WEEKDAYS=['일','월','화','수','목','금','토'];
 let currentStation=null,selectedDateOffset=0;
 
@@ -2843,8 +2842,8 @@ async function loadTide(name){
     const s=getStation(name),dateStr=dateToStr(getOffsetDate(selectedDateOffset)),isToday=selectedDateOffset===0;
     let td=[];
     if(s.type==='blend'){const[r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true),getTideData(s.obs2,dateStr,true)]);td=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);}
-    else if(s.type==='scale'){td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true);}
-    else{td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale||1,s.timeCorr||0,true);}
+    else if(s.type==='scale'){td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true,s.tcH,s.tcL);}
+    else{td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale||1,s.timeCorr||0,true,s.tcH,s.tcL);}
     td.sort((a,b)=>toMins(a)-toMins(b));
     // 데이터 없으면 캐시에서 복원 시도
     if(!td.length){
@@ -2932,11 +2931,12 @@ function blendTides(d1,d2,w1,w2,tc,isToday){
   return bl;
 }
 
-function scaleTides(data,scale,tc,isToday){
+function scaleTides(data,scale,tc,isToday,tcH,tcL){
   const ts=dateToStr(getOffsetDate(selectedDateOffset)),ps=dateToStr(getOffsetDate(selectedDateOffset-1)),ns=dateToStr(getOffsetDate(selectedDateOffset+1));
   return data.map(item=>{
     if(item.isCurrent)return isToday?item:null;
-    const nm=toMins(item)+tc;
+    const corr=(tcH!=null&&tcL!=null)?(item.type==='high'?tcH:item.type==='low'?tcL:tc):tc;
+    const nm=toMins(item)+corr;
     if(!isToday) return{...item,time:minsToTime(nm),mins:nm,level:Math.round(item.level*scale),date:ts};
     let date=ts,iy=false,in2=false;
     if(nm<0){date=ps;iy=true;}else if(nm>=1440){date=ns;in2=true;}
@@ -3304,9 +3304,9 @@ window.addEventListener('DOMContentLoaded',async()=>{
         const[r1,r2]=await Promise.all([getTideData(s.obs1,ds,true),getTideData(s.obs2,ds,true)]);
         td=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);
       }else if(s.type==='scale'){
-        td=scaleTides(await getTideData(s.obs,ds,true),s.scale,s.timeCorr,true);
+        td=scaleTides(await getTideData(s.obs,ds,true),s.scale,s.timeCorr,true,s.tcH,s.tcL);
       }else{
-        td=scaleTides(await getTideData(s.obs,ds,true),1,s.timeCorr||0,true);
+        td=scaleTides(await getTideData(s.obs,ds,true),1,s.timeCorr||0,true,s.tcH,s.tcL);
       }
       setSplashProg(75,'PROCESSING',1.5);
       if(td&&td.length>0)break;

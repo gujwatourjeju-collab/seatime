@@ -1,4 +1,4 @@
-const CACHE = 'badangttae-v14';
+const CACHE = 'badangttae-v15';
 const API_CACHE = 'badangttae-api-v1';
 const ASSETS = [
   '/seatime/',

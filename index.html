@@ -3062,6 +3062,8 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('sky-objects').style.opacity='1';
     const moonEl2=document.getElementById('sky-moon');
     if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
+    // 오늘로 돌아올 때 달 다시 그리기
+    {const _tod=getTimeOfDay(),_wcat=getWeatherCat(currentWeatherCode),_ld=getLunarDay(getOffsetDate(0));updateMoon(_tod,_wcat,_ld);}
     const fml2=document.getElementById('future-lunar-label');if(fml2){fml2.style.display='none';fml2.textContent='';}
   }else{
     // 미래 날짜 — hero-inner를 직접 위로, 데이터 영역 밀착

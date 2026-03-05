@@ -3372,23 +3372,15 @@ function getCachedTide(name,dateStr){
 })();
 
 /* ═══ 4. GPS 기반 자동 관측소 추천 ═══ */
-function findNearestStation(lat,lng){
-  let best=null,bestDist=Infinity;
-  for(const[name,s]of Object.entries(STATIONS)){
-    const d=Math.sqrt(Math.pow(s.lat-lat,2)+Math.pow(s.lng-lng,2));
-    if(d<bestDist){bestDist=d;best=name;}
-  }
-  return best;
-}
 function tryGeolocate(){
   if(!navigator.geolocation)return;
   if(localStorage.getItem('lastStation'))return; // 이미 선택한 적 있으면 건너뜀
   navigator.geolocation.getCurrentPosition(
     function(pos){
       const nearest=findNearestStation(pos.coords.latitude,pos.coords.longitude);
-      if(nearest&&!currentStation){
-        showToast('📍 현재 위치 기준: '+nearest);
-        selectStation(nearest);
+      if(nearest&&nearest.name&&!currentStation){
+        showToast('📍 현재 위치 기준: '+nearest.name);
+        selectStation(nearest.name);
       }
     },
     function(){},

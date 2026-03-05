@@ -914,7 +914,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 /* 달 */
 #sky-moon{
-  position:absolute;z-index:2;pointer-events:none;
+  position:absolute;z-index:5;pointer-events:none;
   transition:opacity 2s ease, top .5s ease, right .5s ease;
   opacity:0;
 }
@@ -2170,7 +2170,7 @@ function updateMoon(tod, wcat, lunarDay){
   }
 
   // 위치 설정
-  el.style.cssText='position:absolute;transition:opacity 2s ease;'+posStyle;
+  el.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease;'+posStyle;
   drawMoon(lunarDay);
   el.style.opacity=String(baseOp);
 }
@@ -3061,7 +3061,7 @@ function renderTide(data,name,isToday,isRealToday){
     const ub2=document.getElementById('unit-btn');if(ub2)ub2.style.display='';
     document.getElementById('sky-objects').style.opacity='1';
     const moonEl2=document.getElementById('sky-moon');
-    if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:2;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
+    if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
     const fml2=document.getElementById('future-lunar-label');if(fml2){fml2.style.display='none';fml2.textContent='';}
   }else{
     // 미래 날짜 — hero-inner를 직접 위로, 데이터 영역 밀착

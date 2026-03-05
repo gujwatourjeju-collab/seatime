@@ -305,8 +305,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .loc-btn,.date-nav{
   flex:1;display:flex;align-items:center;padding:7px 11px;
   border-radius:10px;gap:6px;
-  background:var(--glass);
-  border:1px solid var(--glass-border);
+  background:rgba(6,15,30,.35);
+  border:1px solid rgba(255,255,255,.05);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   color:rgba(255,255,255,.75);font-size:.68rem;font-weight:600;
   cursor:pointer;font-family:'Noto Sans KR',sans-serif;
@@ -620,7 +620,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
 .region-item:active{transform:scale(.97)}
 .region-item.active{background:rgba(0,229,195,.08);border-color:rgba(0,229,195,.3)}
-.region-emoji{font-size:1.3rem}
+.region-dot{font-size:1.1rem}
 .region-label{font-size:.85rem;font-weight:900}
 .region-count{font-size:.55rem;color:rgba(255,255,255,.28);font-weight:500;margin-top:1px}
 .sheet-back{display:flex;align-items:center;gap:5px;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.28);cursor:pointer;margin-bottom:14px;background:none;border:none;padding:0;font-family:'Noto Sans KR',sans-serif}
@@ -632,7 +632,8 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
 .station-item:active{transform:scale(.94)}
 .station-item.active{background:rgba(0,229,195,.08);border-color:rgba(0,229,195,.3)}
-.station-item-emoji{font-size:1rem}
+.station-item-dot{font-size:.7rem}
+.st-dot{font-size:.7rem}
 .station-item-name{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.65)}
 .station-item.active .station-item-name{color:var(--accent)}
 
@@ -1301,7 +1302,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 <!-- APP -->
 <div id="app">
-  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.5.7</div>
+  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.5.8</div>
   <div id="header">
     <div class="hdr-left" onclick="openDrawer()">
       <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
@@ -1318,7 +1319,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
   <div id="controls">
     <div class="loc-btn" onclick="openSheet()" role="button" aria-label="관측소 선택">
-      <span id="loc-icon" style="font-size:.85rem;flex-shrink:0">📍</span>
+      <span id="loc-icon" style="font-size:.7rem;flex-shrink:0">●</span>
       <span class="loc-text" id="loc-text">관측소 선택</span>
       <span class="loc-arrow">▼</span>
     </div>
@@ -1454,10 +1455,10 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   <div class="sheet-step" id="step-region">
     <div class="sheet-title">지역 선택</div>
     <div class="region-grid">
-      <div class="region-item" onclick="selectRegion('jeju')"><span class="region-emoji">🏝</span><div><div class="region-label">제주</div><div class="region-count">7개 관측소</div></div></div>
-      <div class="region-item" onclick="selectRegion('west')"><span class="region-emoji">🌊</span><div><div class="region-label">서해</div><div class="region-count">19개 관측소</div></div></div>
-      <div class="region-item" onclick="selectRegion('south')"><span class="region-emoji">🐬</span><div><div class="region-label">남해</div><div class="region-count">7개 관측소</div></div></div>
-      <div class="region-item" onclick="selectRegion('east')"><span class="region-emoji">🏔</span><div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('jeju')"><span class="region-dot" style="color:#ff9f43">●</span><div><div class="region-label">제주</div><div class="region-count">7개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('west')"><span class="region-dot" style="color:#54a0ff">●</span><div><div class="region-label">서해</div><div class="region-count">19개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('south')"><span class="region-dot" style="color:#00d2d3">●</span><div><div class="region-label">남해</div><div class="region-count">7개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('east')"><span class="region-dot" style="color:#a29bfe">●</span><div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div></div>
     </div>
   </div>
   <div class="sheet-step" id="step-station" style="display:none">
@@ -2533,8 +2534,7 @@ const STATIONS={
     '후포':{type:'single',obs:'DT_0011',lat:36.6833,lng:129.45,region:'east'},
   '울릉도':{type:'single',obs:'DT_0013',lat:37.5,lng:130.9,region:'east'},
 };
-const RI={jeju:{label:'제주',emoji:'🏝'},west:{label:'서해',emoji:'🌊'},south:{label:'남해',emoji:'🐬'},east:{label:'동해',emoji:'🏔'}};
-const EMOJI={김녕:'🏄',제주:'🌊',성산포:'🌅',서귀포:'🐬',모슬포:'⚓',한림:'🌊',추자도:'🏔',만대항:'🦀',태안:'🌾',안흥:'⛵',보령:'🏖',서천마량:'🎣',군산:'🌉',법성포:'🐚',위도:'🏝',어청도:'⚓',목포:'⛵',흑산도:'🌑',향화도:'🌿',인천송도:'🏙',강화대교:'🌁',덕적도:'🏔',굴업도:'🦅',대청도:'🔵',연평도:'🟡',장항:'🌊',통영:'🦪',거문도:'🏝',마산:'🐟',가덕도:'⚓',진해:'🌸',여수:'🌊',완도:'🏝',속초:'🌊',후포:'🎣',울릉도:'🌋'};
+const RI={jeju:{label:'제주',color:'#ff9f43'},west:{label:'서해',color:'#54a0ff'},south:{label:'남해',color:'#00d2d3'},east:{label:'동해',color:'#a29bfe'}};
 const WEEKDAYS=['일','월','화','수','목','금','토'];
 let currentStation=null,selectedDateOffset=0;
 
@@ -2593,10 +2593,9 @@ function getStation(name){
   return null;
 }
 
-function getStationEmoji(name){
-  if(EMOJI[name])return EMOJI[name];
-  if(customPoints.find(p=>p.name===name))return'📌';
-  return'📍';
+function getStationColor(name){
+  const s=getStation(name);
+  return RI[s?.region]?.color||'#00e5c3';
 }
 
 async function loadCustomPoints(){
@@ -2785,7 +2784,7 @@ function renderCustomPointGrid(){
   grid.innerHTML=customPoints.map(cp=>{
     const isActive=cp.name===currentStation;
     return`<div class="station-item${isActive?' active':''}" onclick="pickStation('${cp.name}')">
-      <span class="station-item-emoji">📌</span>
+      <span class="station-item-dot" style="color:${RI[cp.region]?.color||'#00e5c3'}">●</span>
       <span class="station-item-name">${cp.name}</span>
     </div>`;
   }).join('');
@@ -2859,7 +2858,7 @@ function openSheet(){document.getElementById('sheet-overlay').classList.add('ope
 function closeSheet(){document.getElementById('sheet-overlay').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
 function showRegionStep(){document.getElementById('step-region').style.display='block';document.getElementById('step-station').style.display='none';document.querySelectorAll('.region-item').forEach(el=>{const r=el.getAttribute('onclick').match(/'(\w+)'/)?.[1];el.classList.toggle('active',currentStation&&getStation(currentStation)?.region===r);});}
 function backToRegion(){showRegionStep();}
-function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.emoji} ${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-emoji">${EMOJI[n]||'📍'}</span><span class="station-item-name">${n}</span></div>`).join('');}
+function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-dot" style="color:${info.color}">●</span><span class="station-item-name">${n}</span></div>`).join('');}
 function pickStation(n){closeSheet();selectStation(n);}
 async function selectStation(name){
   document.getElementById('weather').classList.remove('show');
@@ -2868,7 +2867,7 @@ async function selectStation(name){
   const s=getStation(name);
   if(!s)return;
   const region=s.region,ri=RI[region];
-  document.getElementById('loc-icon').textContent=getStationEmoji(name);
+  const li=document.getElementById('loc-icon');li.textContent='●';li.style.color=ri.color;
   document.getElementById('loc-text').textContent=`${ri.label} · ${name}`;
   applyTheme(region,currentWeatherCode,currentWindSpeed);
   await Promise.all([loadTide(name),loadWeather(s.lat,s.lng)]);
@@ -3257,10 +3256,10 @@ function openWeatherSheet(){
   document.getElementById('wxs-lo').textContent=d.lo+'°';
   document.getElementById('wxs-rain').textContent=d.rain+'mm';
   document.getElementById('wxs-prob').textContent=d.prob+'%';
-  document.getElementById('wxs-sunrise').textContent='🌅 '+d.sunrise;
-  document.getElementById('wxs-sunset').textContent='🌇 '+d.sunset;
-  document.getElementById('wxs-uv').textContent=`☀️ UV ${d.uv} (${uvLabel(+d.uv)})`;
-  document.getElementById('wxs-wind').textContent='💨 '+d.wind;
+  document.getElementById('wxs-sunrise').textContent='일출 '+d.sunrise;
+  document.getElementById('wxs-sunset').textContent='일몰 '+d.sunset;
+  document.getElementById('wxs-uv').textContent=`UV ${d.uv} (${uvLabel(+d.uv)})`;
+  document.getElementById('wxs-wind').textContent=d.wind;
   document.getElementById('wx-overlay').classList.add('open');
   document.getElementById('wx-sheet').classList.add('open');
 }
@@ -3360,7 +3359,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 
   const region=getStation(last).region,ri=RI[region];
   // 헤더 관측소 표시
-  document.getElementById('loc-icon').textContent=getStationEmoji(last);
+  const li2=document.getElementById('loc-icon');li2.textContent='●';li2.style.color=ri.color;
   document.getElementById('loc-text').textContent=`${ri.label} · ${last}`;
   currentStation=last;
   applyTheme(region,0);
@@ -4064,10 +4063,10 @@ function renderFavGrid(){
   sec.style.display='block';
   grid.innerHTML=favorites.map(name=>{
     const s=getStation(name);if(!s)return'';
-    const em=getStationEmoji(name);
+    const clr=getStationColor(name);
     const isActive=name===currentStation;
     return `<div class="station-item${isActive?' active':''}" onclick="selectStation('${name}');closeSheet()">
-      <span class="st-icon">${em}</span>
+      <span class="st-dot" style="color:${clr}">●</span>
       <div class="st-name">${name}</div>
       <span style="font-size:.55rem;opacity:.4">${RI[s.region]?.label||''}</span>
     </div>`;

@@ -2624,7 +2624,7 @@ function closeCustomPointSheet(){
 
 function renderCustomPointList(){
   const body=document.getElementById('cp-body');
-  const canAdd=customPoints.length<5;
+  const canAdd=customPoints.length<3;
   let h='';
   if(customPoints.length===0){
     h='<div class="cp-empty">등록된 커스텀 포인트가 없어요<br>지도에서 원하는 바다 위치를 선택해보세요</div>';
@@ -2640,7 +2640,7 @@ function renderCustomPointList(){
     });
   }
   h+=`<button class="cp-add-btn" onclick="openCustomPointMap()" ${canAdd?'':'disabled'}>+ 새 포인트 추가</button>`;
-  if(!canAdd)h+='<div class="cp-limit">최대 5개까지 등록할 수 있어요</div>';
+  if(!canAdd)h+='<div class="cp-limit">최대 3개까지 등록할 수 있어요</div>';
   body.innerHTML=h;
 }
 
@@ -2650,7 +2650,7 @@ function pickCustomPoint(name){
 }
 
 function openCustomPointMap(){
-  if(customPoints.length>=5){showToast('최대 5개까지 등록 가능해요');return;}
+  if(customPoints.length>=3){showToast('최대 3개까지 등록 가능해요');return;}
   closeCustomPointSheet();
   document.getElementById('cpmap-overlay').classList.add('open');
   document.getElementById('cpmap-sheet').classList.add('open');
@@ -4039,6 +4039,7 @@ async function toggleFav(){
     try{await supabaseClient.from('favorites').delete().eq('user_id',currentUser.id).eq('station',currentStation);}
     catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}
   }else{
+    if(favorites.length>=3){showToast('즐겨찾기는 최대 3개까지 가능해요');return;}
     favorites.push(currentStation);
     try{await supabaseClient.from('favorites').insert({user_id:currentUser.id,station:currentStation});}
     catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}

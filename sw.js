@@ -1,10 +1,12 @@
-const CACHE = 'badangttae-v17';
+const CACHE = 'badangttae-v18';
 const API_CACHE = 'badangttae-api-v1';
 const ASSETS = [
   '/seatime/',
   '/seatime/index.html',
   '/seatime/manifest.json',
   '/seatime/logo.png',
+  '/seatime/icon-192.png',
+  '/seatime/icon-512.png',
 ];
 
 // API 도메인 목록 (네트워크 우선, 실패 시 캐시)

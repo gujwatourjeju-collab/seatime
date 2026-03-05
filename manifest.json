@@ -3,22 +3,35 @@
   "short_name": "바당때",
   "description": "바다 앞에 서기 전, 바당때 먼저",
   "start_url": "/seatime/",
+  "scope": "/seatime/",
   "display": "standalone",
-  "background_color": "#0d1f2d",
-  "theme_color": "#0d1f2d",
+  "background_color": "#060f1e",
+  "theme_color": "#060f1e",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "logo.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

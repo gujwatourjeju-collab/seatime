@@ -2520,8 +2520,8 @@ function calcCustomPointParams(lat,lng){
       if(d<bestBDist){bestBDist=d;bestB={name,dist:d};}
     }
   }
-  // B가 없으면 A 수치 그대로
-  if(!bestB)return{obs:sA.obs,scale:sA.scale||1,timeCorr:sA.timeCorr||0,nearest:A.name,second:null,weight:0};
+  // B가 없거나 100km 이상이면 A 수치 그대로 (동해 등 관측소 희박 지역 보호)
+  if(!bestB||bestB.dist>100)return{obs:sA.obs,scale:sA.scale||1,timeCorr:sA.timeCorr||0,nearest:A.name,second:null,weight:0};
   const sB=STATIONS[bestB.name];
   const dA=A.dist,dB=bestB.dist;
   const w=dA/(dA+dB); // A에 가까울수록 0, B에 가까울수록 1
@@ -2628,9 +2628,11 @@ function initCustomPointMap(){
     cpMarker.setMap(cpMapInstance);
 
     const params=calcCustomPointParams(cpSelectedLat,cpSelectedLng);
+    const nearDist=findNearestStation(cpSelectedLat,cpSelectedLng).dist;
     cpNearestStation=params.nearest;
     window._cpParams=params;
-    let infoHtml='기준 관측소: <span class="nearest">'+params.nearest+'</span> ('+findNearestStation(cpSelectedLat,cpSelectedLng).dist.toFixed(1)+'km)';
+    let infoHtml='기준 관측소: <span class="nearest">'+params.nearest+'</span> ('+nearDist.toFixed(1)+'km)';
+    if(nearDist>50)infoHtml+='<br><span style="color:var(--danger);font-weight:700">⚠ 가까운 관측소가 멀어 정확도가 낮을 수 있어요</span>';
     if(params.second)infoHtml+='<br>반대쪽 참조: '+params.second+' (가중치 '+params.weight+'%)';
     if(params.timeCorr)infoHtml+='<br>시간 보정: '+(params.timeCorr>0?'+':'')+params.timeCorr+'분';
     if(params.scale!==1)infoHtml+='<br>높이 보정: ×'+params.scale;

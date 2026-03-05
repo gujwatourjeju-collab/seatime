@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -141,7 +144,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   transition:background 4s ease,filter 4s ease;
 }
 #ocean-water{
-  position:absolute;left:0;right:0;bottom:0;height:40%;
+  position:absolute;left:0;right:0;bottom:0;height:36%;
   transition:height 5s cubic-bezier(.25,.46,.45,.94);
 }
 #water-body{
@@ -172,7 +175,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite}
 @keyframes sunP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
 .sky-cloud{position:absolute;animation:cDrift var(--cd,28s) linear var(--cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none;overflow:visible}
-@keyframes cDrift{0%{transform:translateX(-120%)}100%{transform:translateX(120vw)}}
+@keyframes cDrift{0%{transform:translateX(-100%)}100%{transform:translateX(100vw)}}
 #rain-container{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .raindrop{position:absolute;top:-20px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(180,220,255,.45));animation:rFall var(--rd,.8s) linear var(--rdelay,0s) infinite}
 @keyframes rFall{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(110vh) translateX(-30px);opacity:0}}
@@ -181,7 +184,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
    게이지 — 우측 슬림 바
 ══════════════════════════════════ */
 #gauge-rail{position:fixed;right:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
-#gauge-track{position:absolute;top:28%;bottom:14%;width:2px;background:rgba(80,140,200,.1);border-radius:1px}
+#gauge-track{position:absolute;top:32%;bottom:11%;width:2px;background:rgba(80,140,200,.1);border-radius:1px}
 #gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(100,180,255,.15),rgba(40,120,220,.5));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
 #gauge-dot{
   position:fixed;right:5px;
@@ -198,8 +201,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   position:fixed;right:26px;
   display:flex;flex-direction:column;align-items:flex-end;gap:1px;
 }
-#gauge-high-label{top:28%;transform:translateY(-50%)}
-#gauge-low-label{bottom:14%;transform:translateY(50%)}
+#gauge-high-label{top:32%;transform:translateY(-50%)}
+#gauge-low-label{bottom:11%;transform:translateY(50%)}
 .g-val{font-family:'DM Mono',monospace;font-size:.6rem;font-weight:400;color:rgba(255,255,255,.45);line-height:1}
 .g-name{font-size:.42rem;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:1px}
 
@@ -1111,7 +1114,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 <!-- APP -->
 <div id="app">
-  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.2.0</div>
+  <div style="position:fixed;bottom:calc(env(safe-area-inset-bottom,12px) + 4px);right:14px;font-size:.48rem;color:rgba(255,255,255,.2);font-weight:400;letter-spacing:.3px;pointer-events:none;z-index:5">v0.2.6</div>
   <div id="header">
     <div class="hdr-left" onclick="openDrawer()">
       <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
@@ -1939,12 +1942,12 @@ function getSunPosition(){
   // Y: 포물선 — 낮에 높고, 일출/일몰엔 낮게
   // progress 0~1, 꼭짓점은 0.5(정오)
   const arc=Math.sin(progress*Math.PI); // 0→1→0
-  const yMin=4;   // 최고점 (하늘 위쪽)
+  const yMin=15;  // 최고점 (달 높이 수준)
   const yMax=52;  // 지평선 근처
   const y=yMax-(arc*(yMax-yMin));
 
   // 크기: 정오엔 크고 일출/몰엔 작게
-  const sizeMin=56, sizeMax=92;
+  const sizeMin=40, sizeMax=64;
   const size=sizeMin+arc*(sizeMax-sizeMin);
 
   // 색: 일출/몰엔 주황/붉은빛, 정오엔 밝은 노랑
@@ -1963,6 +1966,9 @@ async function animateSun(wc){
   if(sunAnimFrame)cancelAnimationFrame(sunAnimFrame);
   const sun=document.getElementById('sky-sun');
   if(!sun)return;
+
+  // 미래 날짜면 태양 숨김
+  if(selectedDateOffset!==0){sun.style.opacity='0';return;}
 
   const isClear=wc===0,isMostlyClear=wc===1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48);
   const visible=wc<=3||(wc>=45&&wc<=48);
@@ -2035,34 +2041,34 @@ function updateSkyObjects(wc,windSpd){
   var r=Math.random;
   if(isClear){
     // 맑음(wc=0): 구름 거의 없음, 아주 희미하게 1개
-    if(r()>.5) mkC((3+r()*8)+'%',120,30,.05,.3);
+    if(r()>.5) mkC((14+r()*8)+'%',120,30,.05,.3);
   }
   else if(isMostlyClear){
     // 대체로 맑음(wc=1): 얇은 구름 1~2개
-    mkC((4+r()*7)+'%',150,40,.10,.2);
-    if(r()>.3) mkC((13+r()*5)+'%',110,32,.07,.65);
+    mkC((15+r()*7)+'%',150,40,.10,.2);
+    if(r()>.3) mkC((24+r()*5)+'%',110,32,.07,.65);
   }
   else if(isPartly){
     // 구름 조금: 해/달 주변에 자연스럽게
-    mkC((4+r()*8)+'%',180,56,.28,.1);
-    mkC((10+r()*8)+'%',140,44,.22,.45);
-    mkC((6+r()*6)+'%',120,38,.16,.75);
+    mkC((14+r()*8)+'%',180,56,.28,.1);
+    mkC((20+r()*8)+'%',140,44,.22,.45);
+    mkC((16+r()*6)+'%',120,38,.16,.75);
   }
   else if(isCloudy){
     // 흐림: 구름 많고 두껍게
-    mkC((2+r()*4)+'%',240,72,.42,0);
-    mkC((7+r()*4)+'%',200,62,.36,.25);
-    mkC((4+r()*5)+'%',170,54,.3,.52);
-    mkC((12+r()*4)+'%',150,46,.24,.78);
-    mkC((1+r()*3)+'%',190,58,.32,.9);
+    mkC((12+r()*4)+'%',240,72,.42,0);
+    mkC((18+r()*4)+'%',200,62,.36,.25);
+    mkC((14+r()*5)+'%',170,54,.3,.52);
+    mkC((22+r()*4)+'%',150,46,.24,.78);
+    mkC((11+r()*3)+'%',190,58,.32,.9);
   }
   else if(isDrizzle||isRain||isHeavy||isStorm){
     // 비/폭풍: 두껍고 어두운 구름
-    mkC((1+r()*3)+'%',300,85,.52,0);
-    mkC((4+r()*3)+'%',260,75,.46,.2);
-    mkC((2+r()*4)+'%',240,68,.4,.45);
-    mkC((7+r()*3)+'%',220,62,.36,.68);
-    mkC((1+r()*2)+'%',280,78,.44,.88);
+    mkC((10+r()*4)+'%',300,85,.52,0);
+    mkC((14+r()*4)+'%',260,75,.46,.2);
+    mkC((12+r()*4)+'%',240,68,.4,.45);
+    mkC((18+r()*3)+'%',220,62,.36,.68);
+    mkC((10+r()*3)+'%',280,78,.44,.88);
   }
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
@@ -2439,6 +2445,8 @@ function renderTide(data,name,isToday){
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';
     document.getElementById('hero').style.marginTop='';
+    document.getElementById('hero').style.justifyContent='center';
+    document.getElementById('hero').style.paddingBottom='';
     document.querySelector('.tide-status-row').style.display='flex';
     document.getElementById('gauge-rail').style.display='block';
     document.getElementById('gauge-dot').style.display='block';
@@ -2465,11 +2473,13 @@ function renderTide(data,name,isToday){
     if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:2;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
     const fml2=document.getElementById('future-lunar-label');if(fml2){fml2.style.display='none';fml2.textContent='';}
   }else{
-    // 미래 날짜 — 현재와 동일한 레이아웃 유지
-    document.getElementById('tide-panel').style.marginTop='-55px';
+    // 미래 날짜 — 히어로 30px 올리고 데이터 영역 밀착
+    document.getElementById('tide-panel').style.marginTop='-80px';
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';
-    document.getElementById('hero').style.marginTop='-15px';
+    document.getElementById('hero').style.marginTop='-45px';
+    document.getElementById('hero').style.justifyContent='center';
+    document.getElementById('hero').style.paddingBottom='';
 
     // 게이지/바다/배 숨김 (수위 실시간이 없으므로)
     document.getElementById('gauge-rail').style.display='none';
@@ -2480,8 +2490,10 @@ function renderTide(data,name,isToday){
     document.getElementById('horizon').style.opacity='0';
     const sb=document.getElementById('sailboat');if(sb){sb.classList.remove('show');sb.style.display='none';}
     const ub=document.getElementById('unit-btn');if(ub)ub.style.display='none';
-    // 날씨 그래픽 유지 (태양 등 sky-objects 계속 표시)
+    // 미래: 태양 숨기고 구름만 표시
     document.getElementById('sky-objects').style.opacity='1';
+    const futureSun=document.getElementById('sky-sun');
+    if(futureSun)futureSun.style.opacity='0';
 
     // 음력 달 모양 계산
     const futureLd=getLunarDay(sel);
@@ -2567,7 +2579,7 @@ async function loadWeather(lat,lng){
     const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
     let data=wxCache[cacheKey];
     if(!data){
-      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant,moonrise,moonset&wind_speed_unit=ms&timezone=Asia/Seoul`;
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant&wind_speed_unit=ms&timezone=Asia/Seoul`;
       // 실패시 최대 2회 재시도
       let res=null;
       for(let attempt=0;attempt<3;attempt++){
@@ -2586,14 +2598,14 @@ async function loadWeather(lat,lng){
     const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
     if(selectedDateOffset<0||selectedDateOffset>=max){wi.style.display='none';wx.textContent=selectedDateOffset<0?'과거 날씨 조회 불가':'예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(STATIONS[currentStation]?.region,0);updateSkyObjects(0);document.getElementById('weather').classList.add('show');return;}
     let wCode,wSpeed,wDir;
-    if(selectedDateOffset===0){wCode=data.current.weather_code;wSpeed=data.current.wind_speed_10m;wDir=data.current.wind_direction_10m;currentMoonrise=data.daily.moonrise?.[0]||null;currentMoonset=data.daily.moonset?.[0]||null;}
+    if(selectedDateOffset===0){wCode=data.current.weather_code;wSpeed=data.current.wind_speed_10m;wDir=data.current.wind_direction_10m;}
     else{
       const targetDateStr=dateToStr(getOffsetDate(selectedDateOffset));
       const iso=`${targetDateStr.slice(0,4)}-${targetDateStr.slice(4,6)}-${targetDateStr.slice(6,8)}`;
       let di=dailyDates.indexOf(iso);
       if(di<0)di=selectedDateOffset;
       if(di>=max){wi.style.display='none';wx.textContent='예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(STATIONS[currentStation]?.region,0);updateSkyObjects(0);document.getElementById('weather').classList.add('show');return;}
-      wCode=data.daily.weather_code[di];wSpeed=data.daily.wind_speed_10m_max[di];wDir=data.daily.wind_direction_10m_dominant[di];currentMoonrise=data.daily.moonrise?.[di]||null;currentMoonset=data.daily.moonset?.[di]||null;
+      wCode=data.daily.weather_code[di];wSpeed=data.daily.wind_speed_10m_max[di];wDir=data.daily.wind_direction_10m_dominant[di];
     }
     currentWeatherCode=wCode;if(currentStation)applyTheme(STATIONS[currentStation]?.region,wCode,wSpeed);updateSkyObjects(wCode,wSpeed);checkWeatherAlert(wCode,wSpeed);
     const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(wDir/45)%8]||"북";
@@ -2616,6 +2628,9 @@ async function loadWeather(lat,lng){
     if(wx){wi.style.display='none';wx.textContent='날씨 정보 없음';}
     document.getElementById('weather').classList.add('show');
     if(currentStation)applyTheme(STATIONS[currentStation]?.region,0,0);
+    // 날씨 실패해도 기본 맑음으로 태양 표시
+    currentWeatherCode=0;
+    updateSkyObjects(0,0);
   }
 }
 

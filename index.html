@@ -182,6 +182,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 ══════════════════════════════════ */
 #gauge-rail{position:fixed;right:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
 #gauge-track{position:absolute;top:32%;bottom:11%;width:2px;background:rgba(80,140,200,.2);border-radius:1px}
+#gauge-mid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:1px;background:rgba(255,255,255,.2);border-radius:1px}
 #gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(100,180,255,.3),rgba(40,120,220,.7));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
 #gauge-dot{
   position:fixed;right:5px;
@@ -195,7 +196,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #gauge-dot svg{width:16px;height:16px;transition:transform .4s ease}
 /* 게이지 트랙 푸른톤 */
 #gauge-high-label,#gauge-low-label{
-  position:fixed;right:26px;
+  position:fixed;right:26px;z-index:22;
   display:flex;flex-direction:column;align-items:flex-end;gap:1px;
 }
 #gauge-high-label{top:32%;transform:translateY(-50%)}
@@ -331,9 +332,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #wx-overlay.open{opacity:1;pointer-events:auto}
 #wx-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,rgba(10,22,40,.95),rgba(6,15,30,.98));
+  background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding:0 20px env(safe-area-inset-bottom);
   max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -398,8 +399,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   color:var(--accent);font-size:.6rem;font-weight:900;
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
-.date-pill{display:flex;align-items:center;gap:4px;font-size:.58rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
-.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 2px;font-size:.7rem}
+.date-pill{display:flex;align-items:center;gap:3px;font-size:.62rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
+.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 2px;font-size:.65rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.45rem;color:var(--accent);font-weight:700}
 .station-pill{font-size:.58rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.3px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
@@ -460,23 +461,24 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #ci-graph-overlay.open{display:flex;opacity:1}
 #ci-graph-card{
   width:100%;max-width:420px;
-  background:rgba(6,15,30,.85);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  padding:14px 6px 10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  padding:18px 10px 14px;
   display:flex;flex-direction:column;align-items:center;
   transform:scale(.92);transition:transform .3s ease;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
 }
 #ci-graph-overlay.open #ci-graph-card{transform:scale(1)}
-#ci-graph-title{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.5px}
-#ci-graph-card canvas{width:100%;border-radius:10px;}
-#ci-graph-hint{font-size:.45rem;color:rgba(255,255,255,.18);margin-top:8px;}
+#ci-graph-title{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65);margin-bottom:10px;letter-spacing:.5px}
+#ci-graph-card canvas{width:100%;border-radius:12px;}
+#ci-graph-hint{font-size:.48rem;color:rgba(255,255,255,.22);margin-top:10px;}
 
 /* 조류 세기 바 */
 .ci-row{display:flex;align-items:center;gap:10px}
 .ci-label{
-  font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45);
+  font-size:.71rem;font-weight:700;color:rgba(255,255,255,.45);
   letter-spacing:.5px;
   width:38px;flex-shrink:0;
 }
@@ -625,7 +627,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* 푸터 */
 #footer{padding:4px 18px calc(env(safe-area-inset-bottom,16px) + 4px);text-align:center;flex-shrink:0}
-.credit{font-size:.45rem;color:rgba(255,255,255,.12);font-weight:400}
+.credit{font-size:.5rem;color:rgba(255,255,255,.22);font-weight:400}
 .credit a{color:rgba(255,255,255,.15);text-decoration:none}
 
 /* 새로고침 버튼 */
@@ -682,10 +684,10 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 .sheet-overlay.open,#auth-overlay.open,#log-overlay.open,#loglist-overlay.open,#myinfo-overlay.open,#terms-overlay.open{opacity:1;pointer-events:auto}
 .sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:201;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,rgba(10,22,40,.62),rgba(6,15,30,.68));
+  background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;
-  border-top:1px solid rgba(255,255,255,.08);
+  border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -693,7 +695,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 .sheet-handle,.auth-handle,.log-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
 .sheet-step{padding:16px 18px 22px}
-.sheet-title{font-size:.55rem;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:14px}
+.sheet-title{font-size:.7rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.55);margin-bottom:14px}
 .region-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .region-item{
   display:flex;align-items:center;gap:10px;padding:13px 14px;
@@ -759,8 +761,9 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 #auth-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -811,26 +814,27 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 #log-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
 #log-sheet.open{transform:translateY(0)}
 
-.log-body{padding:18px 20px 24px;display:flex;flex-direction:column;gap:12px}
+.log-body{padding:18px 20px 24px;display:flex;flex-direction:column;gap:16px}
 .log-snapshot{
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
   border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
 }
-.log-snap-title{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px}
+.log-snap-title{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1px}
 .log-snap-row{display:flex;justify-content:space-between;align-items:center}
 .log-snap-main{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:2rem;color:#fff;letter-spacing:2px;line-height:1}
 .log-snap-unit{font-size:.65rem;color:rgba(255,255,255,.3);margin-left:2px}
 .log-snap-meta{font-size:.56rem;color:rgba(255,255,255,.45);line-height:1.6}
 .log-snap-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
 .log-snap-tag{font-size:.46rem;padding:2px 7px;border-radius:20px;background:rgba(0,229,195,.12);color:var(--accent);font-weight:700;border:1px solid rgba(0,229,195,.2)}
-.log-memo-label{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px}
+.log-memo-label{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:6px}
 #log-memo{
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
   border-radius:12px;padding:11px 14px;
@@ -847,8 +851,9 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 #loglist-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   max-height:80vh;display:flex;flex-direction:column;
   padding-bottom:env(safe-area-inset-bottom);
@@ -895,8 +900,9 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 #drawer{
   position:fixed;top:0;left:0;bottom:0;z-index:401;
   width:72vw;max-width:280px;
-  background:linear-gradient(180deg,#0b1a30 0%,#060f1e 100%);
-  border-right:1px solid rgba(255,255,255,.07);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-right:1px solid rgba(255,255,255,.12);
   transform:translateX(-100%);
   transition:transform .35s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;
@@ -913,11 +919,11 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
   font-size:1.3rem;letter-spacing:2px;color:#fff;line-height:1;
 }
 .drawer-profile-email{
-  font-size:.5rem;color:rgba(255,255,255,.3);
+  font-size:.5rem;color:rgba(255,255,255,.45);
   margin-top:4px;letter-spacing:.3px;
 }
 .drawer-profile-login{
-  display:inline-block;font-size:.62rem;color:var(--accent);font-weight:600;
+  display:inline-block;width:fit-content;font-size:.62rem;color:var(--accent);font-weight:600;
   cursor:pointer;transition:all .2s;
   border:1px solid rgba(0,229,195,.35);border-radius:8px;
   padding:6px 14px;margin-top:6px;letter-spacing:.3px;
@@ -930,8 +936,8 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
   padding:10px 0;
 }
 .drawer-section-label{
-  font-size:.46rem;font-weight:700;
-  color:rgba(255,255,255,.2);
+  font-size:.48rem;font-weight:700;
+  color:rgba(255,255,255,.4);
   letter-spacing:1.5px;
   padding:14px 20px 4px;
 }
@@ -947,7 +953,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
 .drawer-item-text{
   font-size:.7rem;font-weight:600;
-  color:rgba(255,255,255,.65);
+  color:rgba(255,255,255,.78);
   font-family:'Pretendard Variable','Pretendard',sans-serif;
   letter-spacing:.2px;
 }
@@ -1026,7 +1032,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 }
 .drawer-logout-btn{
   background:none;border:none;
-  font-size:.58rem;color:rgba(255,100,100,.4);
+  font-size:.62rem;color:rgba(255,100,100,.65);
   cursor:pointer;font-family:'Pretendard Variable','Pretendard',sans-serif;
   padding:0;transition:color .2s;
 }
@@ -1039,8 +1045,9 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 
 #myinfo-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -1169,8 +1176,9 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 #terms-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:412;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   max-height:75vh;display:flex;flex-direction:column;
   padding-bottom:env(safe-area-inset-bottom);
@@ -1249,8 +1257,9 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 #cp-overlay.open,#cpmap-overlay.open{opacity:1;pointer-events:auto}
 #cp-sheet,#cpmap-sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
-  background:linear-gradient(180deg,#0d1e38,#060f1e);
-  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(12,20,36,.45);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -1324,7 +1333,6 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 .cpmap-save-btn:disabled{opacity:.4;pointer-events:none}
 /* 관측소 선택 시트 내 커스텀 포인트 그리드 */
 #step-custom-points{display:none}
-#step-custom-points .sheet-title{font-size:.7rem;opacity:.5;margin-bottom:8px}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1438,6 +1446,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 <div id="gauge-rail">
   <div id="gauge-track">
     <div id="gauge-fill-bar"></div>
+    <div id="gauge-mid"></div>
   </div>
 </div>
 <div id="gauge-dot">
@@ -1589,9 +1598,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     </div>
     <div class="tide-scroll" id="tide-list"></div>
     <div id="footer">
-      <div class="credit">
-        조석 데이터 · <a href="https://www.khoa.go.kr" target="_blank">국립해양조사원 KHOA</a> · Made by Boungje Min
-      </div>
+      <div class="credit" id="last-update"></div>
     </div>
   </div>
 </div>
@@ -1602,13 +1609,13 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   <div class="sheet-handle"></div>
   <!-- 커스텀 포인트 섹션 -->
   <div class="sheet-step" id="step-custom-points" style="display:none">
-    <div class="sheet-title" style="font-size:.7rem;opacity:.5;margin-bottom:8px">📌 커스텀 포인트</div>
+    <div class="sheet-title">📌 커스텀 포인트</div>
     <div class="station-grid" id="cp-grid"></div>
     <div style="height:1px;background:rgba(255,255,255,.06);margin:14px 0"></div>
   </div>
   <!-- 즐겨찾기 섹션 -->
   <div class="sheet-step" id="step-favorites" style="display:none">
-    <div class="sheet-title" style="font-size:.7rem;opacity:.5;margin-bottom:8px">⭐ 즐겨찾기</div>
+    <div class="sheet-title">⭐ 즐겨찾기</div>
     <div class="station-grid" id="fav-grid"></div>
     <div style="height:1px;background:rgba(255,255,255,.06);margin:14px 0"></div>
   </div>
@@ -1774,7 +1781,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   </div>
   <div class="drawer-footer">
     <button class="drawer-logout-btn" id="drawer-logout-btn" onclick="drawerLogout()" style="display:none">로그아웃</button>
-    <div style="font-size:.44rem;color:rgba(255,255,255,.12);margin-top:8px;line-height:1.6">
+    <div style="font-size:.52rem;color:rgba(255,255,255,.4);margin-top:8px;line-height:1.8">
       조석 데이터 · 국립해양조사원 KHOA<br>Made by Boungje Min
     </div>
   </div>
@@ -1784,7 +1791,19 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 <div id="myinfo-overlay" onclick="closeMyInfo()"></div>
 <div id="myinfo-sheet" onclick="event.stopPropagation()">
   <div class="log-handle"></div>
-  <div class="log-body">
+  <!-- Step 1: 비밀번호 확인 -->
+  <div class="log-body" id="myinfo-step1">
+    <div class="auth-title" style="font-size:1.2rem">본인 확인</div>
+    <div style="text-align:center;font-size:.6rem;color:rgba(255,255,255,.45);margin-bottom:4px">정보 수정을 위해 현재 비밀번호를 입력하세요</div>
+    <div class="auth-field">
+      <div class="auth-label">현재 비밀번호</div>
+      <input class="auth-input" id="myinfo-pw-check" type="password" placeholder="비밀번호 입력">
+    </div>
+    <div class="auth-err" id="myinfo-pw-err"></div>
+    <button class="log-save-btn" onclick="verifyMyInfoPw()">확인</button>
+  </div>
+  <!-- Step 2: 정보 수정 -->
+  <div class="log-body" id="myinfo-step2" style="display:none">
     <div class="auth-title" style="font-size:1.2rem">내 정보 수정</div>
     <div class="auth-field">
       <div class="auth-label">이름</div>
@@ -1793,6 +1812,15 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     <div class="auth-field">
       <div class="auth-label">휴대폰 번호</div>
       <input class="auth-input" id="myinfo-phone" type="tel" placeholder="010-0000-0000">
+    </div>
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:4px 0"></div>
+    <div class="auth-field">
+      <div class="auth-label">새 비밀번호 <span style="font-size:11px;color:rgba(255,255,255,.35);font-weight:400">(변경 시에만 입력)</span></div>
+      <input class="auth-input" id="myinfo-new-pw" type="password" placeholder="새 비밀번호 (6자 이상)">
+    </div>
+    <div class="auth-field">
+      <div class="auth-label">새 비밀번호 확인</div>
+      <input class="auth-input" id="myinfo-new-pw2" type="password" placeholder="새 비밀번호 다시 입력">
     </div>
     <div class="auth-err" id="myinfo-err"></div>
     <button class="log-save-btn" onclick="saveMyInfo()">저장</button>
@@ -2064,6 +2092,9 @@ function drawTideGraph(){
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
   const w=W/dpr,h=H/dpr;
+  // 반투명 어두운 배경으로 시인성 확보
+  ctx.fillStyle='rgba(6,15,30,.4)';
+  ctx.beginPath();ctx.roundRect(0,0,w,h,10);ctx.fill();
 
   const todayMins=todayTides.map(t=>toMins(t));
   const minTime=Math.min(...todayMins)-60,maxTime=Math.max(...todayMins)+60;
@@ -3263,6 +3294,7 @@ async function loadTide(name){
     if(!cl.length){showError('데이터 없음');showToast('조석 데이터를 불러오지 못했어요');return;}
     renderTide(cl,name,true,isToday);
     document.getElementById('panel-upd').textContent=isToday?new Date().toLocaleTimeString('ko-KR'):'';
+    const luEl=document.getElementById('last-update');if(luEl&&isToday)luEl.textContent='마지막 업데이트 '+new Date().toLocaleTimeString('ko-KR');
     hideMiniLoader();
   }catch(e){
     // 에러 시 캐시 복원 시도
@@ -3921,6 +3953,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
     if(cl.length){
       renderTide(cl,last,true);
       document.getElementById('panel-upd').textContent=new Date().toLocaleTimeString('ko-KR');
+      const luEl2=document.getElementById('last-update');if(luEl2)luEl2.textContent='마지막 업데이트 '+new Date().toLocaleTimeString('ko-KR');
     }
   } else {
     // 데이터 없어도 UI는 최소한 표시
@@ -4519,9 +4552,11 @@ function openFavSheet(){
 /* 내 정보 수정 */
 function openMyInfo(){
   if(!currentUser){openAuth();return;}
-  document.getElementById('myinfo-name').value=currentUser.user_metadata?.name||'';
-  document.getElementById('myinfo-phone').value=currentUser.user_metadata?.phone||'';
-  document.getElementById('myinfo-err').textContent='';
+  // Step1 보이고 Step2 숨김
+  document.getElementById('myinfo-step1').style.display='';
+  document.getElementById('myinfo-step2').style.display='none';
+  document.getElementById('myinfo-pw-check').value='';
+  document.getElementById('myinfo-pw-err').textContent='';
   document.getElementById('myinfo-overlay').classList.add('open');
   document.getElementById('myinfo-sheet').classList.add('open');
 }
@@ -4529,14 +4564,42 @@ function closeMyInfo(){
   document.getElementById('myinfo-overlay').classList.remove('open');
   document.getElementById('myinfo-sheet').classList.remove('open');
 }
+async function verifyMyInfoPw(){
+  const pw=document.getElementById('myinfo-pw-check').value;
+  const err=document.getElementById('myinfo-pw-err');
+  if(!pw){err.textContent='비밀번호를 입력해주세요';return;}
+  const btn=document.querySelector('#myinfo-step1 .log-save-btn');
+  btn.textContent='확인 중...';btn.disabled=true;
+  // 현재 비밀번호로 재로그인하여 검증
+  const {error}=await supabaseClient.auth.signInWithPassword({email:currentUser.email,password:pw});
+  if(error){err.textContent='비밀번호가 일치하지 않습니다';btn.textContent='확인';btn.disabled=false;return;}
+  btn.textContent='확인';btn.disabled=false;
+  // Step2로 전환
+  document.getElementById('myinfo-step1').style.display='none';
+  document.getElementById('myinfo-step2').style.display='';
+  document.getElementById('myinfo-name').value=currentUser.user_metadata?.name||'';
+  document.getElementById('myinfo-phone').value=currentUser.user_metadata?.phone||'';
+  document.getElementById('myinfo-new-pw').value='';
+  document.getElementById('myinfo-new-pw2').value='';
+  document.getElementById('myinfo-err').textContent='';
+}
 async function saveMyInfo(){
   const name=document.getElementById('myinfo-name').value.trim();
   const phone=document.getElementById('myinfo-phone').value.trim();
+  const newPw=document.getElementById('myinfo-new-pw').value;
+  const newPw2=document.getElementById('myinfo-new-pw2').value;
   const err=document.getElementById('myinfo-err');
   if(!name){err.textContent='이름을 입력해주세요';return;}
-  const btn=document.querySelector('#myinfo-sheet .log-save-btn');
+  if(newPw||newPw2){
+    if(newPw.length<6){err.textContent='새 비밀번호는 6자 이상이어야 합니다';return;}
+    if(newPw!==newPw2){err.textContent='새 비밀번호가 일치하지 않습니다';return;}
+  }
+  const btn=document.querySelector('#myinfo-step2 .log-save-btn');
   btn.textContent='저장 중...';btn.disabled=true;
-  const {error}=await supabaseClient.auth.updateUser({data:{name,phone}});
+  // 메타데이터 업데이트
+  const updateData={data:{name,phone}};
+  if(newPw)updateData.password=newPw;
+  const {error}=await supabaseClient.auth.updateUser(updateData);
   if(error){err.style.color='#ff6b6b';err.textContent=error.message;btn.textContent='저장';btn.disabled=false;return;}
   currentUser.user_metadata={...currentUser.user_metadata,name,phone};
   const sub=document.getElementById('hdr-sub');

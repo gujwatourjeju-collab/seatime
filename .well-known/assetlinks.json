@@ -3,6 +3,9 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.badangttae.app",
-    "sha256_cert_fingerprints": ["08:A9:46:C0:9F:E4:19:8C:FB:4B:71:94:6F:67:95:8B:4F:9F:F8:87:61:7E:93:FC:03:1F:B0:C2:5A:9C:3A:03"]
+    "sha256_cert_fingerprints": [
+      "08:A9:46:C0:9F:E4:19:8C:FB:4B:71:94:6F:67:95:8B:4F:9F:F8:87:61:7E:93:FC:03:1F:B0:C2:5A:9C:3A:03",
+      "63:98:E9:36:4A:6E:66:AD:7D:B7:CB:D4:DF:8A:FB:C2:53:49:58:06:66:EB:10:4B:F9:08:33:43:59:DD:80:B7"
+    ]
   }
 }]

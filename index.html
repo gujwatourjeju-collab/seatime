@@ -150,7 +150,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   transition:background 4s ease;
 }
 #waves{position:absolute;top:0;left:0;right:0;height:90px;overflow:hidden}
-.wave-svg{position:absolute;top:0;left:-10%;width:120%;height:100%}
+.wave-svg{position:absolute;top:0;left:-20%;width:140%;height:100%}
 .wave-path-1{animation:wd1 var(--wave-dur1,3.5s) ease-in-out infinite}
 .wave-path-2{animation:wd2 var(--wave-dur2,5s) ease-in-out infinite}
 .wave-path-3{animation:wd3 var(--wave-dur3,7s) ease-in-out -2s infinite}
@@ -214,9 +214,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   animation:boatSail var(--sail-dur,34s) ease-in-out infinite;
 }
 @keyframes boatSail{
-  0%  {left:8%}
-  50% {left:82%}
-  100%{left:8%}
+  0%,3%  {left:6%}
+  48%,52%{left:92%}
+  97%,100%{left:6%}
 }
 #sailboat.show{opacity:1}
 .boat-wrap{
@@ -336,6 +336,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.08);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding:0 20px env(safe-area-inset-bottom);
+  max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 #wx-sheet.open{transform:translateY(0)}
 .wx-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 16px}
@@ -344,12 +345,28 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .wx-hero-name{font-size:.85rem;font-weight:600;color:rgba(255,255,255,.9);margin-top:4px}
 .wx-hero-temp{font-size:1.8rem;font-weight:700;color:#fff;margin-top:2px;letter-spacing:-1px}
 .wx-hero-sub{font-size:.58rem;color:rgba(255,255,255,.4);margin-top:4px}
+.wx-hero-wind{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 14px;background:rgba(255,255,255,.05);border-radius:10px;font-size:.55rem;color:rgba(255,255,255,.5)}
+.wx-hero-wind .wxhw-dir{font-weight:700;color:rgba(255,255,255,.65);font-size:.6rem}
+.wx-hero-wind .wxhw-wave{color:rgba(100,180,255,.7);font-weight:600}
 .wx-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .wx-card{background:rgba(255,255,255,.05);border-radius:12px;padding:10px 6px;text-align:center}
 .wx-card-label{font-size:.48rem;color:rgba(255,255,255,.35);margin-bottom:4px}
 .wx-card-val{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.85)}
-.wx-info{display:flex;flex-wrap:wrap;gap:10px 16px;padding:12px 0 20px;border-top:1px solid rgba(255,255,255,.06)}
+.wx-info{display:flex;flex-wrap:wrap;gap:10px 16px;padding:12px 0 16px;border-top:1px solid rgba(255,255,255,.06)}
 .wx-info-item{font-size:.56rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px}
+/* 3시간 예보 */
+.wx-hourly-title{font-size:.55rem;font-weight:700;color:rgba(255,255,255,.35);margin:4px 0 8px;letter-spacing:.5px}
+.wx-hourly{display:flex;flex-direction:column;gap:0;padding-bottom:20px}
+.wx-hour-row{display:flex;align-items:center;padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.04);gap:0}
+.wx-hour-row.is-now{background:rgba(0,229,195,.06);border-radius:8px;border:1px solid rgba(0,229,195,.12)}
+.wx-hr-time{width:42px;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.55);flex-shrink:0}
+.wx-hr-time .now-tag{font-size:.5rem;color:var(--accent);display:block;font-weight:600}
+.wx-hr-icon{width:24px;font-size:.9rem;text-align:center;flex-shrink:0}
+.wx-hr-name{flex:1;font-size:.55rem;color:rgba(255,255,255,.45);min-width:0}
+.wx-hr-temp{width:32px;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);text-align:right;flex-shrink:0}
+.wx-hr-windwave{width:52px;font-size:.48rem;color:rgba(255,255,255,.4);text-align:center;flex-shrink:0;line-height:1.35}
+.wx-hr-ww-dir{font-weight:700;color:rgba(255,255,255,.55);font-size:.52rem}
+.wx-hr-ww-wave{color:rgba(100,180,255,.6)}
 
 /* ══════════════════════════════════
    히어로 — 핵심 정보 영역
@@ -386,7 +403,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* 수위 숫자 */
 #level-big{
   font-family:'Bebas Neue',sans-serif;
-  font-size:5.8rem;line-height:.9;letter-spacing:2px;color:#fff;
+  font-size:4.5rem;line-height:.9;letter-spacing:2px;color:#fff;
   text-shadow:0 0 80px rgba(0,229,195,.35),0 4px 30px rgba(0,0,0,.8);
 }
 #level-unit{font-family:'DM Mono',monospace;font-size:1.4rem;opacity:.35;margin-left:3px;letter-spacing:0;align-self:flex-end;padding-bottom:6px}
@@ -407,6 +424,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* ══════════════════════════════════
    조류 인포 카드 — 핵심 신규 UI
 ══════════════════════════════════ */
+#ci-flip-wrap{
+  width:90%;margin:2px auto 0;display:none;
+}
+#ci-flip-wrap.show{display:block}
 #current-info{
   width:100%;
   background:rgba(6,15,30,.25);
@@ -414,10 +435,33 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   border-radius:16px;
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   padding:10px 14px;
-  display:none;flex-direction:column;gap:8px;
-  margin-top:2px;
+  display:flex;flex-direction:column;gap:8px;
+  cursor:pointer;
 }
-#current-info.show{display:flex}
+/* 그래프 오버레이 */
+#ci-graph-overlay{
+  position:fixed;inset:0;z-index:9999;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;transition:opacity .3s ease;
+  padding:24px 10px;
+}
+#ci-graph-overlay.open{display:flex;opacity:1}
+#ci-graph-card{
+  width:100%;max-width:420px;
+  background:rgba(6,15,30,.85);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:14px 6px 10px;
+  display:flex;flex-direction:column;align-items:center;
+  transform:scale(.92);transition:transform .3s ease;
+}
+#ci-graph-overlay.open #ci-graph-card{transform:scale(1)}
+#ci-graph-title{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.5px}
+#ci-graph-card canvas{width:100%;border-radius:10px;}
+#ci-graph-hint{font-size:.45rem;color:rgba(255,255,255,.18);margin-top:8px;}
 
 /* 조류 세기 바 */
 .ci-row{display:flex;align-items:center;gap:10px}
@@ -571,7 +615,7 @@ html.large-text{font-size:125%}
 html.large-text .tr-level{font-size:1.05rem}
 html.large-text .tr-time{font-size:.92rem}
 html.large-text .tr-label{font-size:.6rem}
-html.large-text #level-big{font-size:5.8rem}
+html.large-text #level-big{font-size:5rem}
 html.large-text .tide-badge{font-size:.7rem}
 html.large-text .tide-desc{font-size:.68rem}
 html.large-text .status-pill{font-size:.72rem}
@@ -1072,7 +1116,28 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 }
 
 
-/* 배 글로우 */
+/* 유리구슬 */
+#wind-bubble{
+  position:relative;width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.18),rgba(255,255,255,.04) 60%,rgba(0,229,195,.06));
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.25),inset 0 1px 1px rgba(255,255,255,.15);
+  overflow:hidden;
+}
+.wb-shine{
+  position:absolute;top:6px;left:10px;width:16px;height:10px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,.4),transparent 70%);
+  pointer-events:none;
+}
+.wb-arrow{font-size:.95rem;line-height:1;color:rgba(0,229,195,1);margin-top:-1px;text-shadow:0 0 6px rgba(0,229,195,.6),0 1px 2px rgba(0,0,0,.5)}
+.wb-dir{font-size:.52rem;font-weight:800;color:#fff;line-height:1;letter-spacing:.5px;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.wb-speed{font-size:.58rem;font-weight:700;color:#fff;line-height:1.15;font-family:'DM Mono',monospace;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.wb-speed span{font-size:.38rem;font-weight:500;color:rgba(255,255,255,.8);text-shadow:none}
+.wb-wave{font-size:.5rem;font-weight:700;color:rgba(0,229,195,1);line-height:1.1;font-family:'DM Mono',monospace;text-shadow:0 0 5px rgba(0,229,195,.5),0 1px 2px rgba(0,0,0,.6)}
+.wb-wave span{font-size:.34rem;font-weight:500;color:rgba(0,229,195,.8);text-shadow:none}
+/* 구슬 글로우 */
 #sailboat.ready .boat-wrap{
   filter:drop-shadow(0 0 8px rgba(0,229,195,.9)) drop-shadow(0 0 20px rgba(0,229,195,.5));
   transition:filter 1s ease;
@@ -1262,17 +1327,17 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
 
 </div>
 
-  <!-- 돛단배 -->
+  <!-- 유리구슬 (풍향·풍속·파고) -->
   <div id="sailboat">
     <div id="boat-drift">
       <div class="boat-wrap" id="boat-wrap">
-        <svg id="boat-svg" viewBox="0 0 60 50" width="52" height="44" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-          <line id="boat-mast" x1="28" y1="32" x2="28" y2="6" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round"/>
-          <path id="boat-sail" d="M28,8 Q18,18 20,32 L28,32 Z" fill="rgba(255,255,255,.55)" stroke="rgba(255,255,255,.3)" stroke-width=".8"/>
-          <path d="M14,34 Q16,40 28,41 Q40,40 42,34 Z" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.2)" stroke-width=".8"/>
-          <line x1="16" y1="34" x2="40" y2="34" stroke="rgba(255,255,255,.5)" stroke-width="1" stroke-linecap="round"/>
-          <ellipse cx="28" cy="43" rx="14" ry="2.5" fill="rgba(255,255,255,.06)"/>
-        </svg>
+        <div id="wind-bubble">
+          <div class="wb-arrow" id="wb-arrow">↓</div>
+          <div class="wb-dir" id="wb-dir">북</div>
+          <div class="wb-speed" id="wb-speed">0.0<span>m/s</span></div>
+          <div class="wb-wave" id="wb-wave">--<span>m</span></div>
+          <div class="wb-shine"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1387,43 +1452,46 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
       </div>
 
       <!-- 조류 인포 카드 -->
-      <div id="current-info">
-        <!-- 조류 세기 -->
-        <div class="ci-row">
-          <span class="ci-label">조류</span>
-          <div class="ci-bars" id="ci-bars">
-            <div class="ci-bar"></div><div class="ci-bar"></div>
-            <div class="ci-bar"></div><div class="ci-bar"></div><div class="ci-bar"></div>
+      <div id="ci-flip-wrap">
+        <div id="current-info" onclick="openTideGraph()">
+          <!-- 조류 세기 -->
+          <div class="ci-row">
+            <span class="ci-label">조류</span>
+            <div class="ci-bars" id="ci-bars">
+              <div class="ci-bar"></div><div class="ci-bar"></div>
+              <div class="ci-bar"></div><div class="ci-bar"></div><div class="ci-bar"></div>
+            </div>
+            <span class="ci-desc" id="ci-current-desc">--</span>
           </div>
-          <span class="ci-desc" id="ci-current-desc">--</span>
-        </div>
-        <div class="ci-divider"></div>
-        <!-- 수중활동 -->
-        <div class="ci-act-row">
-          <span class="ci-act-icon">🤿</span>
-          <div class="ci-stars" id="ci-dive-stars">
-            <div class="ci-star"></div><div class="ci-star"></div>
-            <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+          <div class="ci-divider"></div>
+          <!-- 수중활동 -->
+          <div class="ci-act-row">
+            <span class="ci-act-icon">🤿</span>
+            <div class="ci-stars" id="ci-dive-stars">
+              <div class="ci-star"></div><div class="ci-star"></div>
+              <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+            </div>
+            <span class="ci-act-desc" id="ci-dive-desc">--</span>
           </div>
-          <span class="ci-act-desc" id="ci-dive-desc">--</span>
-        </div>
-        <!-- 해루질 -->
-        <div class="ci-act-row" id="ci-forage-row" style="display:none">
-          <span class="ci-act-icon">🦪</span>
-          <div class="ci-stars" id="ci-forage-stars">
-            <div class="ci-star"></div><div class="ci-star"></div>
-            <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+          <!-- 해루질 -->
+          <div class="ci-act-row" id="ci-forage-row" style="display:none">
+            <span class="ci-act-icon">🦪</span>
+            <div class="ci-stars" id="ci-forage-stars">
+              <div class="ci-star"></div><div class="ci-star"></div>
+              <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+            </div>
+            <span class="ci-act-desc" id="ci-forage-desc">--</span>
           </div>
-          <span class="ci-act-desc" id="ci-forage-desc">--</span>
-        </div>
-        <!-- 낚시 -->
-        <div class="ci-act-row">
-          <span class="ci-act-icon">🎣</span>
-          <div class="ci-stars" id="ci-fish-stars">
-            <div class="ci-star"></div><div class="ci-star"></div>
-            <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+          <!-- 낚시 -->
+          <div class="ci-act-row">
+            <span class="ci-act-icon">🎣</span>
+            <div class="ci-stars" id="ci-fish-stars">
+              <div class="ci-star"></div><div class="ci-star"></div>
+              <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+            </div>
+            <span class="ci-act-desc" id="ci-fish-desc">--</span>
           </div>
-          <span class="ci-act-desc" id="ci-fish-desc">--</span>
+          <div style="text-align:center;font-size:.4rem;color:rgba(255,255,255,.15);margin-top:2px">탭하여 조석 그래프 보기</div>
         </div>
       </div>
 
@@ -1671,6 +1739,7 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     <div class="wx-hero-name" id="wxs-name"></div>
     <div class="wx-hero-temp" id="wxs-temp"></div>
     <div class="wx-hero-sub" id="wxs-sub"></div>
+    <div class="wx-hero-wind" id="wxs-hero-wind"></div>
   </div>
   <div class="wx-grid">
     <div class="wx-card"><div class="wx-card-label">최고</div><div class="wx-card-val" id="wxs-hi"></div></div>
@@ -1684,6 +1753,8 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
     <div class="wx-info-item" id="wxs-uv"></div>
     <div class="wx-info-item" id="wxs-wind"></div>
   </div>
+  <div class="wx-hourly-title">3시간 단위 예보</div>
+  <div class="wx-hourly" id="wxs-hourly"></div>
 </div>
 
 <div id="terms-overlay" onclick="closeTerms()"></div>
@@ -1813,8 +1884,9 @@ function starColor(stars){
 }
 
 function renderCurrentInfo(tn){
+  const wrap=document.getElementById('ci-flip-wrap');
   const el=document.getElementById('current-info');
-  if(!tn||!TIDE_DATA[tn]){el.classList.remove('show');return;}
+  if(!tn||!TIDE_DATA[tn]){wrap.classList.remove('show');return;}
   const d=TIDE_DATA[tn];
   const bc=barColor(d.bars);
 
@@ -1851,7 +1923,180 @@ function renderCurrentInfo(tn){
   for(let i=0;i<5;i++){fishStars[i].classList.toggle('on',i<d.fish.stars);if(i<d.fish.stars)fishStars[i].style.setProperty('--star-color',fsc);}
   document.getElementById('ci-fish-desc').textContent=d.fish.desc;
 
-  el.classList.add('show');
+  wrap.classList.add('show');
+}
+
+function openTideGraph(){
+  const ov=document.getElementById('ci-graph-overlay');
+  ov.style.display='flex';
+  requestAnimationFrame(()=>{ov.classList.add('open');drawTideGraph();});
+}
+function closeTideGraph(){
+  const ov=document.getElementById('ci-graph-overlay');
+  ov.classList.remove('open');
+  setTimeout(()=>{ov.style.display='none';},300);
+}
+
+function drawTideGraph(){
+  const canvas=document.getElementById('tide-graph');
+  if(!canvas)return;
+  const raw=window._lastTideRaw||(window._lastTideData||[]).filter(d=>!d.isCurrent);
+  const allTides=raw.filter(d=>d.level!=null);
+  const todayTides=allTides.filter(d=>!d.isYesterday&&!d.isNextDay);
+  if(todayTides.length<2)return;
+
+  // 진입/퇴장 곡선용
+  const ydLast=[...allTides].filter(d=>d.isYesterday).pop();
+  const tmFirst=allTides.find(d=>d.isNextDay);
+  const tides=[];
+  if(ydLast)tides.push(ydLast);
+  tides.push(...todayTides);
+  if(tmFirst)tides.push(tmFirst);
+
+  const dpr=window.devicePixelRatio||1;
+  const wrap=canvas.parentElement;
+  const wrapW=wrap.getBoundingClientRect().width||wrap.offsetWidth||300;
+  const W=Math.round((wrapW-24)*dpr);
+  const H=330*dpr;
+  canvas.width=W;canvas.height=H;
+  canvas.style.height='330px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  const w=W/dpr,h=H/dpr;
+
+  const todayMins=todayTides.map(t=>toMins(t));
+  const minTime=Math.min(...todayMins)-60,maxTime=Math.max(...todayMins)+60;
+  const allLevels=tides.map(t=>t.level);
+  const minLv=Math.min(...allLevels),maxLv=Math.max(...allLevels);
+  const lvRange=maxLv-minLv||1;
+  const pad={top:44,bot:90,left:16,right:16};
+  const gw=w-pad.left-pad.right,gh=h-pad.top-pad.bot;
+
+  function tx(m){return pad.left+((m-minTime)/(maxTime-minTime))*gw;}
+  function ty(lv){return pad.top+gh-(((lv-minLv)/lvRange)*gh);}
+
+  // 코사인 보간
+  const pts=[];
+  for(let i=0;i<tides.length-1;i++){
+    const a=tides[i],b=tides[i+1];
+    const am=toMins(a),bm=toMins(b);
+    const steps=Math.max(30,Math.round((bm-am)/4));
+    for(let s=0;s<=steps;s++){
+      const t=s/steps;
+      const m=am+(bm-am)*t;
+      const lv=a.level+(b.level-a.level)*(1-Math.cos(t*Math.PI))/2;
+      pts.push({x:tx(m),y:ty(lv),m});
+    }
+  }
+  const visPts=pts.filter(p=>p.x>=pad.left-2&&p.x<=w-pad.right+2);
+  if(visPts.length<2)return;
+
+  // 영역
+  const grad=ctx.createLinearGradient(0,pad.top,0,h-pad.bot);
+  grad.addColorStop(0,'rgba(0,229,195,.18)');
+  grad.addColorStop(1,'rgba(0,229,195,.02)');
+  ctx.beginPath();
+  ctx.moveTo(visPts[0].x,h-pad.bot);
+  visPts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(visPts[visPts.length-1].x,h-pad.bot);
+  ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+
+  // 곡선
+  ctx.beginPath();
+  visPts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='rgba(0,229,195,.65)';ctx.lineWidth=2;ctx.stroke();
+
+  // 일출/일몰 — 항상 그래프 영역 아래 고정 (간조 데이터와 겹치지 않게)
+  const wd=currentWeatherDetail;
+  if(wd){
+    [['일출',wd.sunrise],['일몰',wd.sunset]].forEach(([label,timeStr])=>{
+      if(!timeStr||timeStr==='--')return;
+      const [hh,mm]=timeStr.split(':').map(Number);
+      const sm=hh*60+mm;
+      if(sm<minTime||sm>maxTime)return;
+      const sx=tx(sm);
+      // 점선 — 일출/일몰 레이블 영역까지 연장
+      ctx.setLineDash([2,3]);
+      ctx.beginPath();ctx.moveTo(sx,pad.top);ctx.lineTo(sx,h-pad.bot+57);
+      ctx.strokeStyle='rgba(255,200,50,.12)';ctx.lineWidth=1;ctx.stroke();
+      ctx.setLineDash([]);
+      // 텍스트 — 간조 박스보다 충분히 아래
+      ctx.textAlign='center';
+      ctx.font='bold 9px "Pretendard Variable",sans-serif';ctx.fillStyle='rgba(255,200,50,.7)';
+      ctx.fillText(label,sx,h-pad.bot+55);
+      ctx.font='bold 9px "DM Mono",monospace';ctx.fillStyle='rgba(255,200,50,.55)';
+      ctx.fillText(timeStr,sx,h-pad.bot+67);
+    });
+  }
+
+  // 현재 시각 세로선 + 포인트
+  const now=new Date(),nm=now.getHours()*60+now.getMinutes();
+  if(nm>=minTime&&nm<=maxTime){
+    const nx=tx(nm);
+    ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(nx,pad.top);ctx.lineTo(nx,h-pad.bot);
+    ctx.strokeStyle='rgba(0,229,195,.25)';ctx.lineWidth=1;ctx.stroke();
+    ctx.setLineDash([]);
+    const cLv=calcLive(allTides);
+    const cy=ty(cLv);
+    ctx.beginPath();ctx.arc(nx,cy,4.5,0,Math.PI*2);
+    ctx.fillStyle='#00e5c3';ctx.fill();
+    ctx.beginPath();ctx.arc(nx,cy,7,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,229,195,.3)';ctx.lineWidth=1.5;ctx.stroke();
+  }
+
+  // 만조/간조 레이블 + 전 물때 대비 차이
+  ctx.textAlign='center';
+  todayTides.forEach((t,idx)=>{
+    const px=tx(toMins(t)),py=ty(t.level);
+    const isH=t.type==='high';
+    // 점
+    ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);
+    ctx.fillStyle=isH?'#7ab3f5':'#ff7a95';ctx.fill();
+    // 전 물때 대비 차이 (어제 마지막 물때 포함)
+    let diffStr='';
+    const prevTide=idx>0?todayTides[idx-1]:(ydLast||null);
+    if(prevTide){
+      const diff=t.level-prevTide.level;
+      diffStr=(diff>0?'+':'')+diff;
+    }
+    // 배경 박스
+    const boxH=diffStr?34:26;
+    const boxY=isH?py-(boxH+8):py+8;
+    ctx.fillStyle='rgba(6,15,30,.65)';
+    ctx.beginPath();ctx.roundRect(px-32,boxY,64,boxH,5);ctx.fill();
+    ctx.strokeStyle=isH?'rgba(122,179,245,.15)':'rgba(255,122,149,.15)';
+    ctx.lineWidth=1;ctx.stroke();
+    // 시간
+    ctx.font='bold 11px "DM Mono",monospace';
+    ctx.fillStyle=isH?'#7ab3f5':'#ff7a95';
+    ctx.fillText(t.time,px,boxY+12);
+    // 수위
+    ctx.font='600 9px "Pretendard Variable",sans-serif';
+    ctx.fillStyle='rgba(255,255,255,.45)';
+    ctx.fillText(t.level+'cm',px,boxY+22);
+    // 차이
+    if(diffStr){
+      ctx.font='bold 8px "DM Mono",monospace';
+      const dv=parseInt(diffStr);
+      ctx.fillStyle=dv>0?'rgba(122,179,245,.5)':'rgba(255,122,149,.5)';
+      ctx.fillText(diffStr+'cm',px,boxY+31);
+    }
+  });
+
+  // X축 시간 눈금
+  ctx.textAlign='center';
+  ctx.font='8px "DM Mono",monospace';
+  for(let hh=0;hh<=24;hh+=6){
+    const m=hh*60;
+    if(m<minTime||m>maxTime)continue;
+    const xx=tx(m);
+    ctx.beginPath();ctx.moveTo(xx,h-pad.bot);ctx.lineTo(xx,h-pad.bot+4);
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.2)';
+    ctx.fillText(String(hh%24).padStart(2,'0')+'시',xx,h-pad.bot+14);
+  }
 }
 
 /* ═══ 시간대 × 날씨 × 지역 테마 ═══ */
@@ -2449,53 +2694,49 @@ function setOceanLevel(pct,isFalling,animate=true){
 
 function updateSailboat(windSpeed, windDir){
   const wrap=document.getElementById('boat-wrap');
-  const sail=document.getElementById('boat-sail');
   const boat=document.getElementById('sailboat');
   const waves=document.getElementById('waves');
-  if(!wrap||!sail||!boat)return;
+  if(!wrap||!boat)return;
+
+  // 구슬 내부 텍스트 업데이트
+  const dirs=["북","북동","동","남동","남","남서","서","북서"];
+  const dirArrows=["↓","↙","←","↖","↑","↗","→","↘"];
+  const di=Math.round(windDir/45)%8;
+  const arrowEl=document.getElementById('wb-arrow');
+  const dirEl=document.getElementById('wb-dir');
+  const speedEl=document.getElementById('wb-speed');
+  const waveEl=document.getElementById('wb-wave');
+  if(arrowEl)arrowEl.textContent=dirArrows[di]||'↓';
+  if(dirEl)dirEl.textContent=dirs[di]||'북';
+  if(speedEl)speedEl.innerHTML=(windSpeed??0).toFixed(1)+'<span>m/s</span>';
+  const wv=window._currentWaveHeight;
+  if(waveEl)waveEl.innerHTML=wv!=null?wv.toFixed(2)+'<span>m</span>':'--';
 
   const fromWest=windDir>=200&&windDir<=340;
-  const side=fromWest?-1:1; // -1=왼쪽, 1=오른쪽으로 돛 부풂
-  let bobDur,tilt,tiltExtra,sailDur,sailPath,sailOpacity,sailStroke;
+  const side=fromWest?-1:1;
+  let bobDur,tilt,tiltExtra,sailDur;
   let waveDur1,waveDur2,waveDur3,waveAmp,waveShift;
 
   if(windSpeed<3){
-    // 잔잔 — 돛이 거의 안 부풂, 축 늘어짐
     bobDur='5.5s';tilt='0deg';tiltExtra='0.6deg';sailDur='46s';
-    sailPath=`M28,8 Q${28+side*4},20 ${28+side*3},32 L28,32 Z`;
-    sailOpacity='.28';sailStroke='rgba(255,255,255,.2)';
     waveDur1='4.5s';waveDur2='6.5s';waveDur3='9s';waveAmp='0.7';waveShift='-4%';
   }else if(windSpeed<5){
-    // 약한 바람
     bobDur='4s';tilt=`${side*1.5}deg`;tiltExtra='1deg';sailDur='34s';
-    sailPath=`M28,7 Q${28+side*9},16 ${28+side*7},32 L28,32 Z`;
-    sailOpacity='.45';sailStroke='rgba(255,255,255,.28)';
     waveDur1='3.2s';waveDur2='4.8s';waveDur3='6.5s';waveAmp='0.9';waveShift='-5%';
   }else if(windSpeed<8){
-    // 보통 — 돛 제법 팽팽
     bobDur='3s';tilt=`${side*2.5}deg`;tiltExtra='1.8deg';sailDur='24s';
-    sailPath=`M28,7 Q${28+side*14},15 ${28+side*10},32 L28,32 Z`;
-    sailOpacity='.62';sailStroke='rgba(255,255,255,.35)';
     waveDur1='2.2s';waveDur2='3.3s';waveDur3='4.8s';waveAmp='1.15';waveShift='-7%';
   }else{
-    // 강풍 — 돛 최대 팽창, 배 기울기
     bobDur='1.6s';tilt=`${side*5}deg`;tiltExtra='3deg';sailDur='11s';
-    sailPath=`M28,6 Q${28+side*20},13 ${28+side*14},32 L28,32 Z`;
-    sailOpacity='.82';sailStroke='rgba(255,255,255,.5)';
     waveDur1='1.4s';waveDur2='2.1s';waveDur3='3s';waveAmp='1.4';waveShift='-10%';
   }
 
-  // 돛 업데이트
   wrap.style.setProperty('--bob-dur',bobDur);
   wrap.style.setProperty('--bob-tilt',tilt);
   wrap.style.setProperty('--tilt-extra',tiltExtra);
   boat.style.setProperty('--sail-dur',sailDur);
-  sail.setAttribute('d',sailPath);
-  sail.style.opacity=sailOpacity;
-  sail.setAttribute('stroke',sailStroke);
   wrap.style.transform=`rotate(${tilt})`;
 
-  // 파도 속도·진폭 업데이트
   if(waves){
     waves.style.setProperty('--wave-dur1',waveDur1);
     waves.style.setProperty('--wave-dur2',waveDur2);
@@ -2922,6 +3163,7 @@ async function loadTide(name){
       cacheTideData(name,dateStr,td);
     }
     window._lastTideData=td;
+    window._lastTideRaw=td.filter(d=>!d.isCurrent);
     // 현재/미래 모두 현재시각 기준 수위 계산
     if(td.length>0){const now=new Date(),nm=now.getHours()*60+now.getMinutes(),lv=calcLive(td);td.push({isCurrent:true,level:lv,time:minsToTime(nm),type:'current',mins:nm});td.sort((a,b)=>toMins(a)-toMins(b));}
     const cl=td.filter(d=>d&&(d.isCurrent||d.time));
@@ -3204,8 +3446,12 @@ async function loadWeather(lat,lng){
   try{
     const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
     let data=wxCache[cacheKey];
+    // Marine API — 캐시 여부와 무관하게 항상 호출
+    window._currentWaveHeight=null;window._marineData=null;
+    const marineUrl=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&hourly=wave_height&timezone=Asia/Seoul`;
+    const marinePromise=(async()=>{for(let i=0;i<3;i++){try{const r=await fetch(marineUrl);if(r.ok)return await r.json();}catch(e){}if(i<2)await new Promise(r=>setTimeout(r,800*(i+1)));}return null;})();
     if(!data){
-      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code,temperature_2m,relative_humidity_2m,apparent_temperature&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max&wind_speed_unit=ms&timezone=Asia/Seoul`;
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code,temperature_2m,relative_humidity_2m,apparent_temperature&hourly=weather_code,temperature_2m,wind_speed_10m,wind_direction_10m,precipitation&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max&wind_speed_unit=ms&timezone=Asia/Seoul`;
       // 실패시 최대 2회 재시도
       let res=null;
       for(let attempt=0;attempt<3;attempt++){
@@ -3235,7 +3481,6 @@ async function loadWeather(lat,lng){
     }
     currentWeatherCode=wCode;if(currentStation)applyTheme(getStation(currentStation)?.region,wCode,wSpeed);updateSkyObjects(wCode,wSpeed);checkWeatherAlert(wCode,wSpeed);
     const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(wDir/45)%8]||"북";
-    updateSailboat(wSpeed, wDir);
     const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
     const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
     const wl=v=>v<1.5?"잔잔":v<3.3?"약한":v<5.4?"산들":v<7.9?"건들":v<10.7?"흔들":"강풍";
@@ -3256,7 +3501,18 @@ async function loadWeather(lat,lng){
       };
     }
     wi.style.display='inline';wi.textContent=emo(wCode);
-    wx.textContent=`${wn(wCode)} · ${dir}풍 ${wl(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`;
+    // Marine 데이터 대기 (날씨와 병렬로 이미 시작됨)
+    const md=await marinePromise;
+    if(md&&md.hourly&&md.hourly.wave_height&&md.hourly.time){
+      window._marineData=md;
+      const nowH2=new Date().getHours();const today2=new Date();
+      const tStr2=`${today2.getFullYear()}-${String(today2.getMonth()+1).padStart(2,'0')}-${String(today2.getDate()).padStart(2,'0')}T${String(nowH2).padStart(2,'0')}:00`;
+      const mIdx=md.hourly.time.indexOf(tStr2);
+      if(mIdx>=0&&md.hourly.wave_height[mIdx]!=null)window._currentWaveHeight=md.hourly.wave_height[mIdx];
+    }
+    updateSailboat(wSpeed, wDir);
+    const tempStr=selectedDateOffset===0?` ${Math.round(data.current.temperature_2m)}°`:'';
+    wx.textContent=`${wn(wCode)}${tempStr}`;
     document.getElementById('weather').classList.add('show');
   }catch(e){
     console.error('날씨 오류:',e);
@@ -3292,8 +3548,66 @@ function openWeatherSheet(){
   document.getElementById('wxs-sunset').textContent='일몰 '+d.sunset;
   document.getElementById('wxs-uv').textContent=`UV ${d.uv} (${uvLabel(+d.uv)})`;
   document.getElementById('wxs-wind').textContent=d.wind;
+  // 히어로 풍향·풍속·파고
+  const waveVal=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(2)+'m':'--';
+  const _dirs=["북","북동","동","남동","남","남서","서","북서"],_dArw=["↓","↙","←","↖","↑","↗","→","↘"];
+  const heroArrow=_dArw[_dirs.indexOf(d.dir)]||'↓';
+  document.getElementById('wxs-hero-wind').innerHTML=`<span class="wxhw-dir">${heroArrow} ${d.dir}</span> ${(d.wSpeed??0).toFixed(1)}m/s <span class="wxhw-wave">파고 ${waveVal}</span>`;
+  // 3시간 단위 예보
+  renderHourlyForecast();
   document.getElementById('wx-overlay').classList.add('open');
   document.getElementById('wx-sheet').classList.add('open');
+}
+
+function renderHourlyForecast(){
+  const el=document.getElementById('wxs-hourly');
+  const s=currentStation?getStation(currentStation):null;
+  if(!s){el.innerHTML='';return;}
+  const cacheKey=`${s.lat.toFixed(2)}_${s.lng.toFixed(2)}_${new Date().toDateString()}`;
+  const data=wxCache[cacheKey];
+  if(!data||!data.hourly){el.innerHTML='<div style="font-size:.5rem;color:rgba(255,255,255,.2)">시간별 데이터 없음</div>';return;}
+  const h=data.hourly;
+  const marine=window._marineData;
+  const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
+  const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
+  const dirs=["북","북동","동","남동","남","남서","서","북서"];
+  const dirArrows=["↓","↙","←","↖","↑","↗","→","↘"];
+  const nowH=new Date().getHours();
+  // 오늘 날짜에 해당하는 시간 인덱스 찾기
+  const targetDate=getOffsetDate(selectedDateOffset);
+  const tStr=`${targetDate.getFullYear()}-${String(targetDate.getMonth()+1).padStart(2,'0')}-${String(targetDate.getDate()).padStart(2,'0')}`;
+  let rows='';
+  for(let hr=0;hr<=24;hr+=3){
+    const timeKey=hr<24?`${tStr}T${String(hr).padStart(2,'0')}:00`:`${tStr}T23:00`;
+    const idx=h.time.indexOf(timeKey);
+    if(idx<0)continue;
+    const realHr=hr<24?hr:24;
+    const isNow=selectedDateOffset===0&&nowH>=realHr&&nowH<realHr+3&&realHr<24;
+    const wCode=h.weather_code[idx];
+    const temp=Math.round(h.temperature_2m[idx]);
+    const ws=(h.wind_speed_10m[idx]??0).toFixed(1);
+    const wd=h.wind_direction_10m[idx]??0;
+    const dir=dirs[Math.round(wd/45)%8]||'북';
+    const precip=h.precipitation?.[idx];
+    const precipStr=precip>0?`${precip.toFixed(1)}mm`:'';
+    // 파고
+    let waveStr='--';
+    if(marine&&marine.hourly&&marine.hourly.wave_height){
+      const mIdx=marine.hourly.time?.indexOf(timeKey);
+      if(mIdx>=0&&marine.hourly.wave_height[mIdx]!=null){
+        waveStr=marine.hourly.wave_height[mIdx].toFixed(2)+'m';
+      }
+    }
+    const timeLabel=isNow?`<span class="now-tag">현재</span>${String(realHr).padStart(2,'0')}시`:`${String(realHr).padStart(2,'0')}시`;
+    rows+=`<div class="wx-hour-row${isNow?' is-now':''}">
+      <div class="wx-hr-time">${timeLabel}</div>
+      <div class="wx-hr-icon">${emo(wCode)}</div>
+      <div class="wx-hr-name">${wn(wCode)}${precipStr?' '+precipStr:''}</div>
+      <div class="wx-hr-temp">${temp}°</div>
+      <div class="wx-hr-windwave"><span class="wx-hr-ww-dir">${dirArrows[Math.round(wd/45)%8]} ${dir}</span><br>${ws}m/s<br><span class="wx-hr-ww-wave">${waveStr}</span></div>
+    </div>`;
+  }
+  el.innerHTML=rows;
 }
 function closeWeatherSheet(){document.getElementById('wx-overlay').classList.remove('open');document.getElementById('wx-sheet').classList.remove('open');}
 
@@ -3439,6 +3753,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
 
   if(td&&td.length>0){
     td.sort((a,b)=>toMins(a)-toMins(b));
+    window._lastTideData=td;
+    window._lastTideRaw=td.filter(d=>!d.isCurrent);
     const now=new Date(),nm=now.getHours()*60+now.getMinutes(),lv=calcLive(td);
     td.push({isCurrent:true,level:lv,time:minsToTime(nm),type:'current',mins:nm});
     td.sort((a,b)=>toMins(a)-toMins(b));
@@ -3803,7 +4119,7 @@ function toggleZenMode(){
       ocean.addEventListener('click',function(e){
         const t=e.target;
         if(t.closest('button,input,select,textarea,a,[onclick]'))return;
-        if(t.closest('#sailboat,#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#current-info'))return;
+        if(t.closest('#sailboat,#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#ci-flip-wrap'))return;
         if(t.closest('.tr-row,.tide-row'))return;
         toggleZenMode();
       });
@@ -4321,5 +4637,15 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
 });
 
 </script>
+
+<!-- 조석 그래프 오버레이 -->
+<div id="ci-graph-overlay" onclick="closeTideGraph()">
+  <div id="ci-graph-card" onclick="event.stopPropagation()">
+    <div id="ci-graph-title">조석 그래프</div>
+    <canvas id="tide-graph" height="200"></canvas>
+    <div id="ci-graph-hint">바깥을 탭하여 닫기</div>
+  </div>
+</div>
+
 </body>
 </html>

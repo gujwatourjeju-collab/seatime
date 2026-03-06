@@ -86,8 +86,8 @@ jobs:
                   applicationId "com.badangttae.app"
                   minSdk 21
                   targetSdk 35
-                  versionCode 2
-                  versionName "1.0.1"
+                  versionCode 3
+                  versionName "1.0.2"
 
                   manifestPlaceholders = [
                       hostName: "gujwatourjeju-collab.github.io",
@@ -121,6 +121,7 @@ jobs:
 
           dependencies {
               implementation 'androidx.browser:browser:1.8.0'
+              implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
           }
           APPBUILD
 
@@ -160,27 +161,17 @@ jobs:
           </manifest>
           MANIFEST
 
-          # LauncherActivity.java
+          # LauncherActivity.java (TWA)
           mkdir -p twa-project/app/src/main/java/com/badangttae/app
           cat > twa-project/app/src/main/java/com/badangttae/app/LauncherActivity.java << 'JAVA'
           package com.badangttae.app;
 
-          import android.content.Intent;
           import android.net.Uri;
-          import android.os.Bundle;
-          import androidx.browser.customtabs.CustomTabsIntent;
 
-          public class LauncherActivity extends android.app.Activity {
+          public class LauncherActivity extends com.google.androidbrowserhelper.trusted.LauncherActivity {
               @Override
-              protected void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-                  Uri uri = Uri.parse("https://gujwatourjeju-collab.github.io/seatime/");
-                  CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-                  Intent intent = customTabsIntent.intent;
-                  intent.setData(uri);
-                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                  startActivity(intent);
-                  finish();
+              protected Uri getLaunchingUrl() {
+                  return Uri.parse("https://gujwatourjeju-collab.github.io/seatime/");
               }
           }
           JAVA

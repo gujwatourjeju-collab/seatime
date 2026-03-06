@@ -3262,8 +3262,13 @@ async function selectStation(name){
 
 /* API */
 async function getTideData(obsCode,date,isToday=false){
-  try{const r=await fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({obsCode,date,isToday})});const d=await r.json();if(!r.ok)return[];return d?.result?.data||[];}
-  catch(e){return[];}
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),8000);
+    const r=await fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({obsCode,date,isToday}),signal:ctrl.signal});
+    clearTimeout(tid);
+    const d=await r.json();if(!r.ok)return[];return d?.result?.data||[];
+  }catch(e){return[];}
 }
 
 function showMiniLoader(){const ml=document.getElementById('mini-loader');ml.style.background=getComputedStyle(document.getElementById('ocean')).background;ml.classList.add('show');}

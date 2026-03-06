@@ -1407,6 +1407,15 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
           </div>
           <span class="ci-act-desc" id="ci-dive-desc">--</span>
         </div>
+        <!-- 해루질 -->
+        <div class="ci-act-row" id="ci-forage-row" style="display:none">
+          <span class="ci-act-icon">🦪</span>
+          <div class="ci-stars" id="ci-forage-stars">
+            <div class="ci-star"></div><div class="ci-star"></div>
+            <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+          </div>
+          <span class="ci-act-desc" id="ci-forage-desc">--</span>
+        </div>
         <!-- 낚시 -->
         <div class="ci-act-row">
           <span class="ci-act-icon">🎣</span>
@@ -1769,22 +1778,22 @@ const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 /* ═══ 물때 데이터 ═══ */
 const TIDE_DATA={
-  '1물': { desc:'물이 거의 움직이지 않아요', bars:1, dive:{stars:5,desc:'이동 없어 안전'}, fish:{stars:2,desc:'물고기 활동 적음'} },
-  '2물': { desc:'천천히 흐르기 시작해요', bars:2, dive:{stars:5,desc:'초보 체험 최적'}, fish:{stars:3,desc:'먹이 흐름 시작'} },
-  '3물': { desc:'약한 물살이 느껴져요', bars:2, dive:{stars:4,desc:'활동성 좋고 안정적'}, fish:{stars:4,desc:'입질 증가'} },
-  '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
-  '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, fish:{stars:5,desc:'먹이 이동 활발'} },
-  '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, fish:{stars:4,desc:'활성 높음'} },
-  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, fish:{stars:3,desc:'채비 유지 어려움'} },
-  '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, fish:{stars:3,desc:'조류 너무 강함'} },
-  '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, fish:{stars:4,desc:'대형어 활동'} },
-  '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, fish:{stars:5,desc:'입질 최고'} },
-  '11물': { desc:'활동하기 무난해요', bars:3, dive:{stars:4,desc:'체험 적합'}, fish:{stars:5,desc:'균형 좋음'} },
-  '12물': { desc:'잔잔해지는 구간이에요', bars:2, dive:{stars:5,desc:'시야·안전 최고'}, fish:{stars:4,desc:'안정적 조황'} },
-  '13물': { desc:'거의 안정된 바다예요', bars:2, dive:{stars:5,desc:'장시간 체험 가능'}, fish:{stars:3,desc:'흐름 감소'} },
-  '14물': { desc:'매우 잔잔해요', bars:1, dive:{stars:5,desc:'초보 최적'}, fish:{stars:2,desc:'물 정체'} },
-  '조금': { desc:'하루 중 가장 잔잔한 바다예요', bars:1, dive:{stars:5,desc:'수중활동 최고'}, fish:{stars:2,desc:'어류 활동 감소'} },
-  '무시': { desc:'흐름 방향이 바뀌는 시기예요', bars:2, dive:{stars:4,desc:'시간 선택 중요'}, fish:{stars:3,desc:'흐름 변화 입질'} },
+  '1물': { desc:'물이 거의 움직이지 않아요', bars:1, dive:{stars:5,desc:'이동 없어 안전'}, forage:{stars:1,desc:'갯벌 노출 거의 없음'}, fish:{stars:2,desc:'물고기 활동 적음'} },
+  '2물': { desc:'천천히 흐르기 시작해요', bars:2, dive:{stars:5,desc:'초보 체험 최적'}, forage:{stars:1,desc:'갯벌 노출 부족'}, fish:{stars:3,desc:'먹이 흐름 시작'} },
+  '3물': { desc:'약한 물살이 느껴져요', bars:2, dive:{stars:4,desc:'활동성 좋고 안정적'}, forage:{stars:2,desc:'갯벌 조금 드러남'}, fish:{stars:4,desc:'입질 증가'} },
+  '4물': { desc:'흐름이 눈에 보이기 시작해요', bars:3, dive:{stars:4,desc:'통제 가능 수준'}, forage:{stars:3,desc:'적당한 갯벌 노출'}, fish:{stars:5,desc:'낚시 최적 흐름'} },
+  '5물': { desc:'가만히 있으면 조금 밀려요', bars:3, dive:{stars:3,desc:'초보자는 주의 필요'}, forage:{stars:3,desc:'갯벌 넓어지는 중'}, fish:{stars:5,desc:'먹이 이동 활발'} },
+  '6물': { desc:'물살이 꽤 빠르게 느껴져요', bars:4, dive:{stars:2,desc:'체험객 떠밀림 가능'}, forage:{stars:4,desc:'넓은 갯벌 노출'}, fish:{stars:4,desc:'활성 높음'} },
+  '7물': { desc:'물살이 쎈 편이에요', bars:5, dive:{stars:1,desc:'초보 입수 위험'}, forage:{stars:5,desc:'갯벌 최대 노출'}, fish:{stars:3,desc:'채비 유지 어려움'} },
+  '8물': { desc:'물 흐름이 가장 강한 날이에요', bars:5, dive:{stars:1,desc:'체험 비추천'}, forage:{stars:5,desc:'해루질 최적'}, fish:{stars:3,desc:'조류 너무 강함'} },
+  '9물': { desc:'아직 물살이 강해요', bars:4, dive:{stars:2,desc:'숙련자만 가능'}, forage:{stars:4,desc:'아직 넓은 갯벌'}, fish:{stars:4,desc:'대형어 활동'} },
+  '10물': { desc:'점점 편해지기 시작해요', bars:3, dive:{stars:3,desc:'안정 회복'}, forage:{stars:3,desc:'갯벌 줄어드는 중'}, fish:{stars:5,desc:'입질 최고'} },
+  '11물': { desc:'활동하기 무난해요', bars:3, dive:{stars:4,desc:'체험 적합'}, forage:{stars:3,desc:'적당한 노출'}, fish:{stars:5,desc:'균형 좋음'} },
+  '12물': { desc:'잔잔해지는 구간이에요', bars:2, dive:{stars:5,desc:'시야·안전 최고'}, forage:{stars:2,desc:'갯벌 좁아짐'}, fish:{stars:4,desc:'안정적 조황'} },
+  '13물': { desc:'거의 안정된 바다예요', bars:2, dive:{stars:5,desc:'장시간 체험 가능'}, forage:{stars:1,desc:'갯벌 거의 없음'}, fish:{stars:3,desc:'흐름 감소'} },
+  '14물': { desc:'매우 잔잔해요', bars:1, dive:{stars:5,desc:'초보 최적'}, forage:{stars:1,desc:'갯벌 노출 부족'}, fish:{stars:2,desc:'물 정체'} },
+  '조금': { desc:'하루 중 가장 잔잔한 바다예요', bars:1, dive:{stars:5,desc:'수중활동 최고'}, forage:{stars:1,desc:'노출 최소'}, fish:{stars:2,desc:'어류 활동 감소'} },
+  '무시': { desc:'흐름 방향이 바뀌는 시기예요', bars:2, dive:{stars:4,desc:'시간 선택 중요'}, forage:{stars:2,desc:'물때 전환기'}, fish:{stars:3,desc:'흐름 변화 입질'} },
 };
 
 /* 조류 세기별 바 색상 */
@@ -1822,6 +1831,19 @@ function renderCurrentInfo(tn){
   const dsc=starColor(d.dive.stars);
   for(let i=0;i<5;i++){diveStars[i].classList.toggle('on',i<d.dive.stars);if(i<d.dive.stars)diveStars[i].style.setProperty('--star-color',dsc);}
   document.getElementById('ci-dive-desc').textContent=d.dive.desc;
+
+  // 해루질 (서해·남해·제주시 지역만)
+  const forageRow=document.getElementById('ci-forage-row');
+  const JEJU_CITY_STATIONS=['김녕','청굴물','제주','한림','추자도'];
+  const s=currentStation?getStation(currentStation):null;
+  const showForage=s&&(s.region==='west'||s.region==='south'||(s.region==='jeju'&&JEJU_CITY_STATIONS.includes(currentStation)));
+  if(showForage){
+    forageRow.style.display='';
+    const forageStars=document.getElementById('ci-forage-stars').children;
+    const fosc=starColor(d.forage.stars);
+    for(let i=0;i<5;i++){forageStars[i].classList.toggle('on',i<d.forage.stars);if(i<d.forage.stars)forageStars[i].style.setProperty('--star-color',fosc);}
+    document.getElementById('ci-forage-desc').textContent=d.forage.desc;
+  }else{forageRow.style.display='none';}
 
   // 낚시
   const fishStars=document.getElementById('ci-fish-stars').children;
@@ -3144,8 +3166,16 @@ function renderTide(data,name,isToday,isRealToday){
   const tnBadge=tn?`<span class="panel-title-badge">${tn}</span>`:'';
   document.getElementById('panel-title').innerHTML=dateText+tnBadge;
 
-  // 리스트
-  const listData=data;
+  // 어제/내일 각 1개로 제한 (어제=마지막1개, 내일=첫1개)
+  const ydItems=data.filter(d=>d.isYesterday);
+  const tmItems=data.filter(d=>d.isNextDay);
+  const keepYd=ydItems.length?ydItems[ydItems.length-1]:null;
+  const keepTm=tmItems.length?tmItems[0]:null;
+  const listData=data.filter(item=>{
+    if(item.isYesterday)return item===keepYd;
+    if(item.isNextDay)return item===keepTm;
+    return true;
+  });
   document.getElementById('tide-list').innerHTML=listData.map(item=>{
     if(item.isCurrent){
       const now=new Date(),ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');

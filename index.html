@@ -3809,10 +3809,13 @@ async function refresh(){if(!currentStation)return;const btn=document.getElement
 
 /* 스플래시 */
 function setSplashProg(pct,text,dur){const w=document.getElementById('splash-water'),d=dur??1.1;w.style.transition=pct===0?'none':`height ${d}s cubic-bezier(.2,.8,.3,1)`;w.style.height=(pct*.62)+'%';if(text)document.getElementById('splash-status').textContent=text;}
-function hideSplash(){const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
+function hideSplash(){if(window._splashHidden)return;window._splashHidden=true;if(window._splashSafeTimer)clearTimeout(window._splashSafeTimer);const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
 
 /* 시작 */
 window.addEventListener('DOMContentLoaded',async()=>{
+  // 스플래시 강제 타임아웃 — 6초 후 무조건 넘김
+  window._splashSafeTimer=setTimeout(()=>{try{hideSplash();}catch(e){}},6000);
+
   // 초기 UI 상태 설정 — 항상 먼저 실행
   updateLunarDisplay();
   updateDateNav();

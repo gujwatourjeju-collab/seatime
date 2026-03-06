@@ -380,7 +380,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   pointer-events:none;
 }
 #hero>*{pointer-events:auto}
-#hero-inner{display:none;flex-direction:column;align-items:center;text-align:center;gap:0;position:relative}
+#hero-inner{display:none;flex-direction:column;align-items:center;text-align:center;gap:0;position:relative;width:100%}
 #hero-glass{
   display:flex;flex-direction:column;align-items:center;gap:0;
   width:90%;padding:12px 16px;border-radius:18px;
@@ -559,7 +559,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #tide-panel{
   flex-shrink:0;max-height:46dvh;
   display:flex;flex-direction:column;
-  margin-top:-55px;
+  margin-top:-40px;
   position:relative;z-index:10;
 }
 #panel-spacer{height:28px;flex-shrink:0;pointer-events:none}
@@ -664,7 +664,7 @@ html.large-text .ci-desc{font-size:.65rem}
 html.large-text .ci-act-desc{font-size:.62rem}
 html.large-text .panel-title{font-size:.72rem}
 html.large-text #hero{margin-top:-25px}
-html.large-text #tide-panel{margin-top:-45px}
+html.large-text #tide-panel{margin-top:-20px}
 html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
 html.large-text #current-info{padding:8px 12px;gap:6px}
 html.large-text .ci-bar{width:17px;height:4px;border-radius:99px}
@@ -1083,7 +1083,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 @keyframes zenBlink{0%,100%{opacity:.18}50%{opacity:.4}}
 body.zen-mode #app{opacity:0;pointer-events:none}
 body.zen-mode #gauge-rail{opacity:0;pointer-events:none}
-body.zen-mode #gauge-dot{opacity:0;pointer-events:none}
+body.zen-mode #gauge-dot{opacity:0!important;pointer-events:none;visibility:hidden}
 body.zen-mode #gauge-high-label{opacity:0}
 body.zen-mode #gauge-low-label{opacity:0}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none}

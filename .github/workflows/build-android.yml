@@ -86,8 +86,8 @@ jobs:
                   applicationId "com.badangttae.app"
                   minSdk 21
                   targetSdk 35
-                  versionCode 4
-                  versionName "1.0.3"
+                  versionCode 5
+                  versionName "1.0.4"
 
                   manifestPlaceholders = [
                       hostName: "gujwatourjeju-collab.github.io",
@@ -140,6 +140,30 @@ jobs:
                       android:name="asset_statements"
                       android:value='${assetStatements}' />
 
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.DEFAULT_URL"
+                      android:value="https://gujwatourjeju-collab.github.io/seatime/" />
+
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
+                      android:resource="@color/colorPrimary" />
+
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR"
+                      android:resource="@color/colorPrimary" />
+
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.SPLASH_IMAGE_DRAWABLE"
+                      android:resource="@mipmap/ic_launcher" />
+
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.SPLASH_SCREEN_BACKGROUND_COLOR"
+                      android:resource="@color/colorPrimary" />
+
+                  <meta-data
+                      android:name="android.support.customtabs.trusted.SCREEN_ORIENTATION"
+                      android:value="portrait" />
+
                   <activity
                       android:name="com.badangttae.app.LauncherActivity"
                       android:exported="true"
@@ -187,6 +211,14 @@ jobs:
               </style>
           </resources>
           STYLES
+
+          # colors.xml
+          cat > twa-project/app/src/main/res/values/colors.xml << 'COLORS'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="colorPrimary">#060f1e</color>
+          </resources>
+          COLORS
 
           # strings.xml
           cat > twa-project/app/src/main/res/values/strings.xml << 'STRINGS'

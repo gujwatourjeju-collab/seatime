@@ -390,7 +390,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .hg-divider{width:100%;height:1px;background:rgba(255,255,255,.06);margin:8px 0}
 
 /* 상단 배지 row */
-.hero-top-row{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:4px;padding-left:10px}
+.hero-top-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;padding-left:10px}
 .tide-badge{
   display:inline-flex;align-items:center;
   background:linear-gradient(135deg,rgba(0,229,195,.18),rgba(0,180,216,.12));
@@ -1717,9 +1717,9 @@ body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
   <div class="drawer-menu">
 
     <div class="drawer-section-label">바다 정보</div>
-    <div class="drawer-item" onclick="closeDrawer()">
-      <span class="drawer-item-icon">🌊</span>
-      <span class="drawer-item-text">물때 보기</span>
+    <div class="drawer-item" onclick="closeDrawer();openSheet()">
+      <span class="drawer-item-icon">📍</span>
+      <span class="drawer-item-text">관측소 선택</span>
       <span class="drawer-item-arrow">›</span>
     </div>
     <div class="drawer-item" onclick="closeDrawer();openLogList()">

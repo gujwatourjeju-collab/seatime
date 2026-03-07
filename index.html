@@ -453,7 +453,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #ci-graph-overlay{
   position:fixed;inset:0;z-index:9999;
   display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.55);
+  background:rgba(4,18,38,.6);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   opacity:0;transition:opacity .3s ease;
   padding:24px 10px;
@@ -461,8 +461,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #ci-graph-overlay.open{display:flex;opacity:1}
 #ci-graph-card{
   width:100%;max-width:420px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(180deg,rgba(12,45,75,.92),rgba(8,32,58,.95));
+  border:1px solid rgba(0,180,216,.15);
   border-radius:22px;
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   padding:18px 10px 14px;
@@ -471,8 +471,21 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   box-shadow:0 8px 32px rgba(0,0,0,.3);
 }
 #ci-graph-overlay.open #ci-graph-card{transform:scale(1)}
-#ci-graph-title{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65);margin-bottom:10px;letter-spacing:.5px}
+#ci-graph-title{display:none}
+#ci-graph-timebar{position:relative;width:100%;height:16px;margin-bottom:2px;padding:0 12px;box-sizing:border-box}
+#ci-graph-timebar span{font-size:.52rem;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.3px}
 #ci-graph-card canvas{width:100%;border-radius:12px;}
+#ci-graph-top{display:flex;align-items:flex-start;justify-content:space-between;width:100%;padding:0 6px;margin-bottom:10px}
+#ci-graph-station{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:.3px}
+#ci-graph-datetime{text-align:right;font-size:.58rem;font-weight:600;color:rgba(255,255,255,.4);line-height:1.4}
+#ci-graph-wx{display:flex;align-items:center;justify-content:center;gap:10px;font-size:.7rem;color:rgba(255,255,255,.5);margin-bottom:14px;white-space:nowrap}
+#ci-graph-wx:empty{display:none}
+#ci-graph-wx .hw-wx{display:flex;align-items:center;gap:4px;font-size:.72rem;color:rgba(255,255,255,.55)}
+#ci-graph-wx .hw-sep{color:rgba(255,255,255,.12);font-size:.55rem}
+#ci-graph-wx .hw-dir{display:flex;align-items:center;gap:4px;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5)}
+#ci-graph-wx .hw-arrow{width:15px;height:15px;flex-shrink:0;color:rgba(255,255,255,.5)}
+#ci-graph-wx .hw-speed{font-size:.6rem;color:rgba(255,255,255,.45)}
+#ci-graph-wx .hw-wave{display:flex;align-items:center;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5)}
 #ci-graph-hint{font-size:.48rem;color:rgba(255,255,255,.22);margin-top:10px;}
 
 /* 조류 세기 바 */
@@ -580,7 +593,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 .panel-upd{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.5rem;color:rgba(255,255,255,.25);font-weight:300}
 
-.tide-scroll{overflow-y:auto;padding:0 48px;scrollbar-width:none;flex:1}
+.tide-scroll{overflow-y:auto;padding:0 95px 0 81px;scrollbar-width:none;flex:1}
 .tide-scroll::-webkit-scrollbar{display:none}
 
 .tide-row{
@@ -1084,13 +1097,14 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);
 body.zen-mode #app{opacity:0;pointer-events:none}
 body.zen-mode #gauge-rail{opacity:0;pointer-events:none}
 body.zen-mode #gauge-dot{opacity:0!important;pointer-events:none;visibility:hidden}
-body.zen-mode #gauge-high-label{opacity:0}
-body.zen-mode #gauge-low-label{opacity:0}
+body.zen-mode #gauge-high-label{opacity:0;pointer-events:none}
+body.zen-mode #gauge-low-label{opacity:0;pointer-events:none}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none}
 body.zen-mode #refresh-btn{opacity:0;pointer-events:none}
 body.zen-mode #zen-hint{opacity:0}
-body.zen-mode #sailboat{pointer-events:auto;z-index:15}
+body.zen-mode #sailboat{pointer-events:auto;z-index:10002}
 body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
+body.zen-mode #ci-graph-overlay{display:none!important}
 
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
@@ -2055,6 +2069,19 @@ function renderCurrentInfo(tn){
 }
 
 function openTideGraph(){
+  if(zenMode)return;
+  const stEl=document.getElementById('ci-graph-station');
+  if(stEl)stEl.textContent=document.getElementById('station-pill')?.textContent||'';
+  const wxEl=document.getElementById('ci-graph-wx');
+  const hwEl=document.getElementById('hero-wx');
+  if(wxEl&&hwEl)wxEl.innerHTML=hwEl.innerHTML;
+  const dtEl=document.getElementById('ci-graph-datetime');
+  if(dtEl){
+    const now=new Date();
+    const days=['일','월','화','수','목','금','토'];
+    const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    dtEl.innerHTML=`${time}<br>${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+  }
   const ov=document.getElementById('ci-graph-overlay');
   ov.style.display='flex';
   requestAnimationFrame(()=>{ov.classList.add('open');drawTideGraph();});
@@ -2092,7 +2119,7 @@ function drawTideGraph(){
   ctx.scale(dpr,dpr);
   const w=W/dpr,h=H/dpr;
   // 반투명 어두운 배경으로 시인성 확보
-  ctx.fillStyle='rgba(6,15,30,.4)';
+  ctx.fillStyle='rgba(10,42,68,.5)';
   ctx.beginPath();ctx.roundRect(0,0,w,h,10);ctx.fill();
 
   const todayMins=todayTides.map(t=>toMins(t));
@@ -2195,9 +2222,9 @@ function drawTideGraph(){
     // 배경 박스
     const boxH=diffStr?34:26;
     const boxY=isH?py-(boxH+8):py+8;
-    ctx.fillStyle='rgba(6,15,30,.65)';
+    ctx.fillStyle='rgba(10,42,68,.8)';
     ctx.beginPath();ctx.roundRect(px-32,boxY,64,boxH,5);ctx.fill();
-    ctx.strokeStyle=isH?'rgba(122,179,245,.15)':'rgba(255,122,149,.15)';
+    ctx.strokeStyle=isH?'rgba(122,179,245,.2)':'rgba(255,122,149,.2)';
     ctx.lineWidth=1;ctx.stroke();
     // 시간
     ctx.font='bold 11px "Pretendard Variable",sans-serif';
@@ -2216,17 +2243,17 @@ function drawTideGraph(){
     }
   });
 
-  // X축 시간 눈금
-  ctx.textAlign='center';
-  ctx.font='8px "Pretendard Variable",sans-serif';
-  for(let hh=0;hh<=24;hh+=6){
-    const m=hh*60;
-    if(m<minTime||m>maxTime)continue;
-    const xx=tx(m);
-    ctx.beginPath();ctx.moveTo(xx,h-pad.bot);ctx.lineTo(xx,h-pad.bot+4);
-    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,.2)';
-    ctx.fillText(String(hh%24).padStart(2,'0')+'시',xx,h-pad.bot+14);
+  // X축 시간 눈금 — HTML로 표시 (canvas 밖)
+  const timeBar=document.getElementById('ci-graph-timebar');
+  if(timeBar){
+    let html='';
+    for(let hh=0;hh<=24;hh+=6){
+      const m=hh*60;
+      if(m<minTime||m>maxTime)continue;
+      const pct=((m-minTime)/(maxTime-minTime))*100;
+      html+=`<span style="position:absolute;left:${pct}%;transform:translateX(-50%)">${String(hh%24).padStart(2,'0')}시</span>`;
+    }
+    timeBar.innerHTML=html;
   }
 }
 
@@ -4314,6 +4341,7 @@ function toggleZenMode(){
   if(selectedDateOffset!==0)return; // 미래 날짜엔 관상모드 불가
   zenMode=!zenMode;
   if(navigator.vibrate)navigator.vibrate(zenMode?[10,30,10]:15);
+  if(zenMode)closeTideGraph();
   document.body.classList.toggle('zen-mode',zenMode);
   if(zenMode&&!localStorage.getItem('zenTipShown')){
     showToast('다시 탭하면 돌아갑니다',2500);
@@ -4321,24 +4349,28 @@ function toggleZenMode(){
   }
 }
 
-// hero 빈 영역 탭 → 관상모드
-// app이 pointer-events:none이라 hero에 직접 이벤트 붙임
+// 관상모드: 돗단배 제외 어디든 클릭 시 해제 (캡처 단계에서 차단)
+document.addEventListener('click',function(e){
+  if(!zenMode)return;
+  if(e.target.closest('#sailboat'))return;
+  e.stopPropagation();
+  e.preventDefault();
+  toggleZenMode();
+},true);
+
+// hero 빈 영역 탭 → 관상모드 진입
 (function setupZenTap(){
-  // DOM 준비 후 실행
   function attach(){
-    const hero=document.getElementById('hero');
-    if(!hero){setTimeout(attach,300);return;}
-    // hero는 pointer-events:none이라 ocean(배경)에 클릭 이벤트 붙임
     const ocean=document.getElementById('ocean');
-    if(ocean){
-      ocean.addEventListener('click',function(e){
-        const t=e.target;
-        if(t.closest('button,input,select,textarea,a,[onclick]'))return;
-        if(t.closest('#sailboat,#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#ci-flip-wrap'))return;
-        if(t.closest('.tr-row,.tide-row'))return;
-        toggleZenMode();
-      });
-    }
+    if(!ocean){setTimeout(attach,300);return;}
+    ocean.addEventListener('click',function(e){
+      if(zenMode)return;
+      const t=e.target;
+      if(t.closest('button,input,select,textarea,a,[onclick]'))return;
+      if(t.closest('#sailboat,#level-big,#fav-star,.tide-badge,.status-pill,.timeleft-pill,.ci-row,#ci-flip-wrap'))return;
+      if(t.closest('.tr-row,.tide-row'))return;
+      toggleZenMode();
+    });
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach);
@@ -4894,7 +4926,10 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
 <!-- 조석 그래프 오버레이 -->
 <div id="ci-graph-overlay" onclick="closeTideGraph()">
   <div id="ci-graph-card" onclick="event.stopPropagation()">
+    <div id="ci-graph-top"><div id="ci-graph-station"></div><div id="ci-graph-datetime"></div></div>
+    <div id="ci-graph-wx"></div>
     <div id="ci-graph-title">조석 그래프</div>
+    <div id="ci-graph-timebar"></div>
     <canvas id="tide-graph" height="200"></canvas>
     <div id="ci-graph-hint">바깥을 탭하여 닫기</div>
   </div>

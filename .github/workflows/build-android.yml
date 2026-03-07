@@ -1,4 +1,4 @@
-name: Build Android TWA
+name: Build Android App
 
 on:
   workflow_dispatch:
@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -24,226 +29,101 @@ jobs:
       - name: Restore Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
 
-      - name: Create TWA Project
+      - name: Create Capacitor Project
         run: |
-          mkdir -p twa-project/app/src/main/res/values
-          mkdir -p twa-project/app/src/main/res/mipmap-xxxhdpi
-          mkdir -p twa-project/app/src/main/res/xml
-          mkdir -p twa-project/gradle/wrapper
+          mkdir -p cap-project/www
+          cd cap-project
 
-          # Download icon
-          curl -sL "https://gujwatourjeju-collab.github.io/seatime/icon-512.png" -o twa-project/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          echo '<html><head><meta charset="utf-8"><title>badangttae</title></head><body></body></html>' > www/index.html
 
-          # settings.gradle
-          cat > twa-project/settings.gradle << 'SETTINGS'
-          pluginManagement {
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
+          cat > package.json << 'PKG'
+          {
+            "name": "badangttae",
+            "version": "1.0.5",
+            "private": true
           }
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-              repositories {
-                  google()
-                  mavenCentral()
-              }
+          PKG
+
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+          cat > capacitor.config.json << 'CAP'
+          {
+            "appId": "com.badangttae.app",
+            "appName": "badangttae",
+            "webDir": "www",
+            "server": {
+              "url": "https://gujwatourjeju-collab.github.io/seatime/",
+              "cleartext": false
+            }
           }
-          rootProject.name = "badangttae"
-          include ':app'
-          SETTINGS
+          CAP
 
-          # Top-level build.gradle
-          cat > twa-project/build.gradle << 'BUILD'
-          plugins {
-              id 'com.android.application' version '8.2.2' apply false
-          }
-          BUILD
+          npx cap add android
 
-          # gradle.properties
-          cat > twa-project/gradle.properties << 'PROPS'
-          android.useAndroidX=true
-          org.gradle.jvmargs=-Xmx2048m
-          PROPS
+      - name: Configure Android Project
+        run: |
+          cd cap-project
 
-          # gradle wrapper properties
-          cat > twa-project/gradle/wrapper/gradle-wrapper.properties << 'WRAPPER'
-          distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-bin.zip
-          WRAPPER
+          # Copy keystore into android project
+          cp ../keystore.jks android/keystore.jks
 
-          # App build.gradle
-          cat > twa-project/app/build.gradle << 'APPBUILD'
-          plugins {
-              id 'com.android.application'
-          }
+          # Add signing config to app/build.gradle
+          cd android
 
-          android {
-              namespace 'com.badangttae.app'
-              compileSdk 35
+          # Insert signingConfigs before buildTypes
+          sed -i '/buildTypes {/i\
+              signingConfigs {\
+                  release {\
+                      storeFile file("../keystore.jks")\
+                      storePassword System.getenv("KEYSTORE_PASSWORD")\
+                      keyAlias "badangttae"\
+                      keyPassword System.getenv("KEYSTORE_PASSWORD")\
+                  }\
+              }' app/build.gradle
 
-              defaultConfig {
-                  applicationId "com.badangttae.app"
-                  minSdk 21
-                  targetSdk 35
-                  versionCode 5
-                  versionName "1.0.4"
+          # Add signingConfig to release buildType
+          sed -i '/release {/,/}/{s/minifyEnabled false/signingConfig signingConfigs.release\n                minifyEnabled false/}' app/build.gradle
 
-                  manifestPlaceholders = [
-                      hostName: "gujwatourjeju-collab.github.io",
-                      defaultUrl: "https://gujwatourjeju-collab.github.io/seatime/",
-                      launcherName: "바당때",
-                      assetStatements: '[{"relation": ["delegate_permission/common.handle_all_urls"], "target": {"namespace": "web", "site": "https://gujwatourjeju-collab.github.io"}}]'
-                  ]
-              }
+          # Update version
+          sed -i 's/versionCode 1/versionCode 6/' app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.0.5"/' app/build.gradle
 
-              signingConfigs {
-                  release {
-                      storeFile file("../../keystore.jks")
-                      storePassword System.getenv("KEYSTORE_PASSWORD")
-                      keyAlias "badangttae"
-                      keyPassword System.getenv("KEYSTORE_PASSWORD")
-                  }
-              }
-
-              buildTypes {
-                  release {
-                      signingConfig signingConfigs.release
-                      minifyEnabled false
-                  }
-              }
-
-              compileOptions {
-                  sourceCompatibility JavaVersion.VERSION_1_8
-                  targetCompatibility JavaVersion.VERSION_1_8
-              }
-          }
-
-          dependencies {
-              implementation 'androidx.browser:browser:1.8.0'
-              implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
-          }
-          APPBUILD
-
-          # AndroidManifest.xml
-          cat > twa-project/app/src/main/AndroidManifest.xml << 'MANIFEST'
-          <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-              <application
-                  android:allowBackup="true"
-                  android:icon="@mipmap/ic_launcher"
-                  android:label="${launcherName}"
-                  android:theme="@style/Theme.LauncherTheme">
-
-                  <meta-data
-                      android:name="asset_statements"
-                      android:value='${assetStatements}' />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.DEFAULT_URL"
-                      android:value="https://gujwatourjeju-collab.github.io/seatime/" />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
-                      android:resource="@color/colorPrimary" />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR"
-                      android:resource="@color/colorPrimary" />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.SPLASH_IMAGE_DRAWABLE"
-                      android:resource="@mipmap/ic_launcher" />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.SPLASH_SCREEN_BACKGROUND_COLOR"
-                      android:resource="@color/colorPrimary" />
-
-                  <meta-data
-                      android:name="android.support.customtabs.trusted.SCREEN_ORIENTATION"
-                      android:value="portrait" />
-
-                  <activity
-                      android:name="com.badangttae.app.LauncherActivity"
-                      android:exported="true"
-                      android:theme="@style/Theme.LauncherTheme">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-                      <intent-filter android:autoVerify="true">
-                          <action android:name="android.intent.action.VIEW" />
-                          <category android:name="android.intent.category.DEFAULT" />
-                          <category android:name="android.intent.category.BROWSABLE" />
-                          <data android:scheme="https"
-                               android:host="${hostName}"
-                               android:pathPrefix="/seatime" />
-                      </intent-filter>
-                  </activity>
-              </application>
-          </manifest>
-          MANIFEST
-
-          # LauncherActivity.java (TWA)
-          mkdir -p twa-project/app/src/main/java/com/badangttae/app
-          cat > twa-project/app/src/main/java/com/badangttae/app/LauncherActivity.java << 'JAVA'
-          package com.badangttae.app;
-
-          import android.net.Uri;
-
-          public class LauncherActivity extends com.google.androidbrowserhelper.trusted.LauncherActivity {
-              @Override
-              protected Uri getLaunchingUrl() {
-                  return Uri.parse("https://gujwatourjeju-collab.github.io/seatime/");
-              }
-          }
-          JAVA
-
-          # Theme (splash screen color)
-          cat > twa-project/app/src/main/res/values/styles.xml << 'STYLES'
+          # Set app theme colors (status bar, nav bar, splash)
+          cat > app/src/main/res/values/styles.xml << 'STYLES'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <style name="Theme.LauncherTheme" parent="android:Theme.NoTitleBar">
-                  <item name="android:windowBackground">#060f1e</item>
+              <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
                   <item name="android:statusBarColor">#060f1e</item>
                   <item name="android:navigationBarColor">#060f1e</item>
+                  <item name="android:windowBackground">#060f1e</item>
+              </style>
+              <style name="AppTheme.NoActionBar" parent="AppTheme">
+                  <item name="android:windowActionBar">false</item>
+                  <item name="android:windowNoTitle">true</item>
               </style>
           </resources>
           STYLES
 
-          # colors.xml
-          cat > twa-project/app/src/main/res/values/colors.xml << 'COLORS'
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="colorPrimary">#060f1e</color>
-          </resources>
-          COLORS
+          # App icon
+          for dir in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
+            mkdir -p app/src/main/res/$dir
+            curl -sL "https://gujwatourjeju-collab.github.io/seatime/icon-512.png" -o app/src/main/res/$dir/ic_launcher.png
+          done
 
-          # strings.xml
-          cat > twa-project/app/src/main/res/values/strings.xml << 'STRINGS'
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <string name="app_name">바당때</string>
-          </resources>
-          STRINGS
+          # Set app label in strings.xml
+          sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">badangttae<\/string>/' app/src/main/res/values/strings.xml
+          sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">badangttae<\/string>/' app/src/main/res/values/strings.xml
+          sed -i 's/<string name="package_name">.*<\/string>/<string name="package_name">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
+          sed -i 's/<string name="custom_url_scheme">.*<\/string>/<string name="custom_url_scheme">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
 
-      - name: Build APK
-        working-directory: twa-project
+      - name: Build AAB
+        working-directory: cap-project/android
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: |
-          gradle wrapper --gradle-version 8.2
-          ./gradlew bundleRelease
+        run: ./gradlew bundleRelease
 
-      - name: Upload APK
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: badangttae-aab
-          path: twa-project/app/build/outputs/bundle/release/*.aab
-
-      - name: Get signing fingerprint
-        run: |
-          keytool -list -v -keystore keystore.jks \
-            -alias badangttae \
-            -storepass ${{ secrets.KEYSTORE_PASSWORD }} | grep SHA256
+          path: cap-project/android/app/build/outputs/bundle/release/*.aab

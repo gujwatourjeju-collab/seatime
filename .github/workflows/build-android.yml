@@ -143,9 +143,8 @@ jobs:
           ICON
           cp app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
 
-          # Icon background color
-          sed -i '/<\/resources>/i\    <color name="ic_launcher_background">#060f1e</color>' app/src/main/res/values/colors.xml || \
-          echo '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#060f1e</color></resources>' > app/src/main/res/values/colors.xml
+          # Icon background color - overwrite existing file
+          echo '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#060f1e</color></resources>' > app/src/main/res/values/ic_launcher_background.xml
 
           # Add location permissions to AndroidManifest
           sed -i '/<application/i\    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' app/src/main/AndroidManifest.xml

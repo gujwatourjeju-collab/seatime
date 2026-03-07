@@ -70,6 +70,24 @@ jobs:
           # Add signing config to app/build.gradle
           cd android
 
+          # Fix Kotlin duplicate classes - add resolution strategy to root build.gradle
+          cat >> build.gradle << 'KOTLIN_FIX'
+
+          subprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.24'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.24'
+                  }
+              }
+          }
+          KOTLIN_FIX
+
+          # Fix Java source compatibility in variables.gradle
+          sed -i "s/= 21/= 17/g" variables.gradle
+          sed -i "s/= '21'/= '17'/g" variables.gradle
+
           # Insert signingConfigs before buildTypes
           sed -i '/buildTypes {/i\
               signingConfigs {\

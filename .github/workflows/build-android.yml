@@ -52,7 +52,7 @@ jobs:
             "appName": "바당때",
             "webDir": "www",
             "server": {
-              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=7",
+              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=8",
               "cleartext": false
             },
             "plugins": {
@@ -107,8 +107,8 @@ jobs:
           sed -i '/release {/,/}/{s/minifyEnabled false/signingConfig signingConfigs.release\n                minifyEnabled false/}' app/build.gradle
 
           # Update version
-          sed -i 's/versionCode 1/versionCode 7/' app/build.gradle
-          sed -i 's/versionName "1.0"/versionName "1.0.6"/' app/build.gradle
+          sed -i 's/versionCode 1/versionCode 8/' app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.0.7"/' app/build.gradle
 
           # Set app theme colors (status bar, nav bar, splash)
           cat > app/src/main/res/values/styles.xml << 'STYLES'

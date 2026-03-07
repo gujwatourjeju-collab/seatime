@@ -164,6 +164,21 @@ jobs:
           sed -i 's/<string name="package_name">.*<\/string>/<string name="package_name">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
           sed -i 's/<string name="custom_url_scheme">.*<\/string>/<string name="custom_url_scheme">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
 
+
+      - name: Debug - Show generated files
+        run: |
+          echo "=== AndroidManifest.xml ==="
+          cat cap-project/android/app/src/main/AndroidManifest.xml
+          echo ""
+          echo "=== strings.xml ==="
+          cat cap-project/android/app/src/main/res/values/strings.xml
+          echo ""
+          echo "=== styles.xml ==="
+          cat cap-project/android/app/src/main/res/values/styles.xml
+          echo ""
+          echo "=== app/build.gradle ==="
+          cat cap-project/android/app/build.gradle
+
       - name: Build AAB
         working-directory: cap-project/android
         env:

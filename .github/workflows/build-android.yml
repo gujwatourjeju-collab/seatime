@@ -49,11 +49,19 @@ jobs:
           cat > capacitor.config.json << 'CAP'
           {
             "appId": "com.badangttae.app",
-            "appName": "badangttae",
+            "appName": "바당때",
             "webDir": "www",
             "server": {
               "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=7",
               "cleartext": false
+            },
+            "plugins": {
+              "SplashScreen": {
+                "launchAutoHide": true,
+                "launchShowDuration": 0,
+                "backgroundColor": "#060f1e",
+                "showSpinner": false
+              }
             }
           }
           CAP
@@ -117,6 +125,7 @@ jobs:
               </style>
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                   <item name="windowSplashScreenBackground">#060f1e</item>
+                  <item name="windowSplashScreenAnimatedIcon">@color/ic_launcher_background</item>
                   <item name="android:statusBarColor">#060f1e</item>
                   <item name="android:navigationBarColor">#060f1e</item>
               </style>
@@ -150,8 +159,8 @@ jobs:
           sed -i '/<application/i\    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' app/src/main/AndroidManifest.xml
 
           # Set app label in strings.xml
-          sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">badangttae<\/string>/' app/src/main/res/values/strings.xml
-          sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">badangttae<\/string>/' app/src/main/res/values/strings.xml
+          sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">바당때<\/string>/' app/src/main/res/values/strings.xml
+          sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">바당때<\/string>/' app/src/main/res/values/strings.xml
           sed -i 's/<string name="package_name">.*<\/string>/<string name="package_name">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
           sed -i 's/<string name="custom_url_scheme">.*<\/string>/<string name="custom_url_scheme">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
 

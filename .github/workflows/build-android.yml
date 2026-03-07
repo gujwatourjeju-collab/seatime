@@ -115,6 +115,11 @@ jobs:
                   <item name="android:windowActionBar">false</item>
                   <item name="android:windowNoTitle">true</item>
               </style>
+              <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+                  <item name="windowSplashScreenBackground">#060f1e</item>
+                  <item name="android:statusBarColor">#060f1e</item>
+                  <item name="android:navigationBarColor">#060f1e</item>
+              </style>
           </resources>
           STYLES
 

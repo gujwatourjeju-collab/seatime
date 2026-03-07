@@ -99,8 +99,8 @@ jobs:
           sed -i '/release {/,/}/{s/minifyEnabled false/signingConfig signingConfigs.release\n                minifyEnabled false/}' app/build.gradle
 
           # Update version
-          sed -i 's/versionCode 1/versionCode 6/' app/build.gradle
-          sed -i 's/versionName "1.0"/versionName "1.0.5"/' app/build.gradle
+          sed -i 's/versionCode 1/versionCode 7/' app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.0.6"/' app/build.gradle
 
           # Set app theme colors (status bar, nav bar, splash)
           cat > app/src/main/res/values/styles.xml << 'STYLES'
@@ -123,11 +123,32 @@ jobs:
           </resources>
           STYLES
 
-          # App icon
+          # App icon - download and set for all densities + adaptive icon
+          curl -sL "https://gujwatourjeju-collab.github.io/seatime/icon-512.png" -o /tmp/icon.png
           for dir in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
             mkdir -p app/src/main/res/$dir
-            curl -sL "https://gujwatourjeju-collab.github.io/seatime/icon-512.png" -o app/src/main/res/$dir/ic_launcher.png
+            cp /tmp/icon.png app/src/main/res/$dir/ic_launcher.png
+            cp /tmp/icon.png app/src/main/res/$dir/ic_launcher_round.png
+            cp /tmp/icon.png app/src/main/res/$dir/ic_launcher_foreground.png
           done
+
+          # Adaptive icon XML
+          mkdir -p app/src/main/res/mipmap-anydpi-v26
+          cat > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml << 'ICON'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          ICON
+          cp app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+
+          # Icon background color
+          sed -i '/<\/resources>/i\    <color name="ic_launcher_background">#060f1e</color>' app/src/main/res/values/colors.xml || \
+          echo '<?xml version="1.0" encoding="utf-8"?><resources><color name="ic_launcher_background">#060f1e</color></resources>' > app/src/main/res/values/colors.xml
+
+          # Add location permissions to AndroidManifest
+          sed -i '/<application/i\    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' app/src/main/AndroidManifest.xml
 
           # Set app label in strings.xml
           sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">badangttae<\/string>/' app/src/main/res/values/strings.xml

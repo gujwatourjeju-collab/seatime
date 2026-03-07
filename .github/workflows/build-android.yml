@@ -52,7 +52,7 @@ jobs:
             "appName": "바당때",
             "webDir": "www",
             "server": {
-              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=8",
+              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=9",
               "cleartext": false
             },
             "plugins": {
@@ -107,8 +107,8 @@ jobs:
           sed -i '/release {/,/}/{s/minifyEnabled false/signingConfig signingConfigs.release\n                minifyEnabled false/}' app/build.gradle
 
           # Update version
-          sed -i 's/versionCode 1/versionCode 8/' app/build.gradle
-          sed -i 's/versionName "1.0"/versionName "1.0.7"/' app/build.gradle
+          sed -i 's/versionCode 1/versionCode 9/' app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.0.8"/' app/build.gradle
 
           # Set app theme colors (status bar, nav bar, splash)
           cat > app/src/main/res/values/styles.xml << 'STYLES'
@@ -164,20 +164,6 @@ jobs:
           sed -i 's/<string name="package_name">.*<\/string>/<string name="package_name">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
           sed -i 's/<string name="custom_url_scheme">.*<\/string>/<string name="custom_url_scheme">com.badangttae.app<\/string>/' app/src/main/res/values/strings.xml
 
-
-      - name: Debug - Show generated files
-        run: |
-          echo "=== AndroidManifest.xml ==="
-          cat cap-project/android/app/src/main/AndroidManifest.xml
-          echo ""
-          echo "=== strings.xml ==="
-          cat cap-project/android/app/src/main/res/values/strings.xml
-          echo ""
-          echo "=== styles.xml ==="
-          cat cap-project/android/app/src/main/res/values/styles.xml
-          echo ""
-          echo "=== app/build.gradle ==="
-          cat cap-project/android/app/build.gradle
 
       - name: Build AAB
         working-directory: cap-project/android

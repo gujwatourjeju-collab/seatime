@@ -626,6 +626,29 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle;
 }
 
+/* 업데이트 배너 */
+#update-banner{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));
+  border:1px solid rgba(0,229,195,.3);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:14px;padding:12px 16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+  animation:bannerIn .4s ease;
+}
+#update-banner span{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.8)}
+#update-banner a{
+  font-size:.65rem;font-weight:700;color:#040d18;
+  background:var(--accent);padding:6px 14px;border-radius:8px;
+  text-decoration:none;white-space:nowrap;
+}
+#update-banner button{
+  background:none;border:none;color:rgba(255,255,255,.4);font-size:.8rem;
+  cursor:pointer;padding:0 0 0 4px;
+}
+@keyframes bannerIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
 /* 로딩 */
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;gap:10px}
 .ld-dots{display:flex;gap:5px}
@@ -4071,6 +4094,20 @@ function getCachedTide(name,dateStr){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach);
   else attach();
 })();
+
+/* ═══ 인앱 업데이트 체크 ═══ */
+const MIN_APP_VERSION=7; // 이 숫자를 올리면 구버전 앱에 업데이트 배너 표시
+function checkAppUpdate(){
+  const params=new URLSearchParams(location.search);
+  const nv=parseInt(params.get('nv'));
+  if(!nv)return; // 브라우저 접속이면 무시
+  if(nv>=MIN_APP_VERSION)return; // 최신이면 무시
+  const banner=document.createElement('div');
+  banner.id='update-banner';
+  banner.innerHTML='<span>새 버전이 있습니다</span><a href="https://play.google.com/store/apps/details?id=com.badangttae.app" target="_blank">업데이트</a><button onclick="this.parentElement.remove()">✕</button>';
+  document.body.appendChild(banner);
+}
+setTimeout(checkAppUpdate,3000);
 
 /* ═══ 4. GPS 기반 자동 관측소 추천 ═══ */
 function tryGeolocate(){

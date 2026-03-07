@@ -52,7 +52,7 @@ jobs:
             "appName": "badangttae",
             "webDir": "www",
             "server": {
-              "url": "https://gujwatourjeju-collab.github.io/seatime/",
+              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=7",
               "cleartext": false
             }
           }

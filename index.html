@@ -2055,6 +2055,9 @@ const TIDE_DATA={
   '무시': { desc:'물때 전환 중', bars:2, dive:{stars:4,desc:'타이밍 중요'}, forage:{stars:2,desc:'들락날락'}, fish:{stars:3,desc:'운 좋으면 대박'} },
 };
 
+/* HTML 이스케이프 (XSS 방지) */
+function esc(s){if(!s)return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
 /* 조류 세기별 바 색상 */
 function barColor(bars){
   if(bars<=1)return {color:'#6fd8c4',glow:'rgba(111,216,196,.25)'};
@@ -2701,7 +2704,7 @@ function getSunPosition(){
 }
 
 async function animateSun(wc){
-  if(sunAnimFrame)cancelAnimationFrame(sunAnimFrame);
+  if(sunAnimFrame){clearTimeout(sunAnimFrame);cancelAnimationFrame(sunAnimFrame);sunAnimFrame=null;}
   const sun=document.getElementById('sky-sun');
   if(!sun)return;
 
@@ -2737,7 +2740,7 @@ async function animateSun(wc){
       transition:opacity 2s ease;
     `;
     // 매 30초마다 위치 갱신 (부드럽게)
-    sunAnimFrame=setTimeout(()=>{sunAnimFrame=requestAnimationFrame(frame);},30000);
+    sunAnimFrame=setTimeout(()=>{cancelAnimationFrame(sunAnimFrame);sunAnimFrame=requestAnimationFrame(frame);},30000);
   }
   frame();
 }
@@ -3355,6 +3358,7 @@ async function getTideData(obsCode,date,isToday=false){
 function showMiniLoader(){const ml=document.getElementById('mini-loader');ml.style.background=getComputedStyle(document.getElementById('ocean')).background;ml.classList.add('show');}
 function hideMiniLoader(){const ml=document.getElementById('mini-loader');ml.style.opacity='0';setTimeout(()=>{ml.classList.remove('show');ml.style.opacity='';},200);}
 async function loadTide(name){
+  const seq=_loadSeq;
   showMiniLoader();
   showLoading();document.getElementById('hero-inner').style.display='none';
   try{
@@ -3364,6 +3368,8 @@ async function loadTide(name){
     else if(s.type==='scale'){td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true,s.tcH,s.tcL);}
     else{td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale||1,s.timeCorr||0,true,s.tcH,s.tcL);}
     td.sort((a,b)=>toMins(a)-toMins(b));
+    // 레이스 컨디션 방지: 이미 새 요청이 시작됐으면 중단
+    if(seq!==_loadSeq){hideMiniLoader();return;}
     // 데이터 없으면 캐시에서 복원 시도
     if(!td.length){
       const cached=getCachedTide(name,dateStr);
@@ -3383,6 +3389,8 @@ async function loadTide(name){
     const luEl=document.getElementById('last-update');if(luEl&&isToday)luEl.textContent='마지막 업데이트 '+new Date().toLocaleTimeString('ko-KR');
     hideMiniLoader();
   }catch(e){
+    // 레이스 컨디션 방지: 이미 새 요청이 시작됐으면 중단
+    if(seq!==_loadSeq){hideMiniLoader();return;}
     // 에러 시 캐시 복원 시도
     try{
       const dateStr=dateToStr(getOffsetDate(selectedDateOffset));
@@ -4396,7 +4404,7 @@ async function renderLogList(){
       </div>
       ${l.tide_context?`<div style="font-size:.5rem;color:rgba(91,164,245,.6);margin-top:4px;font-weight:600">${l.tide_context}</div>`:''}
       ${l.weather?`<div style="font-size:.5rem;color:rgba(255,255,255,.3);margin-top:4px">${l.weather}</div>`:''}
-      ${(l.photo_url?`<img src="${l.photo_url}" style="width:100%;border-radius:10px;margin-bottom:6px;max-height:160px;object-fit:cover;" loading="lazy">`:'')+(l.memo?`<div class="log-card-memo">${l.memo}</div>`:'')}
+      ${(l.photo_url?`<img src="${l.photo_url}" style="width:100%;border-radius:10px;margin-bottom:6px;max-height:160px;object-fit:cover;" loading="lazy">`:'')+(l.memo?`<div class="log-card-memo">${esc(l.memo)}</div>`:'')}
 
     </div>`;
   }).join('');

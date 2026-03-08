@@ -648,7 +648,7 @@ body.zen-mode #zen-next-tide{display:block}
   font-size:.45rem;background:rgba(255,255,255,.06);color:rgba(255,255,255,.28);
   padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle;
 }
-.tide-alarm-btn{background:none;border:none;font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:8px;opacity:.4;transition:all .2s}
+.tide-alarm-btn{background:none;border:none;font-size:.75rem;cursor:pointer;padding:2px 4px;border-radius:6px;opacity:.35;transition:all .2s;vertical-align:middle;margin-left:4px}
 .tide-alarm-btn.active{opacity:1;color:#00e5c3}
 .tide-alarm-btn:active{transform:scale(.9)}
 
@@ -3704,9 +3704,8 @@ function renderTide(data,name,isToday,isRealToday){
     }
     return `<div class="tide-row${isDim?' is-dim':''}">
       <div class="tr-icon" style="color:${color}">${isH?'▲':'▼'}</div>
-      <div class="tr-body"><div class="tr-level">${item.level}cm${tag}</div><div class="tr-label">${isH?'만조':'간조'}</div></div>
+      <div class="tr-body"><div class="tr-level">${item.level}cm${alarmBtn}${tag}</div><div class="tr-label">${isH?'만조':'간조'}</div></div>
       <div class="tr-time">${item.time}</div>
-      ${alarmBtn}
     </div>`;
   }).join('');
 }

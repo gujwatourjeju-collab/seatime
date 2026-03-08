@@ -1131,15 +1131,6 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 #future-lunar-label{display:none;position:absolute;top:calc(15% + 58px);right:22%;transform:translateX(50%);font-size:.62rem;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:.4px;white-space:nowrap;z-index:3;text-shadow:0 1px 6px rgba(0,0,0,.8);}
 
 /* ═══ 관상 모드 ═══ */
-#zen-hint{
-  position:fixed;bottom:calc(env(safe-area-inset-bottom,16px)+8px);
-  left:50%;transform:translateX(-50%);
-  font-size:.52rem;color:rgba(255,255,255,.18);
-  letter-spacing:1px;pointer-events:none;
-  transition:opacity .5s;z-index:20;
-  animation:zenBlink 3s ease-in-out infinite;
-  white-space:nowrap;
-}
 @keyframes zenBlink{0%,100%{opacity:.18}50%{opacity:.4}}
 body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
 body.zen-mode #app .level-group{visibility:visible;pointer-events:auto}
@@ -1152,7 +1143,6 @@ body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:non
 body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
-body.zen-mode #zen-hint{opacity:0;transition:none!important}
 body.zen-mode #sailboat{pointer-events:auto;z-index:25}
 body.splash-active #sailboat{opacity:0!important;pointer-events:none!important}
 body.zen-mode #drawer-overlay:not(.open){opacity:0!important;pointer-events:none!important;transition:none!important}
@@ -1471,7 +1461,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   <div id="ocean-sky">
     <div id="future-lunar-label"></div>
   </div>
-<div id="zen-hint">바다를 탭하면 관상 모드</div>
   <div id="sky-moon"></div>
   <div id="sky-objects">
     <div id="sky-sun"><div class="sun-rays"></div></div>
@@ -1600,7 +1589,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
       <div style="margin-top:12px;font-size:.5rem;color:rgba(255,255,255,.22);line-height:1.8;font-weight:400">
         🌊 실시간 물높이 · 간만조 시간<br>
         🎣 낚시·체험 적합도 안내<br>
-        🌅 바다를 탭하면 관상 모드
+        🌅 단순/디테일 모드 전환
       </div>
     </div>
 

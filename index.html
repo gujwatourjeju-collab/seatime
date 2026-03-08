@@ -434,9 +434,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 
 /* 수위 숫자 */
 .level-group{display:flex;flex-direction:column;align-items:flex-start;position:relative}
-#zen-next-tide{display:none;font-size:.82rem;color:rgba(255,255,255,.55);font-weight:600;padding-left:3px;text-shadow:0 0 12px rgba(0,0,0,.5);position:absolute;bottom:-46px;left:0;line-height:1.6}
-#zen-next-tide div{display:flex;align-items:center;gap:0}
+#zen-next-tide{display:none;font-size:.95rem;color:rgba(255,255,255,.5);font-weight:500;text-shadow:0 0 12px rgba(0,0,0,.5);margin-top:12px;line-height:1.7;letter-spacing:.3px}
+#zen-next-tide div{display:flex;align-items:center;justify-content:center;gap:0}
 #zen-next-tide div span{display:inline-block;width:2.2em;text-align:left;flex-shrink:0}
+body.zen-mode #zen-next-tide{display:block}
 .level-label{font-size:.85rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;font-weight:500;margin-bottom:2px;padding-left:3px}
 #level-big{
   font-family:'Pretendard Variable','Pretendard',sans-serif;
@@ -2461,8 +2462,12 @@ async function applyTheme(region,wCode,windSpeed){
   sky.style.filter='none';
   // 다이내믹 아일랜드 / 상태바 색상 동기화
   const skyTop=pal.sky.match(/#[0-9a-f]{6}/i)?.[0]||'#060f1e';
-  const tcMeta=document.getElementById('theme-color-meta');
-  if(tcMeta)tcMeta.setAttribute('content',skyTop);
+  // meta theme-color 교체 (iOS에서 실시간 반영 보장)
+  const oldMeta=document.getElementById('theme-color-meta');
+  if(oldMeta)oldMeta.remove();
+  const newMeta=document.createElement('meta');
+  newMeta.name='theme-color';newMeta.id='theme-color-meta';newMeta.content=skyTop;
+  document.head.appendChild(newMeta);
   // body 배경도 동기화 → safe-area/다이내믹아일랜드 자연스럽게
   document.body.style.background=skyTop;
   document.documentElement.style.background=skyTop;
@@ -3499,7 +3504,7 @@ function renderTide(data,name,isToday,isRealToday){
     const lu=document.getElementById('level-unit');if(lu)lu.textContent=unitM?'m':'cm';
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm),isFalling=nextTide?.type==='low';
     const prevTide=[...data].reverse().find(d=>!d.isCurrent&&toMins(d)<=nm);
-    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window._nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=document.getElementById('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#7ab3f5':'#ff7a95',nl=nextTide.type==='high'?'만조':'간조';let html=`<div><span style="color:${nc}">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;if(prevTide){const pd=nm-toMins(prevTide),ph=Math.floor(pd/60),pm=pd%60;const pc=prevTide.type==='high'?'#7ab3f5':'#ff7a95',pl=prevTide.type==='high'?'만조':'간조';html+=`<div><span style="color:${pc}">${pl}</span> ${ph>0?ph+'시간 ':''}${pm}분 지남</div>`;}znt.innerHTML=html;}const ta=document.getElementById('tide-arrow');if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window._nextTideLabel=null;const ta=document.getElementById('tide-arrow');if(ta)ta.style.display='none';}
+    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window._nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=document.getElementById('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#7ab3f5':'#ff7a95',nl=nextTide.type==='high'?'만조':'간조';znt.innerHTML=`<div><span style="color:${nc}">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;}const ta=document.getElementById('tide-arrow');if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window._nextTideLabel=null;const ta=document.getElementById('tide-arrow');if(ta)ta.style.display='none';}
     document.getElementById('tide-panel').style.marginTop='-55px';
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';

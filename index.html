@@ -648,6 +648,9 @@ body.zen-mode #zen-next-tide{display:block}
   font-size:.45rem;background:rgba(255,255,255,.06);color:rgba(255,255,255,.28);
   padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle;
 }
+.tide-alarm-btn{background:none;border:none;font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:8px;opacity:.4;transition:all .2s}
+.tide-alarm-btn.active{opacity:1;color:#00e5c3}
+.tide-alarm-btn:active{transform:scale(.9)}
 
 /* 업데이트 배너 */
 #update-banner{
@@ -1215,18 +1218,20 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 #wx-alert{
   display:none;
-  width:100%;
-  background:linear-gradient(90deg,rgba(255,80,80,.15),rgba(255,120,50,.1));
-  border-bottom:1px solid rgba(255,80,80,.2);
-  padding:6px 18px;
-  font-size:.52rem;font-weight:700;
-  color:rgba(255,160,100,.9);
-  letter-spacing:.3px;
-  flex-shrink:0;
+  background:rgba(255,80,60,.15);
+  border:1px solid rgba(255,80,60,.3);
+  border-radius:10px;
+  padding:8px 14px;
+  font-size:.72rem;
+  color:#ff6b5b;
+  font-weight:600;
+  text-align:center;
+  margin-bottom:8px;
+  width:auto;
   animation:alertPulse 2s ease-in-out infinite;
 }
 #wx-alert.show{display:block}
-@keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.65}}
+@keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.7}}
 
 
 
@@ -1579,6 +1584,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
     <div id="hero-inner">
       <div id="hero-glass">
+        <div id="wx-alert" style="display:none"></div>
         <!-- 날짜 + 관측소 -->
         <div class="hero-top-row">
           <div class="date-pill"><span class="dp-arr" onclick="shiftDate(-1)">‹</span><span id="date-pill-text" onclick="openCalendar()">--/--</span><span class="date-pill-label" id="date-pill-label" onclick="openCalendar()">오늘</span><span class="dp-arr" onclick="shiftDate(+1)">›</span></div>
@@ -3416,6 +3422,7 @@ async function loadTide(name){
     }else{
       // 성공 시 캐시 저장
       cacheTideData(name,dateStr,td);
+      localStorage.setItem('lastSyncTime',Date.now().toString());
     }
     window.__app.lastTideData=td;
     window.__app.lastTideRaw=td.filter(d=>!d.isCurrent);
@@ -3680,12 +3687,74 @@ function renderTide(data,name,isToday,isRealToday){
     }
     const isH=item.type==='high',color=isH?'#7ab3f5':'#ff7a95',isDim=item.isYesterday||item.isNextDay;
     const tag=item.isYesterday?'<span class="day-tag">어제</span>':item.isNextDay?'<span class="day-tag">내일</span>':'';
+    // 알람 버튼: 오늘이고, 어제/내일이 아니고, 현재 시각 이후인 만조/간조만
+    let alarmBtn='';
+    if(isRealToday&&!item.isYesterday&&!item.isNextDay&&item.time){
+      const [_ah,_am]=item.time.split(':').map(Number);
+      const _anow=new Date(),_anm=_anow.getHours()*60+_anow.getMinutes();
+      if(_ah*60+_am>_anm){
+        const _atype=isH?'high':'low';
+        const _aActive=_tideAlarms[item.time]?' active':'';
+        alarmBtn=`<button class="tide-alarm-btn${_aActive}" onclick="toggleTideAlarm(this,'${item.time}','${_atype}')" title="30분 전 알림">🔔</button>`;
+      }
+    }
     return `<div class="tide-row${isDim?' is-dim':''}">
       <div class="tr-icon" style="color:${color}">${isH?'▲':'▼'}</div>
       <div class="tr-body"><div class="tr-level">${item.level}cm${tag}</div><div class="tr-label">${isH?'만조':'간조'}</div></div>
       <div class="tr-time">${item.time}</div>
+      ${alarmBtn}
     </div>`;
   }).join('');
+}
+
+const _tideAlarms={};
+function toggleTideAlarm(btn,time,type){
+  const key=time;
+  if(_tideAlarms[key]){
+    clearTimeout(_tideAlarms[key]);
+    delete _tideAlarms[key];
+    btn.classList.remove('active');
+    showToast('알림이 취소되었어요');
+    if(navigator.vibrate)navigator.vibrate(10);
+    // Capacitor 알림 취소
+    if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications){
+      const[ch,cm]=time.split(':').map(Number);
+      window.Capacitor.Plugins.LocalNotifications.cancel({notifications:[{id:ch*100+cm}]});
+    }
+    return;
+  }
+  const[h,m]=time.split(':').map(Number);
+  const now=new Date();
+  const target=new Date();
+  target.setHours(h,m,0,0);
+  const alertTime=target.getTime()-30*60000;
+  const delay=alertTime-now.getTime();
+  if(delay<=0){
+    showToast('이미 30분 이내예요');
+    return;
+  }
+  const label=type==='high'?'만조':'간조';
+  _tideAlarms[key]=setTimeout(()=>{
+    if(navigator.vibrate)navigator.vibrate([200,100,200]);
+    if(typeof Notification!=='undefined'&&Notification.permission==='granted'){
+      new Notification('바당때',{body:`${label} ${time} — 30분 전이에요`,icon:'https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png'});
+    }
+    showToast(`${label} ${time} — 30분 전이에요`,5000);
+    delete _tideAlarms[key];
+    btn.classList.remove('active');
+  },delay);
+  if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications){
+    window.Capacitor.Plugins.LocalNotifications.schedule({
+      notifications:[{title:'바당때',body:`${label} ${time} — 30분 전이에요`,id:h*100+m,schedule:{at:new Date(alertTime)}}]
+    });
+  }
+  btn.classList.add('active');
+  const minLeft=Math.floor(delay/60000);
+  showToast(`${label} ${time} 30분 전에 알려드릴게요 (${minLeft}분 후)`);
+  if(navigator.vibrate)navigator.vibrate(15);
+  if(typeof Notification!=='undefined'&&Notification.permission==='default'){
+    Notification.requestPermission();
+  }
 }
 
 function showLoading(){
@@ -4619,7 +4688,18 @@ function updateUnitSwitch(){
   sw.querySelectorAll('.unit-opt').forEach(o=>o.classList.toggle('active',o.dataset.val===(unitM?'m':'cm')));
 }
 
-window.addEventListener('offline',()=>showToast('오프라인 상태입니다',3000));
+window.addEventListener('offline',()=>{
+  const last=parseInt(localStorage.getItem('lastSyncTime')||'0');
+  let suffix='';
+  if(last>0){
+    const ago=Date.now()-last;
+    const min=Math.floor(ago/60000);
+    if(min<1)suffix=' · 최종 업데이트: 방금 전';
+    else if(min<60)suffix=' · 최종 업데이트: '+min+'분 전';
+    else suffix=' · 최종 업데이트: '+Math.floor(min/60)+'시간 전';
+  }
+  showToast('오프라인 상태입니다'+suffix,3000);
+});
 window.addEventListener('online',()=>showToast('다시 연결되었습니다',2000));
 
 function showToast(msg,dur=2000){
@@ -4632,15 +4712,22 @@ function showToast(msg,dur=2000){
 
 /* 기상특보 */
 function checkWeatherAlert(wc, windSpeed){
-  const alert=document.getElementById('wx-alert');
-  if(!alert)return;
-  let msg='';
-  if(wc>=95)msg='⚡ 뇌우 주의 — 해상 활동을 자제하세요';
-  else if(wc>=80)msg='🌧 폭우 주의 — 출조 시 각별히 주의하세요';
-  else if(windSpeed>=14)msg='💨 강풍 주의 — 풍속 '+windSpeed.toFixed(1)+'m/s';
-  else if(windSpeed>=10)msg='🌬 바람 강함 — 풍속 '+windSpeed.toFixed(1)+'m/s';
-  if(msg){alert.textContent=msg;alert.classList.add('show');}
-  else{alert.classList.remove('show');}
+  const el=document.getElementById('wx-alert');
+  if(!el)return;
+  // 심각도 점수가 높을수록 우선 표시 (가장 심각한 것 하나만)
+  const alerts=[];
+  if(windSpeed>=14)alerts.push({s:90,m:'🚨 강풍 경보 — 풍속 '+windSpeed.toFixed(1)+'m/s, 해상 활동 금지'});
+  else if(windSpeed>=10)alerts.push({s:60,m:'💨 강풍 주의 — 풍속 '+windSpeed.toFixed(1)+'m/s'});
+  if(wc>=95)alerts.push({s:100,m:'⚡ 뇌우 경보 — 해상 활동을 즉시 중단하세요'});
+  if(wc===65||wc===67)alerts.push({s:50,m:'🌧 폭우 주의 — 출조 시 각별히 주의하세요'});
+  if(wc>=75&&wc<80)alerts.push({s:55,m:'🌨 폭설 주의 — 해상 활동에 주의하세요'});
+  if(alerts.length>0){
+    alerts.sort((a,b)=>b.s-a.s);
+    el.textContent=alerts[0].m;
+    el.classList.add('show');el.style.display='';
+  }else{
+    el.classList.remove('show');el.style.display='none';
+  }
 }
 
 function openTerms(){closeDrawer();document.getElementById('terms-overlay').classList.add('open');document.getElementById('terms-sheet').classList.add('open');}

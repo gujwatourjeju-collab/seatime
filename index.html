@@ -1594,7 +1594,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
         <div id="hero-wx" onclick="openWeatherSheet()"></div>
         <div class="hero-top-row"><span class="tide-badge" id="tide-badge" style="display:none"></span></div>
         <div class="level-group">
-          <div class="level-label">현재 물높이</div>
+          <div class="level-label" id="level-label-text">현재 물높이</div>
           <div id="level-wrap"><div id="level-big" onclick="openLogSheet()">--</div><span id="level-unit">cm</span><span id="tide-arrow" style="display:none"></span></div>
           <div id="zen-next-tide"></div>
         </div>
@@ -3280,7 +3280,7 @@ async function updateLunarDisplay(){
   const msLocal=typeof lmLocal==='string'?lmLocal:lmLocal+'월';
   document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) 🌙`;
 }
-function updateDateNav(){const d=getOffsetDate(selectedDateOffset);const ds=`${d.getMonth()+1}/${d.getDate()}`;const dl=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;document.getElementById('date-solar').textContent=ds;document.getElementById('date-label').textContent=dl;const dp=document.getElementById('date-pill-text');if(dp)dp.textContent=ds;const dpl=document.getElementById('date-pill-label');if(dpl)dpl.textContent=dl;}
+function updateDateNav(){const d=getOffsetDate(selectedDateOffset);const ds=`${d.getMonth()+1}/${d.getDate()}`;const dl=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;document.getElementById('date-solar').textContent=ds;document.getElementById('date-label').textContent=dl;const dp=document.getElementById('date-pill-text');if(dp)dp.textContent=ds;const dpl=document.getElementById('date-pill-label');if(dpl)dpl.textContent=dl;const ll=document.getElementById('level-label-text');if(ll)ll.textContent=selectedDateOffset===0?'현재 물높이':selectedDateOffset>0?'예상 물높이':'같은시각 물높이';}
 function updateClock(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
 setInterval(updateClock,1000);updateClock();
 

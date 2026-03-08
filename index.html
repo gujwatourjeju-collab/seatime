@@ -830,6 +830,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
   transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
+  max-height:85vh;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 #auth-sheet.open{transform:translateY(0)}
 
@@ -4819,29 +4820,13 @@ function openAuth(){
   document.getElementById('auth-forgot-btn').style.display=isLogin?'block':'none';
 }
 
-// 모바일 키보드 올라올 때 auth-sheet 위로 올리기
+// 모바일 키보드 올라올 때 입력창 스크롤
 function setupKeyboardHandler(){
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize',()=>{
-      const vv=window.visualViewport;
-      const kbH=window.innerHeight-vv.height-vv.offsetTop;
-      ['auth-sheet','forgot-sheet'].forEach(id=>{
-        const sheet=document.getElementById(id);
-        if(sheet&&sheet.classList.contains('open')){
-          sheet.style.transition='bottom .15s ease';
-          sheet.style.bottom=(kbH>50?kbH:0)+'px';
-        }
-      });
-    });
-  }
   document.addEventListener('focusin',e=>{
-    if(!e.target.matches('#auth-sheet input, #forgot-sheet input'))return;
-    setTimeout(()=>e.target.scrollIntoView({behavior:'smooth',block:'center'}),350);
-  });
-  document.addEventListener('focusout',e=>{
-    if(!e.target.matches('#auth-sheet input, #forgot-sheet input'))return;
-    const sheet=e.target.closest('#auth-sheet,#forgot-sheet');
-    if(sheet)sheet.style.bottom='0';
+    if(!e.target.matches('#auth-sheet input, #auth-sheet textarea'))return;
+    setTimeout(()=>{
+      e.target.scrollIntoView({behavior:'smooth',block:'center'});
+    },350);
   });
 }
 setupKeyboardHandler();

@@ -3687,15 +3687,19 @@ function renderTide(data,name,isToday,isRealToday){
     }
     const isH=item.type==='high',color=isH?'#7ab3f5':'#ff7a95',isDim=item.isYesterday||item.isNextDay;
     const tag=item.isYesterday?'<span class="day-tag">어제</span>':item.isNextDay?'<span class="day-tag">내일</span>':'';
-    // 알람 버튼: 오늘이고, 어제/내일이 아니고, 현재 시각 이후인 만조/간조만
+    // 알람 버튼: 현재 시각 이후 만조/간조 (오늘+미래)
     let alarmBtn='';
-    if(isRealToday&&!item.isYesterday&&!item.isNextDay&&item.time){
+    if(item.time&&!item.isYesterday){
       const [_ah,_am]=item.time.split(':').map(Number);
-      const _anow=new Date(),_anm=_anow.getHours()*60+_anow.getMinutes();
-      if(_ah*60+_am>_anm){
+      const _aDate=getOffsetDate(selectedDateOffset);
+      if(item.isNextDay){_aDate.setDate(_aDate.getDate()+1);}
+      _aDate.setHours(_ah,_am,0,0);
+      if(_aDate.getTime()>Date.now()){
         const _atype=isH?'high':'low';
-        const _aActive=_tideAlarms[item.time]?' active':'';
-        alarmBtn=`<button class="tide-alarm-btn${_aActive}" onclick="toggleTideAlarm(this,'${item.time}','${_atype}')" title="30분 전 알림">🔔</button>`;
+        const _aDateStr=_aDate.getFullYear()+'-'+String(_aDate.getMonth()+1).padStart(2,'0')+'-'+String(_aDate.getDate()).padStart(2,'0');
+        const _aKey=_aDateStr+'_'+item.time;
+        const _aActive=_tideAlarms[_aKey]?' active':'';
+        alarmBtn=`<button class="tide-alarm-btn${_aActive}" onclick="toggleTideAlarm(this,'${item.time}','${_atype}','${_aDateStr}')" title="30분 전 알림">🔔</button>`;
       }
     }
     return `<div class="tide-row${isDim?' is-dim':''}">
@@ -3708,27 +3712,25 @@ function renderTide(data,name,isToday,isRealToday){
 }
 
 const _tideAlarms={};
-function toggleTideAlarm(btn,time,type){
-  const key=time;
+function toggleTideAlarm(btn,time,type,dateStr){
+  const key=dateStr+'_'+time;
+  const notiId=Math.abs(parseInt(dateStr.replace(/-/g,'').slice(-4)+time.replace(':',''),10))%2147483647;
   if(_tideAlarms[key]){
     clearTimeout(_tideAlarms[key]);
     delete _tideAlarms[key];
     btn.classList.remove('active');
     showToast('알림이 취소되었어요');
     if(navigator.vibrate)navigator.vibrate(10);
-    // Capacitor 알림 취소
     if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications){
-      const[ch,cm]=time.split(':').map(Number);
-      window.Capacitor.Plugins.LocalNotifications.cancel({notifications:[{id:ch*100+cm}]});
+      window.Capacitor.Plugins.LocalNotifications.cancel({notifications:[{id:notiId}]});
     }
     return;
   }
   const[h,m]=time.split(':').map(Number);
-  const now=new Date();
-  const target=new Date();
-  target.setHours(h,m,0,0);
+  const[y,mo,d]=dateStr.split('-').map(Number);
+  const target=new Date(y,mo-1,d,h,m,0,0);
   const alertTime=target.getTime()-30*60000;
-  const delay=alertTime-now.getTime();
+  const delay=alertTime-Date.now();
   if(delay<=0){
     showToast('이미 30분 이내예요');
     return;
@@ -3745,12 +3747,14 @@ function toggleTideAlarm(btn,time,type){
   },delay);
   if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications){
     window.Capacitor.Plugins.LocalNotifications.schedule({
-      notifications:[{title:'바당때',body:`${label} ${time} — 30분 전이에요`,id:h*100+m,schedule:{at:new Date(alertTime)}}]
+      notifications:[{title:'바당때',body:`${label} ${time} — 30분 전이에요`,id:notiId,schedule:{at:new Date(alertTime)}}]
     });
   }
   btn.classList.add('active');
   const minLeft=Math.floor(delay/60000);
-  showToast(`${label} ${time} 30분 전에 알려드릴게요 (${minLeft}분 후)`);
+  const hourLeft=Math.floor(minLeft/60);
+  const timeLabel=hourLeft>0?`${hourLeft}시간 ${minLeft%60}분 후`:`${minLeft}분 후`;
+  showToast(`${label} ${time} 30분 전에 알려드릴게요 (${timeLabel})`);
   if(navigator.vibrate)navigator.vibrate(15);
   if(typeof Notification!=='undefined'&&Notification.permission==='default'){
     Notification.requestPermission();

@@ -1144,9 +1144,6 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 
 
 
-/* 미래 날짜 달 중앙 표시 */
-#future-moon-wrap{display:none;}
-#future-lunar-label{display:none;position:absolute;top:calc(15% + 58px);right:22%;transform:translateX(50%);font-size:.62rem;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:.4px;white-space:nowrap;z-index:3;text-shadow:0 1px 6px rgba(0,0,0,.8);}
 
 /* ═══ 관상 모드 ═══ */
 body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
@@ -1405,7 +1402,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
   <div class="ml-text">바다를 읽는 중입니다<span class="ml-dots"></span></div>
 </div>
-<div id="moon-popup-overlay" onclick="closeMoonPopup()">
+<div id="moon-popup-overlay" role="dialog" aria-label="달 정보 팝업" onclick="closeMoonPopup()">
   <div id="moon-popup" onclick="event.stopPropagation()">
     <div class="mp-moon-svg" id="mp-moon-svg"></div>
     <div class="mp-moon-name" id="mp-moon-name">--</div>
@@ -1465,7 +1462,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 <!-- OCEAN -->
 <div id="ocean">
   <div id="ocean-sky">
-    <div id="future-lunar-label"></div>
   </div>
   <div id="sky-moon"></div>
   <div id="sky-objects">
@@ -2539,9 +2535,12 @@ function getMoonPhase(lunarDay){
   return         {type:'crescent', dir:'left', illum:.28-(d-24)*.05};
 }
 
+let _lastMoonDay=-1;
 function drawMoon(lunarDay){
   const el=document.getElementById('sky-moon');
   if(!el)return;
+  if(lunarDay===_lastMoonDay&&el.innerHTML)return;
+  _lastMoonDay=lunarDay;
   const phase=getMoonPhase(lunarDay);
   const size=52, r=size/2, ri=r-2;
   const fill='rgba(255,248,210,.92)';
@@ -2653,8 +2652,18 @@ function updateMoon(tod, wcat, lunarDay){
 }
 
 function buildShimmers(color){
-  document.querySelectorAll('.shimmer').forEach(s=>s.remove());
   const wb=document.getElementById('water-body');
+  const existing=wb.querySelectorAll('.shimmer');
+  if(existing.length===6){
+    // 요소가 이미 존재하면 색상만 업데이트
+    existing.forEach(s=>{
+      const bg=s.style.background;
+      s.style.background=bg.replace(/rgba?\([^)]*\)[0-9a-fA-F]*|#[0-9a-fA-F]+[0-9a-fA-F]*/,color+'14');
+      s.style.background=`linear-gradient(180deg,transparent 0%,${color}14 45%,transparent 100%)`;
+    });
+    return;
+  }
+  existing.forEach(s=>s.remove());
   for(let i=0;i<6;i++){const s=document.createElement('div');s.className='shimmer';s.style.cssText=`left:${8+i*15}%;height:${50+Math.random()*50}%;--d:${6+Math.random()*8}s;--delay:${Math.random()*6}s;background:linear-gradient(180deg,transparent 0%,${color}14 45%,transparent 100%)`;wb.appendChild(s);}
 }
 
@@ -3545,7 +3554,6 @@ function renderTide(data,name,isToday,isRealToday){
     if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
     // 오늘로 돌아올 때 달 다시 그리기
     {const _tod=getTimeOfDay(),_wcat=getWeatherCat(currentWeatherCode),_ld=getLunarDay(getOffsetDate(0));updateMoon(_tod,_wcat,_ld);}
-    const fml2=document.getElementById('future-lunar-label');if(fml2){fml2.style.display='none';fml2.textContent='';}
   }else{
     // 미래 날짜 — hero-inner를 직접 위로, 데이터 영역 밀착
     document.getElementById('hero').style.flex='1';
@@ -3609,12 +3617,6 @@ function renderTide(data,name,isToday,isRealToday){
     // 달 모양
     drawMoon(futureLd);
     updateMoon('night', getWeatherCat(currentWeatherCode), futureLd);
-    // 음력 레이블
-    let fml=document.getElementById('future-lunar-label');
-    if(fml){
-      fml.textContent=moonPhaseName?`${moonPhaseName} · 음력 ${ms} ${futureLd}일`:`음력 ${ms} ${futureLd}일`;
-      fml.style.display='block';
-    }
     // 미래에도 조류 카드 표시
     renderCurrentInfo(tn);
   }
@@ -3668,6 +3670,12 @@ function showLoading(){
 function showError(msg){document.getElementById('tide-list').innerHTML=`<div class="err-msg">⚠ ${msg}<br><button class="retry-btn" onclick="refresh()">다시 시도</button></div>`;document.getElementById('hero-inner').style.display='none';}
 
 /* 날씨 */
+const WIND_DIRS=["북","북동","동","남동","남","남서","서","북서"];
+const WIND_DIR_ARROWS=["↓","↙","←","↖","↑","↗","→","↘"];
+function windDir(deg){return WIND_DIRS[Math.round(deg/45)%8]||"북";}
+function wxEmoji(v){return v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";}
+function wxName(v){return v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";}
+function windLabel(v){return v<1.5?"잔잔":v<3.3?"약한":v<5.4?"산들":v<7.9?"건들":v<10.7?"흔들":"강풍";}
 let wxCache={};
 async function loadWeather(lat,lng){
   try{
@@ -3707,16 +3715,13 @@ async function loadWeather(lat,lng){
       wCode=data.daily.weather_code[di];wSpeed=data.daily.wind_speed_10m_max[di];wDir=data.daily.wind_direction_10m_dominant[di];
     }
     currentWeatherCode=wCode;if(currentStation)applyTheme(getStation(currentStation)?.region,wCode,wSpeed);updateSkyObjects(wCode,wSpeed);checkWeatherAlert(wCode,wSpeed);
-    const dirs=["북","북동","동","남동","남","남서","서","북서"],dir=dirs[Math.round(wDir/45)%8]||"북";
-    const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
-    const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
-    const wl=v=>v<1.5?"잔잔":v<3.3?"약한":v<5.4?"산들":v<7.9?"건들":v<10.7?"흔들":"강풍";
+    const dir=windDir(wDir);
     // 날씨 상세 저장
     {
       const di2=selectedDateOffset===0?0:(()=>{const t=dateToStr(getOffsetDate(selectedDateOffset)),iso=`${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;let i=dailyDates.indexOf(iso);return i<0?selectedDateOffset:i;})();
       const d=data.daily;
       currentWeatherDetail={
-        icon:emo(wCode),name:wn(wCode),wCode,
+        icon:wxEmoji(wCode),name:wxName(wCode),wCode,
         temp:selectedDateOffset===0?Math.round(data.current.temperature_2m):null,
         feel:selectedDateOffset===0?Math.round(data.current.apparent_temperature):null,
         humid:selectedDateOffset===0?Math.round(data.current.relative_humidity_2m):null,
@@ -3724,10 +3729,10 @@ async function loadWeather(lat,lng){
         rain:(d.precipitation_sum[di2]??0).toFixed(1),prob:d.precipitation_probability_max?.[di2]??'--',
         sunrise:d.sunrise?.[di2]?.slice(11,16)||'--',sunset:d.sunset?.[di2]?.slice(11,16)||'--',
         uv:d.uv_index_max?.[di2]??'--',
-        wind:`${dir}풍 ${wl(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`,dir,wSpeed,wDeg:wDir
+        wind:`${dir}풍 ${windLabel(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`,dir,wSpeed,wDeg:wDir
       };
     }
-    wi.style.display='inline';wi.textContent=emo(wCode);
+    wi.style.display='inline';wi.textContent=wxEmoji(wCode);
     // Marine 데이터 대기 (날씨와 병렬로 이미 시작됨)
     const md=await marinePromise;
     if(md&&md.hourly&&md.hourly.wave_height&&md.hourly.time){
@@ -3745,13 +3750,13 @@ async function loadWeather(lat,lng){
     const heroWxEl=document.getElementById('hero-wx');
     const rot=(wDir+180)%360;
     const svgA=`<svg style="width:14px;height:14px;flex-shrink:0;color:rgba(255,255,255,.5);transform:rotate(${rot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
-    const wxIcon=emo(wCode);
+    const wxIcon=wxEmoji(wCode);
     const wxTemp=selectedDateOffset===0?Math.round(data.current.temperature_2m)+'°':'';
-    const wxName=(v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우")(wCode);
-    if(hwEl){hwEl.innerHTML=`<div class="hw-line1">${wxIcon} ${wxName} ${wxTemp}</div><div class="hw-line2">${svgA} ${dir} ${ws}m/s &nbsp;〜 ${wv}</div>`;hwEl.classList.add('show');}
+    const _wxName=wxName(wCode);
+    if(hwEl){hwEl.innerHTML=`<div class="hw-line1">${wxIcon} ${_wxName} ${wxTemp}</div><div class="hw-line2">${svgA} ${dir} ${ws}m/s &nbsp;〜 ${wv}</div>`;hwEl.classList.add('show');}
     if(heroWxEl){heroWxEl.style.display='none';}}
     const tempStr=selectedDateOffset===0?` ${Math.round(data.current.temperature_2m)}°`:'';
-    wx.textContent=`${wn(wCode)}${tempStr}`;
+    wx.textContent=`${wxName(wCode)}${tempStr}`;
     document.getElementById('weather').classList.add('show');
   }catch(e){
     console.error('날씨 오류:',e);
@@ -3762,7 +3767,7 @@ async function loadWeather(lat,lng){
       return;
     }
     const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
-    if(wx){wi.style.display='none';wx.textContent='날씨 정보 없음';}
+    if(wx){wi.style.display='none';wx.innerHTML='<span style="cursor:pointer;text-decoration:underline" onclick="if(currentStation){const s=getStation(currentStation);loadWeather(s.lat,s.lng);}">날씨 로드 실패 — 다시 시도</span>';}
     document.getElementById('weather').classList.add('show');
     if(currentStation)applyTheme(getStation(currentStation)?.region,0,0);
     // 날씨 실패해도 기본 맑음으로 태양 표시
@@ -3789,7 +3794,6 @@ function openWeatherSheet(){
   document.getElementById('wxs-wind').textContent=d.wind;
   // 히어로 풍향·풍속·파고
   const waveVal=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(2)+'m':'--';
-  const _dirs=["북","북동","동","남동","남","남서","서","북서"],_dArw=["↓","↙","←","↖","↑","↗","→","↘"];
   const _wdRot=((d.wDeg||0)+180)%360;
   const heroSvg=`<svg style="width:12px;height:12px;vertical-align:-2px;color:rgba(255,255,255,.6);transform:rotate(${_wdRot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
   document.getElementById('wxs-hero-wind').innerHTML=`<span class="wxhw-dir">${heroSvg} ${d.dir}</span> ${(d.wSpeed??0).toFixed(1)}m/s <span class="wxhw-wave">파고 ${waveVal}</span>`;
@@ -3808,10 +3812,6 @@ function renderHourlyForecast(){
   if(!data||!data.hourly){el.innerHTML='<div style="font-size:.5rem;color:rgba(255,255,255,.2)">시간별 데이터 없음</div>';return;}
   const h=data.hourly;
   const marine=window._marineData;
-  const emo=v=>v===0?"☀️":v<=2?"🌤":v===3?"☁️":v<=48?"🌫":v<=55?"🌦":v<=65?"🌧":v<=75?"❄️":v<=82?"🌧":"⛈";
-  const wn=v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우";
-  const dirs=["북","북동","동","남동","남","남서","서","북서"];
-  const dirArrows=["↓","↙","←","↖","↑","↗","→","↘"];
   const nowH=new Date().getHours();
   // 오늘 날짜에 해당하는 시간 인덱스 찾기
   const targetDate=getOffsetDate(selectedDateOffset);
@@ -3827,7 +3827,7 @@ function renderHourlyForecast(){
     const temp=Math.round(h.temperature_2m[idx]);
     const ws=(h.wind_speed_10m[idx]??0).toFixed(1);
     const wd=h.wind_direction_10m[idx]??0;
-    const dir=dirs[Math.round(wd/45)%8]||'북';
+    const dir=windDir(wd);
     const precip=h.precipitation?.[idx];
     const precipStr=precip>0?`${precip.toFixed(1)}mm`:'';
     // 파고
@@ -3841,8 +3841,8 @@ function renderHourlyForecast(){
     const timeLabel=isNow?`<span class="now-tag">현재</span>${String(realHr).padStart(2,'0')}시`:`${String(realHr).padStart(2,'0')}시`;
     rows+=`<div class="wx-hour-row${isNow?' is-now':''}">
       <div class="wx-hr-time">${timeLabel}</div>
-      <div class="wx-hr-icon">${emo(wCode)}</div>
-      <div class="wx-hr-name">${wn(wCode)}${precipStr?' '+precipStr:''}</div>
+      <div class="wx-hr-icon">${wxEmoji(wCode)}</div>
+      <div class="wx-hr-name">${wxName(wCode)}${precipStr?' '+precipStr:''}</div>
       <div class="wx-hr-temp">${temp}°</div>
       <div class="wx-hr-windwave"><span class="wx-hr-ww-dir"><svg style="width:10px;height:10px;vertical-align:-1px;color:rgba(255,255,255,.5);transform:rotate(${(wd+180)%360}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg> ${dir}</span><br>${ws}m/s<br><span class="wx-hr-ww-wave">${waveStr}</span></div>
     </div>`;
@@ -4334,8 +4334,8 @@ async function saveLog(){
   // Supabase에도 시도
   try{
     const {error}=await supabaseClient.from('tide_logs').insert(entry);
-    if(error)console.warn('Supabase 저장 실패, 로컬에만 저장됨:',error.message);
-  }catch(e){console.warn('Supabase 오프라인');}
+    if(error){console.warn('Supabase 저장 실패, 로컬에만 저장됨:',error.message);showToast('로컬에 저장됨 (서버 동기화 실패)');}
+  }catch(e){console.warn('Supabase 오프라인');showToast('로컬에 저장됨 (서버 동기화 실패)');}
   btn.textContent='✓ 저장됐어요';
   // 사진 초기화
   clearPhoto();
@@ -4388,7 +4388,10 @@ async function renderLogList(){
   });
 
   if(!filtered.length){body.innerHTML='<div class="log-empty">해당 기간에 기록이 없어요 🌊</div>';return;}
-  body.innerHTML=filtered.map((l,i)=>{
+  const LOG_PAGE_SIZE=50;
+  const hasMore=filtered.length>LOG_PAGE_SIZE;
+  const visibleLogs=hasMore?filtered.slice(0,LOG_PAGE_SIZE):filtered;
+  function buildLogCard(l){
     const tags=[l.tide_name,l.status,l.current].filter(Boolean);
     const safeAt=(l.saved_at||'').replace(/'/g,"\\'");
     return `<div class="log-card">
@@ -4407,7 +4410,30 @@ async function renderLogList(){
       ${(l.photo_url?`<img src="${l.photo_url}" style="width:100%;border-radius:10px;margin-bottom:6px;max-height:160px;object-fit:cover;" loading="lazy">`:'')+(l.memo?`<div class="log-card-memo">${esc(l.memo)}</div>`:'')}
 
     </div>`;
+  }
+  let html=visibleLogs.map(buildLogCard).join('');
+  if(hasMore){
+    window._loglistRemaining=filtered.slice(LOG_PAGE_SIZE);
+    html+=`<button id="loglist-more-btn" style="width:100%;padding:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:.75rem;cursor:pointer;font-family:'Pretendard Variable','Pretendard',sans-serif" onclick="loadMoreLogs(this)">더보기 (나머지 ${filtered.length-LOG_PAGE_SIZE}개)</button>`;
+  }
+  body.innerHTML=html;
+}
+
+function loadMoreLogs(btn){
+  btn.disabled=true;btn.textContent='불러오는 중...';
+  const body=document.getElementById('loglist-body');
+  const rest=window._loglistRemaining||[];
+  const frag=document.createDocumentFragment();
+  const tmp=document.createElement('div');
+  tmp.innerHTML=rest.map(l=>{
+    const tags=[l.tide_name,l.status,l.current].filter(Boolean);
+    const safeAt=(l.saved_at||'').replace(/'/g,"\\'");
+    return `<div class="log-card"><div class="log-card-top"><div><div class="log-card-level">${l.level||'--'}<span>cm</span></div><div class="log-card-tags">${tags.map(t=>`<span class="log-card-tag">${t}</span>`).join('')}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><div class="log-card-info">${l.station||''}${l.point?' · '+l.point:''}<br>${l.date||''} ${l.time||''}</div><button class="log-card-del" onclick="deleteLog('${safeAt}',event)">삭제</button></div></div></div>`;
   }).join('');
+  while(tmp.firstChild)frag.appendChild(tmp.firstChild);
+  btn.parentNode.removeChild(btn);
+  body.appendChild(frag);
+  delete window._loglistRemaining;
 }
 
 async function deleteLog(savedAt,e){
@@ -5035,7 +5061,7 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
 </script>
 
 <!-- 조석 그래프 오버레이 -->
-<div id="ci-graph-overlay" onclick="closeTideGraph()">
+<div id="ci-graph-overlay" role="dialog" aria-label="조석 그래프" onclick="closeTideGraph()">
   <div id="ci-graph-card" onclick="event.stopPropagation()">
     <div id="ci-graph-top"><div id="ci-graph-station"></div><div id="ci-graph-datetime"></div></div>
     <div id="ci-graph-wx"></div>

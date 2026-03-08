@@ -1931,6 +1931,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     <div class="wx-info-item" id="wxs-sunset"></div>
     <div class="wx-info-item" id="wxs-uv"></div>
     <div class="wx-info-item" id="wxs-wind"></div>
+    <div class="wx-info-item" id="wxs-sea-temp"></div>
   </div>
   <div class="wx-hourly-title">3시간 단위 예보</div>
   <div class="wx-hourly" id="wxs-hourly"></div>
@@ -3857,7 +3858,7 @@ async function loadWeather(lat,lng){
     const svgA=`<svg style="width:14px;height:14px;flex-shrink:0;color:rgba(255,255,255,.5);transform:rotate(${rot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
     const wxIcon=wxEmoji(wCode);
     const wxTemp=selectedDateOffset===0?Math.round(data.current.temperature_2m)+'°':'';
-    const seaTemp=md&&md.current&&md.current.sea_surface_temperature!=null?` 🌊${Math.round(md.current.sea_surface_temperature)}°`:'';
+    const seaTemp=md&&md.current&&md.current.sea_surface_temperature!=null?` 수온${Math.round(md.current.sea_surface_temperature)}°`:'';
     const _wxName=wxName(wCode);
     if(hwEl){hwEl.innerHTML=`<div class="hw-line1">${wxIcon} ${_wxName} ${wxTemp}${seaTemp}</div><div class="hw-line2">${svgA} ${dir} ${ws}m/s &nbsp;〜 ${wv}</div>`;hwEl.classList.add('show');}
     if(heroWxEl){heroWxEl.style.display='none';}}
@@ -3898,6 +3899,10 @@ function openWeatherSheet(){
   document.getElementById('wxs-sunset').textContent='일몰 '+d.sunset;
   document.getElementById('wxs-uv').textContent=`UV ${d.uv} (${uvLabel(+d.uv)})`;
   document.getElementById('wxs-wind').textContent=d.wind;
+  const seaTempEl=document.getElementById('wxs-sea-temp');
+  const md2=window.__app.marineData;
+  if(md2&&md2.current&&md2.current.sea_surface_temperature!=null){seaTempEl.textContent=`수온 ${Math.round(md2.current.sea_surface_temperature)}°`;seaTempEl.style.display='';}
+  else{seaTempEl.style.display='none';}
   // 히어로 풍향·풍속·파고
   const waveVal=window.__app.currentWaveHeight!=null?window.__app.currentWaveHeight.toFixed(2)+'m':'--';
   const _wdRot=((d.wDeg||0)+180)%360;

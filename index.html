@@ -1995,6 +1995,21 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     <button id="auth-forgot-btn" onclick="openForgotPw()" style="display:none;background:none;border:none;color:rgba(0,229,195,.5);font-size:12px;cursor:pointer;margin-top:8px;width:100%;text-align:center;font-family:'Pretendard Variable','Pretendard',sans-serif;">비밀번호를 잊으셨나요?</button>
     <div class="auth-switch" id="auth-switch-text" onclick="switchAuthTab('signup')">계정이 없으신가요? <span>회원가입</span></div>
 
+    <!-- OTP 인증번호 입력 뷰 -->
+    <div id="otp-view" style="display:none;margin-top:4px;">
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin:16px 0;"></div>
+      <div style="text-align:center;margin-bottom:12px;">
+        <div style="font-size:13px;color:rgba(255,255,255,.7);font-weight:700;">✉️ 인증번호를 입력해주세요</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;" id="otp-email-hint"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
+        <input class="auth-input" id="otp-code" type="text" inputmode="numeric" maxlength="6" placeholder="인증번호" style="text-align:center;font-size:1.4rem;letter-spacing:8px;font-weight:700;width:200px;">
+      </div>
+      <div class="auth-err" id="otp-err"></div>
+      <button class="auth-btn" id="otp-submit-btn" onclick="submitOtp()">인증 확인</button>
+      <div class="auth-switch" onclick="resendOtp()" style="margin-top:10px;">인증번호가 안 왔나요? <span>다시 보내기</span></div>
+    </div>
+
     <!-- 비밀번호 찾기 뷰 (auth-sheet 내부) -->
     <div id="forgot-view" style="display:none;margin-top:4px;">
       <div style="border-top:1px solid rgba(255,255,255,.07);margin:16px 0;"></div>
@@ -4861,6 +4876,7 @@ async function submitForgotPw(){
 function closeAuth(){
   document.getElementById('auth-overlay').classList.remove('open');
   document.getElementById('auth-sheet').classList.remove('open');
+  if(_otpEmail)hideOtpView();
 }
 function switchAuthTab(tab){
   authTab=tab;
@@ -4911,12 +4927,11 @@ async function submitAuth(){
       const name=document.getElementById('auth-name').value.trim();
     const phone=document.getElementById('auth-phone').value.trim();
     if(!name){err.textContent='이름을 입력해주세요';btn.textContent='회원가입';btn.disabled=false;return;}
-    result=await supabaseClient.auth.signUp({email,password:pw,options:{emailRedirectTo:'https://gujwatourjeju-collab.github.io/seatime/',data:{name,phone}}});
+    result=await supabaseClient.auth.signUp({email,password:pw,options:{data:{name,phone}}});
     }
     if(result.error)throw result.error;
     if(authTab==='signup'&&!result.data?.session){
-      err.style.color='var(--accent)';
-      err.textContent='인증 메일을 보냈어요. 확인 후 로그인해주세요 ✉️';
+      showOtpView(email);
       btn.textContent='회원가입';btn.disabled=false;return;
     }
     onAuthSuccess(result.data.user);
@@ -4925,6 +4940,55 @@ async function submitAuth(){
     err.style.color='#ff6b6b';
     err.textContent=e.message==='Invalid login credentials'?'이메일 또는 비밀번호가 틀렸어요':e.message;
     btn.textContent=authTab==='login'?'로그인':'회원가입';btn.disabled=false;
+  }
+}
+
+let _otpEmail='';
+function showOtpView(email){
+  _otpEmail=email;
+  document.getElementById('otp-view').style.display='block';
+  document.getElementById('otp-email-hint').textContent=email+'로 인증번호를 보냈어요';
+  document.getElementById('otp-code').value='';
+  document.getElementById('otp-err').textContent='';
+  // 기존 폼 숨기기
+  document.querySelectorAll('.auth-field,.auth-tabs,#auth-remember-wrap,#auth-submit-btn,#auth-forgot-btn,#auth-switch-text,.auth-pw-hint').forEach(el=>el.style.display='none');
+  document.getElementById('otp-code').focus();
+}
+function hideOtpView(){
+  document.getElementById('otp-view').style.display='none';
+  _otpEmail='';
+  // 폼 복원
+  document.querySelectorAll('.auth-field,.auth-tabs,#auth-remember-wrap,#auth-submit-btn,#auth-forgot-btn,#auth-switch-text').forEach(el=>el.style.display='');
+  switchAuthTab(authTab);
+}
+async function submitOtp(){
+  const code=document.getElementById('otp-code').value.trim();
+  const err=document.getElementById('otp-err');
+  const btn=document.getElementById('otp-submit-btn');
+  if(!code){err.textContent='인증번호를 입력해주세요';return;}
+  btn.textContent='확인 중...';btn.disabled=true;err.textContent='';
+  try{
+    const{data,error}=await supabaseClient.auth.verifyOtp({email:_otpEmail,token:code,type:'signup'});
+    if(error)throw error;
+    hideOtpView();
+    onAuthSuccess(data.user);
+    closeAuth();
+  }catch(e){
+    err.style.color='#ff6b6b';
+    err.textContent=e.message==='Token has expired or is invalid'?'인증번호가 만료되었거나 올바르지 않아요':e.message;
+    btn.textContent='인증 확인';btn.disabled=false;
+  }
+}
+async function resendOtp(){
+  if(!_otpEmail)return;
+  const err=document.getElementById('otp-err');
+  try{
+    await supabaseClient.auth.resend({type:'signup',email:_otpEmail});
+    err.style.color='var(--accent)';
+    err.textContent='인증번호를 다시 보냈어요 ✉️';
+  }catch(e){
+    err.style.color='#ff6b6b';
+    err.textContent=e.message;
   }
 }
 

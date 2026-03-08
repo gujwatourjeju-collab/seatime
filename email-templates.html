@@ -1,0 +1,198 @@
+<!--
+  바당때 Supabase 이메일 템플릿 (스플래시 컨셉 라이트 테마)
+
+  Supabase Dashboard → Authentication → Email Templates
+  각 템플릿 Body에 해당 섹션 복사 붙여넣기
+-->
+
+
+<!-- ═══════════════════════════════════════
+     1. Confirm signup (회원가입 인증)
+     Subject: 바당때 - 이메일 인증
+═══════════════════════════════════════ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#dae8f0" style="background-color:#dae8f0;padding:40px 0;">
+  <tr><td align="center">
+    <table width="440" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background-color:#ffffff;border-radius:20px;overflow:hidden;">
+      <!-- Teal accent bar -->
+      <tr><td style="height:4px;background-color:#00a08c;font-size:0;line-height:0;">&nbsp;</td></tr>
+      <!-- Logo + branding -->
+      <tr><td align="center" style="padding:40px 0 8px;">
+        <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" width="60" height="60" style="border-radius:16px;display:block;" alt="badangttae">
+      </td></tr>
+      <tr><td align="center" style="padding:0;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:5px;color:#6b8a93;font-family:Arial,sans-serif;">바다를 읽는 시간</div>
+      </td></tr>
+      <tr><td align="center" style="padding:8px 0 4px;">
+        <div style="font-size:26px;font-weight:800;letter-spacing:8px;color:#1e3c46;font-family:Arial,sans-serif;">바당때</div>
+      </td></tr>
+      <!-- Divider -->
+      <tr><td style="padding:16px 36px 0;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <!-- Content -->
+      <tr><td style="padding:28px 36px;">
+        <div style="font-size:17px;font-weight:700;color:#1e3c46;line-height:1.6;font-family:Arial,sans-serif;">
+          회원가입 인증번호
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#5a7a85;line-height:1.8;font-family:Arial,sans-serif;">
+          아래 인증번호를 앱에 입력하면<br>가입이 완료됩니다.
+        </div>
+        <div style="margin-top:24px;text-align:center;">
+          <div style="display:inline-block;padding:16px 40px;background-color:#f0f6f8;border-radius:12px;border:1px solid #dae8f0;">
+            <div style="font-size:32px;font-weight:800;letter-spacing:12px;color:#1e3c46;font-family:Arial,sans-serif;">{{ .Token }}</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:#5a7a85;text-align:center;font-family:Arial,sans-serif;">
+          인증번호는 10분간 유효합니다.
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:#a0b5be;line-height:1.6;text-align:center;font-family:Arial,sans-serif;">
+          본인이 요청하지 않은 경우 이 메일을 무시해주세요.
+        </div>
+      </td></tr>
+      <!-- Footer -->
+      <tr><td style="padding:0 36px;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:16px 36px 28px;text-align:center;">
+        <div style="font-size:11px;color:#a0b5be;line-height:1.6;font-family:Arial,sans-serif;">
+          Tidal data by KHOA<br>&copy; badangttae
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+
+
+<!-- ═══════════════════════════════════════
+     2. Magic Link (매직링크 로그인)
+     Subject: 바당때 - 로그인 링크
+═══════════════════════════════════════ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#dae8f0" style="background-color:#dae8f0;padding:40px 0;">
+  <tr><td align="center">
+    <table width="440" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background-color:#ffffff;border-radius:20px;overflow:hidden;">
+      <tr><td style="height:4px;background-color:#00a08c;font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:40px 0 8px;">
+        <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" width="60" height="60" style="border-radius:16px;display:block;" alt="badangttae">
+      </td></tr>
+      <tr><td align="center" style="padding:0;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:5px;color:#6b8a93;font-family:Arial,sans-serif;">바다를 읽는 시간</div>
+      </td></tr>
+      <tr><td align="center" style="padding:8px 0 4px;">
+        <div style="font-size:26px;font-weight:800;letter-spacing:8px;color:#1e3c46;font-family:Arial,sans-serif;">바당때</div>
+      </td></tr>
+      <tr><td style="padding:16px 36px 0;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:28px 36px;">
+        <div style="font-size:17px;font-weight:700;color:#1e3c46;line-height:1.6;font-family:Arial,sans-serif;">
+          로그인 링크
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#5a7a85;line-height:1.8;font-family:Arial,sans-serif;">
+          아래 버튼을 눌러 로그인하세요.
+        </div>
+        <div style="margin-top:28px;text-align:center;">
+          <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 44px;background-color:#00a08c;color:#ffffff;font-size:15px;font-weight:700;border-radius:50px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:0.5px;">
+            로그인
+          </a>
+        </div>
+        <div style="margin-top:20px;font-size:11px;color:#a0b5be;line-height:1.6;text-align:center;font-family:Arial,sans-serif;">
+          본인이 요청하지 않은 경우 이 메일을 무시해주세요.
+        </div>
+      </td></tr>
+      <tr><td style="padding:0 36px;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:16px 36px 28px;text-align:center;">
+        <div style="font-size:11px;color:#a0b5be;line-height:1.6;font-family:Arial,sans-serif;">
+          &copy; badangttae
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+
+
+<!-- ═══════════════════════════════════════
+     3. Reset Password (비밀번호 재설정)
+     Subject: 바당때 - 비밀번호 재설정
+═══════════════════════════════════════ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#dae8f0" style="background-color:#dae8f0;padding:40px 0;">
+  <tr><td align="center">
+    <table width="440" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background-color:#ffffff;border-radius:20px;overflow:hidden;">
+      <tr><td style="height:4px;background-color:#00a08c;font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:40px 0 8px;">
+        <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" width="60" height="60" style="border-radius:16px;display:block;" alt="badangttae">
+      </td></tr>
+      <tr><td align="center" style="padding:0;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:5px;color:#6b8a93;font-family:Arial,sans-serif;">바다를 읽는 시간</div>
+      </td></tr>
+      <tr><td align="center" style="padding:8px 0 4px;">
+        <div style="font-size:26px;font-weight:800;letter-spacing:8px;color:#1e3c46;font-family:Arial,sans-serif;">바당때</div>
+      </td></tr>
+      <tr><td style="padding:16px 36px 0;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:28px 36px;">
+        <div style="font-size:17px;font-weight:700;color:#1e3c46;line-height:1.6;font-family:Arial,sans-serif;">
+          비밀번호 재설정
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#5a7a85;line-height:1.8;font-family:Arial,sans-serif;">
+          아래 버튼을 눌러 새 비밀번호를 설정하세요.
+        </div>
+        <div style="margin-top:28px;text-align:center;">
+          <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 44px;background-color:#00a08c;color:#ffffff;font-size:15px;font-weight:700;border-radius:50px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:0.5px;">
+            비밀번호 재설정
+          </a>
+        </div>
+        <div style="margin-top:20px;font-size:11px;color:#a0b5be;line-height:1.6;text-align:center;font-family:Arial,sans-serif;">
+          본인이 요청하지 않은 경우 이 메일을 무시해주세요.
+        </div>
+      </td></tr>
+      <tr><td style="padding:0 36px;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:16px 36px 28px;text-align:center;">
+        <div style="font-size:11px;color:#a0b5be;line-height:1.6;font-family:Arial,sans-serif;">
+          &copy; badangttae
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+
+
+<!-- ═══════════════════════════════════════
+     4. Change Email (이메일 변경)
+     Subject: 바당때 - 이메일 변경 확인
+═══════════════════════════════════════ -->
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#dae8f0" style="background-color:#dae8f0;padding:40px 0;">
+  <tr><td align="center">
+    <table width="440" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="background-color:#ffffff;border-radius:20px;overflow:hidden;">
+      <tr><td style="height:4px;background-color:#00a08c;font-size:0;line-height:0;">&nbsp;</td></tr>
+      <tr><td align="center" style="padding:40px 0 8px;">
+        <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" width="60" height="60" style="border-radius:16px;display:block;" alt="badangttae">
+      </td></tr>
+      <tr><td align="center" style="padding:0;">
+        <div style="font-size:11px;font-weight:500;letter-spacing:5px;color:#6b8a93;font-family:Arial,sans-serif;">바다를 읽는 시간</div>
+      </td></tr>
+      <tr><td align="center" style="padding:8px 0 4px;">
+        <div style="font-size:26px;font-weight:800;letter-spacing:8px;color:#1e3c46;font-family:Arial,sans-serif;">바당때</div>
+      </td></tr>
+      <tr><td style="padding:16px 36px 0;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:28px 36px;">
+        <div style="font-size:17px;font-weight:700;color:#1e3c46;line-height:1.6;font-family:Arial,sans-serif;">
+          이메일 변경 확인
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#5a7a85;line-height:1.8;font-family:Arial,sans-serif;">
+          아래 버튼을 눌러 새 이메일을 확인하세요.
+        </div>
+        <div style="margin-top:28px;text-align:center;">
+          <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 44px;background-color:#00a08c;color:#ffffff;font-size:15px;font-weight:700;border-radius:50px;text-decoration:none;font-family:Arial,sans-serif;letter-spacing:0.5px;">
+            이메일 확인
+          </a>
+        </div>
+        <div style="margin-top:20px;font-size:11px;color:#a0b5be;line-height:1.6;text-align:center;font-family:Arial,sans-serif;">
+          본인이 요청하지 않은 경우 이 메일을 무시해주세요.
+        </div>
+      </td></tr>
+      <tr><td style="padding:0 36px;"><div style="height:1px;background-color:#e8eff3;"></div></td></tr>
+      <tr><td style="padding:16px 36px 28px;text-align:center;">
+        <div style="font-size:11px;color:#a0b5be;line-height:1.6;font-family:Arial,sans-serif;">
+          &copy; badangttae
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>

@@ -1542,7 +1542,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     </div>
     <div class="hdr-right">
       <div id="clock">--:--:--</div>
-      <div id="lunar">음력 --월 --일 (-)</div>
+      <div id="lunar" onclick="openMoonPopup()">음력 --월 --일 (-) 🌙</div>
       <div class="unit-switch" id="zen-switch" onclick="toggleZenMode()" role="button" aria-label="단순/디테일 모드 전환">
         <div class="unit-opt" data-val="simple">단순</div>
         <div class="unit-opt" data-val="detail">디테일</div>
@@ -3278,13 +3278,7 @@ async function updateLunarDisplay(){
   // 먼저 로컬 계산값으로 표시
   const ldLocal=getLunarDay(d),lmLocal=getLunarMonth(d);
   const msLocal=typeof lmLocal==='string'?lmLocal:lmLocal+'월';
-  document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd})`;
-  // API로 정확한 값 업데이트
-  const moonData=await fetchMoonData(ds);
-  if(moonData){
-    const lm=d.getMonth()+1; // 양력 월 기준 표시 유지
-    document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) ${moonData.icon}`;
-  }
+  document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) 🌙`;
 }
 function updateDateNav(){const d=getOffsetDate(selectedDateOffset);const ds=`${d.getMonth()+1}/${d.getDate()}`;const dl=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;document.getElementById('date-solar').textContent=ds;document.getElementById('date-label').textContent=dl;const dp=document.getElementById('date-pill-text');if(dp)dp.textContent=ds;const dpl=document.getElementById('date-pill-label');if(dpl)dpl.textContent=dl;}
 function updateClock(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}

@@ -205,8 +205,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 #gauge-high-label{top:32%;transform:translateY(-50%)}
 #gauge-low-label{bottom:11%;transform:translateY(50%)}
-.g-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.6rem;font-weight:400;color:rgba(255,255,255,.6);line-height:1}
-.g-name{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:1px}
+.g-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.65rem;font-weight:600;color:rgba(255,255,255,.75);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
+.g-name{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-shadow:0 0 12px rgba(0,0,0,.6)}
 
 /* ══ 돛단배 ══ */
 #sailboat{
@@ -409,11 +409,11 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   color:var(--accent);font-size:.6rem;font-weight:900;
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
-.date-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:6px 14px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
+.date-pill{display:flex;align-items:center;gap:4px;font-size:.75rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:6px 14px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer}
 .dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 3px;font-size:.8rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.55rem;color:var(--accent);font-weight:700}
-.station-pill{font-size:.74rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.3px;padding:5px 13px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
+.station-pill{font-size:.74rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.3px;padding:5px 13px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer}
 .station-pill:active{background:rgba(0,229,195,.12);border-color:rgba(0,229,195,.3)}
 
 /* 조류 설명 한 줄 */
@@ -424,8 +424,14 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 
 /* 수위 숫자 */
-.level-group{display:flex;flex-direction:column;align-items:flex-start}
-.level-label{font-size:.65rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;font-weight:500;margin-bottom:2px;padding-left:3px}
+.level-group{display:flex;flex-direction:column;align-items:flex-start;position:relative}
+#zen-next-tide{display:none;font-size:.82rem;color:rgba(255,255,255,.55);font-weight:600;padding-left:3px;text-shadow:0 0 12px rgba(0,0,0,.5);position:absolute;bottom:-46px;left:0;line-height:1.6}
+#zen-next-tide div{display:flex;align-items:center;gap:0}
+#zen-next-tide div span{display:inline-block;width:2.2em;text-align:left;flex-shrink:0}
+#zen-station{display:none;font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.9rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:1.2px;white-space:nowrap;position:fixed;top:18%;left:50%;transform:translateX(-50%);z-index:25;padding:7px 19px;border-radius:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-shadow:0 2px 8px rgba(0,0,0,.5)}
+body.zen-mode #zen-next-tide{display:block}
+body.zen-mode #zen-station{display:block}
+.level-label{font-size:.85rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;font-weight:500;margin-bottom:2px;padding-left:3px}
 #level-big{
   font-family:'Pretendard Variable','Pretendard',sans-serif;
   font-size:3.4rem;line-height:.9;letter-spacing:1px;color:#fff;
@@ -1131,22 +1137,26 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
   white-space:nowrap;
 }
 @keyframes zenBlink{0%,100%{opacity:.18}50%{opacity:.4}}
-body.zen-mode #app{opacity:0;pointer-events:none}
-body.zen-mode #gauge-rail{opacity:0;pointer-events:none}
-body.zen-mode #gauge-dot{opacity:0!important;pointer-events:none;visibility:hidden}
-body.zen-mode #gauge-high-label{opacity:0;pointer-events:none}
-body.zen-mode #gauge-low-label{opacity:0;pointer-events:none}
-body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none}
-body.zen-mode #refresh-btn{opacity:0;pointer-events:none}
-body.zen-mode #zen-hint{opacity:0}
+body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
+body.zen-mode #app .level-group{visibility:visible}
+body.zen-mode #app #hdr-wx{visibility:visible}
+body.zen-mode #app #station-pill{visibility:hidden}
+body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
+body.zen-mode #gauge-rail{opacity:.7;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!important}
+body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
+body.zen-mode #refresh-btn{opacity:0;pointer-events:none;transition:none!important}
+body.zen-mode #zen-hint{opacity:0;transition:none!important}
 body.zen-mode #sailboat{pointer-events:auto;z-index:10002}
-body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important}
+body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important;transition:none!important}
 body.zen-mode #ci-graph-overlay{display:none!important}
 
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
 .text-toggle-btn,#refresh-btn{
-  transition:opacity .6s ease;
+  transition:opacity var(--zen-t,.3s) ease,visibility var(--zen-t,.3s) ease;
 }
 
 
@@ -1491,6 +1501,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     </div>
   </div>
 
+<div id="zen-station"></div>
 <div id="toast"></div>
 <div id="fish-school"></div>
 <!-- 게이지 -->
@@ -1595,6 +1606,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
         <div class="level-group">
           <div class="level-label">현재 물높이</div>
           <div id="level-wrap"><div id="level-big" onclick="if(!zenMode)openLogSheet()">--</div><span id="level-unit">cm</span><span id="tide-arrow" style="display:none"></span></div>
+          <div id="zen-next-tide"></div>
         </div>
         <div class="hg-divider"></div>
         <!-- 조류 -->
@@ -3325,6 +3337,7 @@ async function selectStation(name){
   if(!s)return;
   const region=s.region,ri=RI[region];
   document.getElementById('station-pill').textContent=`📍 ${ri.label} · ${name}`;
+  const _zs=document.getElementById('zen-station');if(_zs)_zs.textContent=`📍 ${ri.label} · ${name}`;
   applyTheme(region,currentWeatherCode,currentWindSpeed);
   await Promise.all([loadTide(name),loadWeather(s.lat,s.lng)]);
 }
@@ -3474,6 +3487,7 @@ function renderTide(data,name,isToday,isRealToday){
   }else{badge.style.display='none';if(descEl)descEl.style.display='none';}
   const _s=getStation(name),_ri=_s?RI[_s.region]:null;
   document.getElementById('station-pill').textContent=`📍 ${_ri?_ri.label+' · ':''}${name}`;
+  const _zs2=document.getElementById('zen-station');if(_zs2)_zs2.textContent=`📍 ${_ri?_ri.label+' · ':''}${name}`;
 
   // min/max (현재 시각 기준 가장 가까운 간조/만조)
   const nm2=new Date().getHours()*60+new Date().getMinutes();
@@ -3494,7 +3508,8 @@ function renderTide(data,name,isToday,isRealToday){
     const lb=document.getElementById('level-big');lb.dataset.raw=cur.level;lb.textContent=unitM?(cur.level/100).toFixed(2):cur.level;
     const lu=document.getElementById('level-unit');if(lu)lu.textContent=unitM?'m':'cm';
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm),isFalling=nextTide?.type==='low';
-    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window._nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const ta=document.getElementById('tide-arrow');if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window._nextTideLabel=null;const ta=document.getElementById('tide-arrow');if(ta)ta.style.display='none';}
+    const prevTide=[...data].reverse().find(d=>!d.isCurrent&&toMins(d)<=nm);
+    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window._nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=document.getElementById('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#7ab3f5':'#ff7a95',nl=nextTide.type==='high'?'만조':'간조';let html=`<div><span style="color:${nc}">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;if(prevTide){const pd=nm-toMins(prevTide),ph=Math.floor(pd/60),pm=pd%60;const pc=prevTide.type==='high'?'#7ab3f5':'#ff7a95',pl=prevTide.type==='high'?'만조':'간조';html+=`<div><span style="color:${pc}">${pl}</span> ${ph>0?ph+'시간 ':''}${pm}분 지남</div>`;}znt.innerHTML=html;}const ta=document.getElementById('tide-arrow');if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window._nextTideLabel=null;const ta=document.getElementById('tide-arrow');if(ta)ta.style.display='none';}
     document.getElementById('tide-panel').style.marginTop='-55px';
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';
@@ -3979,6 +3994,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const region=getStation(last).region,ri=RI[region];
   // 히어로 관측소 표시
   document.getElementById('station-pill').textContent=`📍 ${ri.label} · ${last}`;
+  const _zs3=document.getElementById('zen-station');if(_zs3)_zs3.textContent=`📍 ${ri.label} · ${last}`;
   currentStation=last;
   applyTheme(region,0);
 
@@ -4399,11 +4415,13 @@ async function deleteLog(savedAt,e){
 let zenMode=false;
 
 function toggleZenMode(){
-  if(selectedDateOffset!==0)return; // 미래 날짜엔 관상모드 불가
+  if(selectedDateOffset!==0)return;
   zenMode=!zenMode;
   if(navigator.vibrate)navigator.vibrate(zenMode?[10,30,10]:15);
   if(zenMode)closeTideGraph();
+  document.body.style.setProperty('--zen-t','0s');
   document.body.classList.toggle('zen-mode',zenMode);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.style.removeProperty('--zen-t')));
   if(zenMode&&!localStorage.getItem('zenTipShown')){
     showToast('다시 탭하면 돌아갑니다',2500);
     localStorage.setItem('zenTipShown','1');

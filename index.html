@@ -181,12 +181,15 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* ══════════════════════════════════
    게이지 — 우측 슬림 바
 ══════════════════════════════════ */
-#gauge-rail{position:fixed;right:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
+#gauge-rail{position:fixed;left:12px;top:0;bottom:0;width:2px;z-index:20;pointer-events:none}
 #gauge-track{position:absolute;top:32%;bottom:11%;width:2px;background:rgba(80,140,200,.2);border-radius:1px}
 #gauge-mid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:1px;background:rgba(255,255,255,.2);border-radius:1px}
+#gauge-top-tick,#gauge-bot-tick{position:absolute;left:50%;transform:translateX(-50%);width:8px;height:1px;background:rgba(255,255,255,.2);border-radius:1px}
+#gauge-top-tick{top:0}
+#gauge-bot-tick{bottom:0}
 #gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1px;background:linear-gradient(180deg,rgba(100,180,255,.3),rgba(40,120,220,.7));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
 #gauge-dot{
-  position:fixed;right:5px;
+  position:fixed;left:5px;
   width:16px;height:16px;
   display:flex;align-items:center;justify-content:center;
   transform:translate(0,-50%);
@@ -197,8 +200,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #gauge-dot svg{width:16px;height:16px;transition:transform .4s ease}
 /* 게이지 트랙 푸른톤 */
 #gauge-high-label,#gauge-low-label{
-  position:fixed;right:26px;z-index:22;
-  display:flex;flex-direction:column;align-items:flex-end;gap:1px;
+  position:fixed;left:26px;z-index:22;
+  display:flex;flex-direction:column;align-items:flex-start;gap:1px;
 }
 #gauge-high-label{top:32%;transform:translateY(-50%)}
 #gauge-low-label{bottom:11%;transform:translateY(50%)}
@@ -252,10 +255,15 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   flex-shrink:0;
   position:relative;
 }
-.hdr-left{display:flex;align-items:center;gap:8px}
-.hdr-logo{width:32px;height:32px;border-radius:8px;object-fit:cover;opacity:.85}
-.hdr-brand{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:1.15rem;letter-spacing:2.5px;color:rgba(255,255,255,.75);line-height:1}
-.hdr-sub{font-size:.46rem;font-weight:400;color:rgba(255,255,255,.28);letter-spacing:.4px;margin-top:1px;line-height:1}
+.hdr-left-wrap{display:flex;flex-direction:column;gap:6px}
+.hdr-left{display:flex;align-items:center;gap:8px;padding:4px;cursor:pointer}
+.hdr-left svg{opacity:.85;transition:opacity .2s}
+.hdr-left:active svg{opacity:1}
+#hdr-wx{display:none;flex-direction:column;gap:2px;padding:0 4px;cursor:pointer;white-space:nowrap}
+#hdr-wx.show{display:flex}
+#hdr-wx:active{opacity:.7;transition:opacity .1s}
+#hdr-wx .hw-line1{display:flex;align-items:center;gap:5px;font-size:.74rem;color:rgba(255,255,255,.55)}
+#hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.45)}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 #clock{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.88rem;font-weight:400;color:rgba(255,255,255,.65);letter-spacing:1.5px;line-height:1}
 #lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px;cursor:pointer}
@@ -416,6 +424,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 
 /* 수위 숫자 */
+.level-group{display:flex;flex-direction:column;align-items:flex-start}
+.level-label{font-size:.65rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;font-weight:500;margin-bottom:2px;padding-left:3px}
 #level-big{
   font-family:'Pretendard Variable','Pretendard',sans-serif;
   font-size:3.4rem;line-height:.9;letter-spacing:1px;color:#fff;
@@ -1487,7 +1497,9 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 <div id="gauge-rail">
   <div id="gauge-track">
     <div id="gauge-fill-bar"></div>
+    <div id="gauge-top-tick"></div>
     <div id="gauge-mid"></div>
+    <div id="gauge-bot-tick"></div>
   </div>
 </div>
 <div id="gauge-dot">
@@ -1508,12 +1520,12 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 <!-- APP -->
 <div id="app">
   <div id="header">
-    <div class="hdr-left" onclick="openDrawer()">
-      <img class="hdr-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">
-      <div>
-        <div class="hdr-brand">바당때 <span id="app-ver" style="font-size:.55rem;color:rgba(0,229,195,.6);font-weight:700;letter-spacing:0">v0.10</span></div>
-        <div class="hdr-sub" id="hdr-sub">로그인 해주세요</div>
+    <div class="hdr-left-wrap">
+      <div class="hdr-left" onclick="openDrawer()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span id="hdr-sub" style="display:none"></span>
       </div>
+      <div id="hdr-wx" onclick="openWeatherSheet()"></div>
     </div>
     <div class="hdr-right">
       <div id="clock">--:--:--</div>
@@ -1580,7 +1592,10 @@ body.zen-mode #ci-graph-overlay{display:none!important}
         <!-- 날씨 -->
         <div id="hero-wx" onclick="openWeatherSheet()"></div>
         <div class="hero-top-row"><span class="tide-badge" id="tide-badge" style="display:none"></span></div>
-        <div id="level-wrap"><div id="level-big" onclick="if(!zenMode)openLogSheet()">--</div><span id="level-unit">cm</span><span id="tide-arrow" style="display:none"></span></div>
+        <div class="level-group">
+          <div class="level-label">현재 물높이</div>
+          <div id="level-wrap"><div id="level-big" onclick="if(!zenMode)openLogSheet()">--</div><span id="level-unit">cm</span><span id="tide-arrow" style="display:none"></span></div>
+        </div>
         <div class="hg-divider"></div>
         <!-- 조류 -->
         <div id="ci-flip-wrap">
@@ -2349,24 +2364,24 @@ const SKY_PAL={
     storm:  {sky:'linear-gradient(180deg,#100c14 0%,#181418 30%,#242028 60%,#302830 100%)',wt:'rgba(35,35,55,.07)'},
   },
   morning:{
-    clear:  {sky:'linear-gradient(180deg,#0a2a5a 0%,#1a5a8a 25%,#3a8ab8 55%,#68b4d8 80%,#90cce8 100%)',wt:'rgba(90,170,215,.2)'},
-    mostlyclear: {sky:'linear-gradient(180deg,#0a2a5a 0%,#1a5a8a 25%,#3a8ab8 55%,#68b4d8 80%,#90cce8 100%)',wt:'rgba(90,170,215,.2)'},
-    partly: {sky:'linear-gradient(180deg,#0e2e5e 0%,#1e5a88 25%,#3a7aaa 55%,#60a4c8 80%,#82bcd8 100%)',wt:'rgba(80,150,195,.17)'},
-    cloudy: {sky:'linear-gradient(180deg,#1a2a3e 0%,#283848 30%,#485868 60%,#687888 100%)',wt:'rgba(70,100,125,.14)'},
-    drizzle:{sky:'linear-gradient(180deg,#161e2c 0%,#222c3a 30%,#384858 60%,#506070 100%)',wt:'rgba(60,90,115,.11)'},
-    rain:   {sky:'linear-gradient(180deg,#101820 0%,#182028 30%,#283040 60%,#384858 100%)',wt:'rgba(50,80,105,.09)'},
-    shower: {sky:'linear-gradient(180deg,#0e1418 0%,#141c24 30%,#202830 60%,#303840 100%)',wt:'rgba(42,72,95,.08)'},
-    storm:  {sky:'linear-gradient(180deg,#080e12 0%,#101418 30%,#181c20 60%,#20242a 100%)',wt:'rgba(28,45,65,.07)'},
+    clear:  {sky:'linear-gradient(180deg,#0e3468 0%,#1e6498 25%,#4498c4 55%,#78c0e0 80%,#a0d8f0 100%)',wt:'rgba(90,170,215,.2)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#0e3468 0%,#1e6498 25%,#4498c4 55%,#78c0e0 80%,#a0d8f0 100%)',wt:'rgba(90,170,215,.2)'},
+    partly: {sky:'linear-gradient(180deg,#123468 0%,#1e5a90 25%,#3a88b8 55%,#68b4d4 80%,#90cce4 100%)',wt:'rgba(80,150,195,.17)'},
+    cloudy: {sky:'linear-gradient(180deg,#1e2e42 0%,#2c4050 30%,#506878 60%,#708898 100%)',wt:'rgba(70,100,125,.14)'},
+    drizzle:{sky:'linear-gradient(180deg,#182230 0%,#263440 30%,#405060 60%,#587078 100%)',wt:'rgba(60,90,115,.11)'},
+    rain:   {sky:'linear-gradient(180deg,#121c28 0%,#1c2830 30%,#303c4c 60%,#405060 100%)',wt:'rgba(50,80,105,.09)'},
+    shower: {sky:'linear-gradient(180deg,#101820 0%,#182028 30%,#243038 60%,#344048 100%)',wt:'rgba(42,72,95,.08)'},
+    storm:  {sky:'linear-gradient(180deg,#0a1018 0%,#12181e 30%,#1c2028 60%,#242a32 100%)',wt:'rgba(28,45,65,.07)'},
   },
   day:{
-    clear:  {sky:'linear-gradient(180deg,#062040 0%,#0a3a6e 25%,#1468a8 55%,#3090cc 80%,#58b4e2 100%)',wt:'rgba(70,150,205,.22)'},
-    mostlyclear: {sky:'linear-gradient(180deg,#062040 0%,#0a3a6e 25%,#1468a8 55%,#3090cc 80%,#58b4e2 100%)',wt:'rgba(70,150,205,.22)'},
-    partly: {sky:'linear-gradient(180deg,#0a2846 0%,#123860 25%,#1c5a8a 55%,#2e7eae 80%,#50a4cc 100%)',wt:'rgba(62,130,185,.18)'},
-    cloudy: {sky:'linear-gradient(180deg,#141e2e 0%,#1e2c40 30%,#304050 60%,#485868 100%)',wt:'rgba(55,82,115,.15)'},
-    drizzle:{sky:'linear-gradient(180deg,#101820 0%,#182430 30%,#283444 60%,#3a4858 100%)',wt:'rgba(44,72,106,.12)'},
-    rain:   {sky:'linear-gradient(180deg,#0c1018 0%,#141820 30%,#1e2430 60%,#2c3240 100%)',wt:'rgba(35,55,86,.1)'},
-    shower: {sky:'linear-gradient(180deg,#080c10 0%,#10141a 30%,#181e26 60%,#242a32 100%)',wt:'rgba(26,44,76,.08)'},
-    storm:  {sky:'linear-gradient(180deg,#060810 0%,#0c1016 30%,#141820 60%,#1c2028 100%)',wt:'rgba(16,26,55,.07)'},
+    clear:  {sky:'linear-gradient(180deg,#0c3468 0%,#1460a0 25%,#2888c8 55%,#48a8de 80%,#70c4ee 100%)',wt:'rgba(70,150,205,.22)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#0c3468 0%,#1460a0 25%,#2888c8 55%,#48a8de 80%,#70c4ee 100%)',wt:'rgba(70,150,205,.22)'},
+    partly: {sky:'linear-gradient(180deg,#103460 0%,#1a5088 25%,#2878b0 55%,#4098c8 80%,#60b4dc 100%)',wt:'rgba(62,130,185,.18)'},
+    cloudy: {sky:'linear-gradient(180deg,#1a2838 0%,#263848 30%,#3a5068 60%,#587080 100%)',wt:'rgba(55,82,115,.15)'},
+    drizzle:{sky:'linear-gradient(180deg,#141e2a 0%,#1e2c3a 30%,#304050 60%,#445868 100%)',wt:'rgba(44,72,106,.12)'},
+    rain:   {sky:'linear-gradient(180deg,#0e1420 0%,#182028 30%,#242e3a 60%,#323c48 100%)',wt:'rgba(35,55,86,.1)'},
+    shower: {sky:'linear-gradient(180deg,#0a0e14 0%,#14181e 30%,#1e2430 60%,#2a3038 100%)',wt:'rgba(26,44,76,.08)'},
+    storm:  {sky:'linear-gradient(180deg,#080a10 0%,#0e1218 30%,#161a22 60%,#1e222a 100%)',wt:'rgba(16,26,55,.07)'},
   },
   dusk:{
     clear:  {sky:'linear-gradient(180deg,#0a1830 0%,#2a2050 18%,#8a3828 42%,#d06030 62%,#e89050 82%,#f0b870 100%)',wt:'rgba(215,95,45,.2)'},
@@ -2723,23 +2738,31 @@ function updateSkyObjects(wc,windSpd){
   animateSun(wc);
   const ws=windSpd||currentWindSpeed||0;
   const baseDur=Math.max(8,40-ws*2.0);
-  function mkC(top,w,h,op,df){
+  function mkC(top,w,h,op,df,blur){
     const el=document.createElement('div');
     el.className='sky-cloud';
     const dur=(baseDur*(0.75+Math.random()*0.5)).toFixed(1);
     const delay=(-(baseDur*df)).toFixed(1);
-    el.style.cssText='position:absolute;top:'+top+';left:0;width:100%;height:'+h+'px;--cd:'+dur+'s;--cdelay:'+delay+'s;opacity:0;transition:opacity 2s ease';
-    const xOff=(15+Math.random()*60).toFixed(0);
+    const bl=blur||0;
+    el.style.cssText='position:absolute;top:'+top+';left:0;width:100%;height:'+h+'px;--cd:'+dur+'s;--cdelay:'+delay+'s;opacity:0;transition:opacity 2s ease'+(bl?';filter:blur('+bl+'px)':'');
+    const xOff=(10+Math.random()*70).toFixed(0);
     const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('viewBox','0 0 '+w+' '+h);
     svg.setAttribute('width',w);svg.setAttribute('height',h);
-    svg.style.cssText='display:block;position:absolute;left:'+xOff+'%;transform:translateX(-50%)';
+    svg.style.cssText='display:block;position:absolute;left:'+xOff+'%;transform:translateX(-50%) scaleX('+(0.85+Math.random()*0.3).toFixed(2)+')';
     const by=h*0.78;
-    [[w*0.22,by-h*0.35,w*0.18,h*0.38],[w*0.38,by-h*0.55,w*0.22,h*0.5],[w*0.55,by-h*0.42,w*0.2,h*0.42],[w*0.70,by-h*0.28,w*0.16,h*0.32],[w*0.5,by,w*0.48,h*0.28]].forEach(function(b){
+    const shapes=[
+      [[w*.2,by-h*.3,w*.16,h*.34],[w*.36,by-h*.5,w*.2,h*.48],[w*.52,by-h*.38,w*.18,h*.4],[w*.68,by-h*.24,w*.14,h*.3],[w*.5,by,w*.46,h*.26]],
+      [[w*.18,by-h*.28,w*.14,h*.32],[w*.32,by-h*.48,w*.18,h*.44],[w*.48,by-h*.55,w*.24,h*.52],[w*.66,by-h*.36,w*.16,h*.36],[w*.5,by,w*.5,h*.24]],
+      [[w*.24,by-h*.32,w*.2,h*.36],[w*.42,by-h*.52,w*.2,h*.46],[w*.6,by-h*.44,w*.22,h*.44],[w*.5,by,w*.44,h*.26]],
+      [[w*.16,by-h*.26,w*.12,h*.28],[w*.3,by-h*.44,w*.16,h*.42],[w*.46,by-h*.5,w*.22,h*.5],[w*.62,by-h*.38,w*.18,h*.38],[w*.76,by-h*.22,w*.12,h*.26],[w*.5,by,w*.52,h*.22]]
+    ];
+    const shape=shapes[Math.floor(Math.random()*shapes.length)];
+    const cloudFill=isStorm||isHeavy?'rgba(140,155,175,'+op+')':isRain||isDrizzle?'rgba(180,195,215,'+op+')':isCloudy?'rgba(200,215,235,'+op+')':isPartly?'rgba(218,232,252,'+op+')':'rgba(230,242,255,'+op+')';
+    shape.forEach(function(b){
       const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
       e.setAttribute('cx',b[0].toFixed(1));e.setAttribute('cy',b[1].toFixed(1));
-      e.setAttribute('rx',b[2].toFixed(1));e.setAttribute('ry',b[3].toFixed(1));
-      const cloudFill=isStorm||isHeavy?'rgba(140,155,175,'+op+')':isRain||isDrizzle?'rgba(180,195,215,'+op+')':isCloudy?'rgba(200,215,235,'+op+')':isPartly?'rgba(218,232,252,'+op+')':'rgba(230,242,255,'+op+')';
+      e.setAttribute('rx',(b[2]*(0.9+Math.random()*0.2)).toFixed(1));e.setAttribute('ry',(b[3]*(0.9+Math.random()*0.2)).toFixed(1));
       e.setAttribute('fill',cloudFill);
       svg.appendChild(e);
     });
@@ -2754,34 +2777,34 @@ function updateSkyObjects(wc,windSpd){
     // 대체로 맑음(wc=1): 구름 없음 (태양 밝기 간섭 방지)
   }
   else if(isPartly){
-    // 구름 조금: 끊김 없이 촘촘하게
-    mkC((6+r()*6)+'%',180,56,.28,0);
-    mkC((10+r()*6)+'%',140,44,.22,.2);
-    mkC((8+r()*5)+'%',160,42,.20,.4);
-    mkC((9+r()*6)+'%',150,48,.24,.6);
-    mkC((7+r()*5)+'%',120,38,.16,.8);
+    // 구름 조금: 높이 분산 + blur로 자연스럽게
+    mkC((3+r()*4)+'%',100,30,.12,0,4);
+    mkC((8+r()*6)+'%',180,56,.26,.15,1);
+    mkC((14+r()*6)+'%',140,44,.20,.35,2);
+    mkC((6+r()*5)+'%',160,42,.22,.55,1);
+    mkC((18+r()*5)+'%',110,34,.10,.75,3);
   }
   else if(isCloudy){
-    // 흐림: 구름 많고 두껍게, 빈틈 없이
-    mkC((4+r()*4)+'%',260,72,.42,0);
-    mkC((7+r()*4)+'%',220,62,.38,.12);
-    mkC((5+r()*4)+'%',240,68,.36,.25);
-    mkC((9+r()*4)+'%',200,58,.34,.38);
-    mkC((3+r()*3)+'%',230,65,.32,.50);
-    mkC((6+r()*4)+'%',190,54,.30,.62);
-    mkC((5+r()*3)+'%',210,60,.36,.75);
-    mkC((8+r()*4)+'%',180,52,.28,.88);
+    // 흐림: 다양한 높이 + 크기 차이 + blur 레이어
+    mkC((2+r()*3)+'%',120,40,.18,0,4);
+    mkC((5+r()*4)+'%',260,72,.40,.1,1);
+    mkC((10+r()*5)+'%',220,62,.36,.2,0);
+    mkC((3+r()*3)+'%',240,68,.34,.32,2);
+    mkC((14+r()*5)+'%',200,58,.30,.44,1);
+    mkC((8+r()*4)+'%',180,50,.26,.56,3);
+    mkC((18+r()*4)+'%',150,44,.18,.7,4);
+    mkC((6+r()*3)+'%',230,65,.34,.84,1);
   }
   else if(isDrizzle||isRain||isHeavy||isStorm){
-    // 비/폭풍: 두껍고 어두운 구름, 빈틈 없이
-    mkC((2+r()*4)+'%',300,85,.52,0);
-    mkC((4+r()*3)+'%',280,78,.48,.12);
-    mkC((5+r()*4)+'%',260,75,.46,.25);
-    mkC((3+r()*3)+'%',290,80,.44,.38);
-    mkC((5+r()*4)+'%',240,68,.42,.50);
-    mkC((2+r()*3)+'%',270,72,.40,.62);
-    mkC((6+r()*3)+'%',250,70,.44,.75);
-    mkC((4+r()*4)+'%',280,78,.46,.88);
+    // 비/폭풍: 두껍고 어두운 구름, 높이 분산
+    mkC((1+r()*3)+'%',160,50,.28,0,4);
+    mkC((3+r()*3)+'%',300,85,.50,.1,1);
+    mkC((7+r()*4)+'%',280,78,.46,.2,0);
+    mkC((4+r()*3)+'%',260,75,.44,.32,2);
+    mkC((10+r()*5)+'%',290,80,.42,.44,1);
+    mkC((5+r()*3)+'%',240,68,.38,.56,3);
+    mkC((14+r()*4)+'%',200,55,.30,.68,4);
+    mkC((3+r()*3)+'%',270,72,.44,.82,1);
   }
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
@@ -3673,7 +3696,7 @@ async function loadWeather(lat,lng){
         rain:(d.precipitation_sum[di2]??0).toFixed(1),prob:d.precipitation_probability_max?.[di2]??'--',
         sunrise:d.sunrise?.[di2]?.slice(11,16)||'--',sunset:d.sunset?.[di2]?.slice(11,16)||'--',
         uv:d.uv_index_max?.[di2]??'--',
-        wind:`${dir}풍 ${wl(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`,dir,wSpeed
+        wind:`${dir}풍 ${wl(wSpeed)} ${(wSpeed??0).toFixed(1)}m/s`,dir,wSpeed,wDeg:wDir
       };
     }
     wi.style.display='inline';wi.textContent=emo(wCode);
@@ -3687,15 +3710,18 @@ async function loadWeather(lat,lng){
       if(mIdx>=0&&md.hourly.wave_height[mIdx]!=null)window._currentWaveHeight=md.hourly.wave_height[mIdx];
     }
     updateSailboat(wSpeed, wDir);
-    // 히어로 풍향·풍속·파고 컴팩트 표시
+    // 헤더 좌측 날씨 표시
     {const ws=(wSpeed??0).toFixed(1);
     const wv=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(1)+'m':'--';
-    const hwEl=document.getElementById('hero-wx');
+    const hwEl=document.getElementById('hdr-wx');
+    const heroWxEl=document.getElementById('hero-wx');
     const rot=(wDir+180)%360;
-    const svgA=`<svg class="hw-arrow" viewBox="0 0 24 24" fill="currentColor" style="transform:rotate(${rot}deg)"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
+    const svgA=`<svg style="width:14px;height:14px;flex-shrink:0;color:rgba(255,255,255,.5);transform:rotate(${rot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
     const wxIcon=emo(wCode);
     const wxTemp=selectedDateOffset===0?Math.round(data.current.temperature_2m)+'°':'';
-    if(hwEl){hwEl.innerHTML=`<div class="hw-wx">${wxIcon} ${wxTemp}</div><span class="hw-sep">·</span><div class="hw-dir">${svgA}${dir} ${ws}m/s</div><span class="hw-sep">·</span><div class="hw-wave"><svg style="width:12px;height:12px;vertical-align:-2px;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"><path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></svg>${wv}</div>`;hwEl.classList.add('show');}}
+    const wxName=(v=>v===0?"맑음":v<=2?"대체로 맑음":v===3?"흐림":v<=48?"안개":v<=55?"이슬비":v<=65?"비":v<=75?"눈":v<=82?"소나기":"뇌우")(wCode);
+    if(hwEl){hwEl.innerHTML=`<div class="hw-line1">${wxIcon} ${wxName} ${wxTemp}</div><div class="hw-line2">${svgA} ${dir} ${ws}m/s &nbsp;〜 ${wv}</div>`;hwEl.classList.add('show');}
+    if(heroWxEl){heroWxEl.style.display='none';}}
     const tempStr=selectedDateOffset===0?` ${Math.round(data.current.temperature_2m)}°`:'';
     wx.textContent=`${wn(wCode)}${tempStr}`;
     document.getElementById('weather').classList.add('show');
@@ -3736,8 +3762,9 @@ function openWeatherSheet(){
   // 히어로 풍향·풍속·파고
   const waveVal=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(2)+'m':'--';
   const _dirs=["북","북동","동","남동","남","남서","서","북서"],_dArw=["↓","↙","←","↖","↑","↗","→","↘"];
-  const heroArrow=_dArw[_dirs.indexOf(d.dir)]||'↓';
-  document.getElementById('wxs-hero-wind').innerHTML=`<span class="wxhw-dir">${heroArrow} ${d.dir}</span> ${(d.wSpeed??0).toFixed(1)}m/s <span class="wxhw-wave">파고 ${waveVal}</span>`;
+  const _wdRot=((d.wDeg||0)+180)%360;
+  const heroSvg=`<svg style="width:12px;height:12px;vertical-align:-2px;color:rgba(255,255,255,.6);transform:rotate(${_wdRot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
+  document.getElementById('wxs-hero-wind').innerHTML=`<span class="wxhw-dir">${heroSvg} ${d.dir}</span> ${(d.wSpeed??0).toFixed(1)}m/s <span class="wxhw-wave">파고 ${waveVal}</span>`;
   // 3시간 단위 예보
   renderHourlyForecast();
   document.getElementById('wx-overlay').classList.add('open');
@@ -3789,7 +3816,7 @@ function renderHourlyForecast(){
       <div class="wx-hr-icon">${emo(wCode)}</div>
       <div class="wx-hr-name">${wn(wCode)}${precipStr?' '+precipStr:''}</div>
       <div class="wx-hr-temp">${temp}°</div>
-      <div class="wx-hr-windwave"><span class="wx-hr-ww-dir">${dirArrows[Math.round(wd/45)%8]} ${dir}</span><br>${ws}m/s<br><span class="wx-hr-ww-wave">${waveStr}</span></div>
+      <div class="wx-hr-windwave"><span class="wx-hr-ww-dir"><svg style="width:10px;height:10px;vertical-align:-1px;color:rgba(255,255,255,.5);transform:rotate(${(wd+180)%360}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg> ${dir}</span><br>${ws}m/s<br><span class="wx-hr-ww-wave">${waveStr}</span></div>
     </div>`;
   }
   el.innerHTML=rows;

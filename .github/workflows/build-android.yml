@@ -158,6 +158,9 @@ jobs:
           # Add location permissions to AndroidManifest
           sed -i '/<application/i\    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' app/src/main/AndroidManifest.xml
 
+          # Lock portrait orientation
+          sed -i 's/<activity/<activity android:screenOrientation="portrait"/' app/src/main/AndroidManifest.xml
+
           # Set app label in strings.xml
           sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">바당때<\/string>/' app/src/main/res/values/strings.xml
           sed -i 's/<string name="title_activity_main">.*<\/string>/<string name="title_activity_main">바당때<\/string>/' app/src/main/res/values/strings.xml

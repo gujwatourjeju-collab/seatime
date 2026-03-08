@@ -145,6 +145,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   position:absolute;left:0;right:0;bottom:0;height:36%;
   transition:height 5s cubic-bezier(.25,.46,.45,.94);
 }
+#ocean-water.tide-rising{animation:tideRise 4s ease-in-out infinite}
+#ocean-water.tide-falling{animation:tideFall 4s ease-in-out infinite}
+@keyframes tideRise{0%,100%{margin-bottom:0}50%{margin-bottom:3px}}
+@keyframes tideFall{0%,100%{margin-bottom:0}50%{margin-bottom:-3px}}
 #water-body{
   position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(0,180,216,.04) 0%,rgba(0,150,200,.3) 5%,rgba(0,100,160,.6) 30%,rgba(2,50,120,.92) 70%,rgba(1,25,70,1) 100%);
@@ -209,7 +213,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #gauge-high-label{top:32%;transform:translateY(-50%)}
 #gauge-low-label{bottom:11%;transform:translateY(50%)}
 .g-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
-.g-time{font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
+.g-time{font-size:.8rem;font-weight:500;color:rgba(255,255,255,.5);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
 .g-name{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:1px;text-shadow:0 0 12px rgba(0,0,0,.6)}
 
 /* ══ 돛단배 ══ */
@@ -413,7 +417,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
 .date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer}
-.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 3px;font-size:.9rem}
+.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.1rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.6rem;color:var(--accent);font-weight:700}
 .station-pill{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;overflow:hidden;text-overflow:ellipsis}
@@ -692,7 +696,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   background:rgba(6,15,30,.7);border:1px solid rgba(0,229,195,.25);
   backdrop-filter:blur(16px);color:var(--accent);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all .2s;z-index:100;
+  transition:all .2s;z-index:200;
   box-shadow:0 4px 20px rgba(0,0,0,.4);
 }
 #refresh-btn:active{transform:scale(.88)}
@@ -1148,7 +1152,6 @@ body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:non
 body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
-body.zen-mode #refresh-btn{opacity:0;pointer-events:none;transition:none!important}
 body.zen-mode #zen-hint{opacity:0;transition:none!important}
 body.zen-mode #sailboat{pointer-events:auto;z-index:25}
 body.splash-active #sailboat{opacity:0!important;pointer-events:none!important}
@@ -1157,7 +1160,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
-.text-toggle-btn,#refresh-btn{
+.text-toggle-btn{
   transition:opacity var(--zen-t,.3s) ease,visibility var(--zen-t,.3s) ease;
 }
 
@@ -2032,11 +2035,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 
 
-<button id="refresh-btn" onclick="refresh()">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-  </svg>
-</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -2849,6 +2847,8 @@ function setOceanLevel(pct,isFalling,animate=true){
 
   const apply=()=>{
     water.style.height=waterPct+'%';
+    water.classList.toggle('tide-rising',!isFalling);
+    water.classList.toggle('tide-falling',!!isFalling);
     horizon.style.top=horizonTop+'%';
     fill.style.height=pct+'%';
     dot.style.top=horizonTop+'%';
@@ -4995,5 +4995,10 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
   </div>
 </div>
 
+<button id="refresh-btn" onclick="refresh()">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+  </svg>
+</button>
 </body>
 </html>

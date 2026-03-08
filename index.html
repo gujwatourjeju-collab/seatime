@@ -43,6 +43,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;
   transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
+  will-change:opacity,transform;
 }
 #splash.hide{opacity:0;transform:scale(1.06);pointer-events:none}
 
@@ -81,8 +82,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 @keyframes spwd2{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(3%) translateY(2px)}}
 @keyframes spwd3{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(-2%) translateY(1px)}}
 
-.sp-wave{position:absolute;top:0;left:-60%;width:220%;height:50px;border-radius:50%;background:rgba(0,200,170,.18);animation:spWave 5s ease-in-out infinite}
-.sp-wave2{position:absolute;top:14px;left:-40%;width:180%;height:35px;border-radius:50%;background:rgba(0,180,160,.12);animation:spWave 7s ease-in-out -2s infinite}
 @keyframes spWave{0%,100%{transform:translateX(0) translateY(0)}25%{transform:translateX(-3%) translateY(2px)}50%{transform:translateX(-6%) translateY(-1px)}75%{transform:translateX(-2%) translateY(3px)}}
 
 .sp-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding-top:10vh}
@@ -144,6 +143,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #ocean-water{
   position:absolute;left:0;right:0;bottom:0;height:36%;
   transition:height 5s cubic-bezier(.25,.46,.45,.94);
+  will-change:height,opacity;
 }
 #ocean-water.tide-rising{animation:tideRise 4s ease-in-out infinite}
 #ocean-water.tide-falling{animation:tideFall 4s ease-in-out infinite}
@@ -155,14 +155,14 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   transition:background 4s ease;
 }
 #waves{position:absolute;top:0;left:0;right:0;height:90px;overflow:hidden}
-.wave-svg{position:absolute;top:0;left:-20%;width:140%;height:100%}
+.wave-svg{position:absolute;top:0;left:-20%;width:140%;height:100%;will-change:transform}
 .wave-path-1{animation:wd1 var(--wave-dur1,3.5s) ease-in-out infinite}
 .wave-path-2{animation:wd2 var(--wave-dur2,5s) ease-in-out infinite}
 .wave-path-3{animation:wd3 var(--wave-dur3,7s) ease-in-out -2s infinite}
 @keyframes wd1{0%,100%{transform:translateX(0) scaleY(var(--wave-amp,1))}50%{transform:translateX(calc(var(--wave-shift,-6%))) scaleY(var(--wave-amp,1))}}
 @keyframes wd2{0%,100%{transform:translateX(-4%) scaleY(var(--wave-amp,1))}50%{transform:translateX(5%) scaleY(var(--wave-amp,1))}}
 @keyframes wd3{0%,100%{transform:translateX(3%) scaleY(var(--wave-amp,1))}50%{transform:translateX(-5%) scaleY(var(--wave-amp,1))}}
-.shimmer{position:absolute;top:0;bottom:0;width:1px;opacity:0;transform-origin:top;animation:shimA var(--d,8s) ease-in-out var(--delay,0s) infinite}
+.shimmer{position:absolute;top:0;bottom:0;width:1px;opacity:0;transform-origin:top;animation:shimA var(--d,8s) ease-in-out var(--delay,0s) infinite;will-change:transform,opacity}
 @keyframes shimA{0%,100%{opacity:0;transform:scaleY(.2) skewX(-15deg)}40%,60%{opacity:1;transform:scaleY(1) skewX(-10deg)}}
 #horizon{
   position:absolute;left:0;right:0;height:1px;
@@ -174,9 +174,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* 날씨 오브젝트 */
 #sky-objects{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 #sky-sun{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,245,180,1) 30%,rgba(255,220,80,.6) 60%,transparent 100%);box-shadow:0 0 40px rgba(255,230,100,.5),0 0 80px rgba(255,200,60,.2);transition:opacity 2s ease, left 60s linear, top 60s ease, width .5s, height .5s}
-.sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite}
+.sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite;will-change:transform,opacity}
 @keyframes sunP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
-.sky-cloud{position:absolute;animation:cDrift var(--cd,28s) linear var(--cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none;overflow:visible}
+.sky-cloud{position:absolute;animation:cDrift var(--cd,28s) linear var(--cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none;overflow:visible;will-change:transform}
 @keyframes cDrift{0%{transform:translateX(-100%)}100%{transform:translateX(100vw)}}
 #rain-container{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .raindrop{position:absolute;top:-20px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(180,220,255,.45));animation:rFall var(--rd,.8s) linear var(--rdelay,0s) infinite}
@@ -225,6 +225,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   transition:top 5s cubic-bezier(.25,.46,.45,.94),opacity 1.5s ease;
   opacity:0;
   animation:boatSail var(--sail-dur,34s) ease-in-out infinite;
+  will-change:left,top,opacity;
 }
 @keyframes boatSail{
   0%  {left:8%}
@@ -290,7 +291,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   transform:scale(.92);transition:transform .25s cubic-bezier(.4,0,.2,1);
 }
 #moon-popup-overlay.open #moon-popup{transform:scale(1)}
-.mp-moon-icon{font-size:3.2rem;line-height:1;margin-bottom:10px}
 .mp-moon-svg{margin:0 auto 10px;width:64px;height:64px}
 .mp-moon-name{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:4px}
 .mp-dates{font-size:.7rem;color:rgba(255,255,255,.45);line-height:1.7;margin-top:12px}
@@ -533,8 +533,6 @@ body.zen-mode #zen-next-tide{display:block}
 .future-levels{display:flex;flex-direction:column;gap:6px;margin-top:4px;align-items:center}
 .future-level-row{display:flex;align-items:baseline;gap:10px}
 .future-lbl{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.6rem;font-weight:500;letter-spacing:1.5px;opacity:.6}
-.future-lbl-high{color:var(--accent)}
-.future-lbl-low{color:rgba(255,160,120,.9)}
 .future-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:4.4rem;line-height:.9;letter-spacing:2px;color:#fff}
 .future-unit{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:1.1rem;opacity:.3;margin-left:3px;font-weight:300}
 
@@ -688,7 +686,6 @@ body.zen-mode #zen-next-tide{display:block}
 .retry-btn{margin-top:10px;padding:8px 20px;border-radius:20px;border:1px solid rgba(0,229,195,.3);background:rgba(0,229,195,.1);color:var(--accent);font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Pretendard Variable','Pretendard',sans-serif}
 .retry-btn:active{background:rgba(0,229,195,.25)}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;gap:8px;color:rgba(255,255,255,.15)}
-.empty-icon{font-size:1.6rem;opacity:.25}
 .empty-text{font-size:.65rem;font-weight:700;text-align:center;line-height:1.7}
 
 /* 푸터 */
@@ -2027,6 +2024,19 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* ═══ 전역 변수 네임스페이싱 ═══ */
+window.__app={
+  lastTideData:null, lastTideRaw:null, nextTideLabel:null,
+  currentWaveHeight:null, marineData:null, loglistRemaining:null,
+  splashHidden:false, splashSafeTimer:null, cpParams:null,
+  stopGaugeDotLoop:null, startGaugeDotLoop:null
+};
+
+/* ═══ DOM 캐싱 ═══ */
+const $=id=>document.getElementById(id);
+let _elLevelBig,_elLevelUnit,_elTideArrow,_elStatusPill,_elTimeleftPill,
+    _elWxText,_elWxIcon,_elClock,_elOceanWater,_elHorizon;
+
 const SUPABASE_URL='https://raykkfvchlfsjtlkbpji.supabase.co';
 const SUPABASE_KEY='sb_publishable_HV81jL04Eq8m52cMm-LhSw_FX9pSikn';
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -2134,12 +2144,18 @@ function closeTideGraph(){
   const ov=document.getElementById('ci-graph-overlay');
   ov.classList.remove('open');
   setTimeout(()=>{ov.style.display='none';},300);
+  _tideGraphCacheKey=''; // 닫을 때 캐시 초기화 (크기 변경 대응)
 }
 
+let _tideGraphCacheKey='';
 function drawTideGraph(){
   const canvas=document.getElementById('tide-graph');
   if(!canvas)return;
-  const raw=window._lastTideRaw||(window._lastTideData||[]).filter(d=>!d.isCurrent);
+  const raw=window.__app.lastTideRaw||(window.__app.lastTideData||[]).filter(d=>!d.isCurrent);
+  // 캐시: 데이터가 변하지 않았으면 다시 그리지 않음
+  const cacheKey=JSON.stringify(raw.map(d=>d.time+'_'+d.level));
+  if(cacheKey===_tideGraphCacheKey&&canvas.width>0)return;
+  _tideGraphCacheKey=cacheKey;
   const allTides=raw.filter(d=>d.level!=null);
   const todayTides=allTides.filter(d=>!d.isYesterday&&!d.isNextDay);
   if(todayTides.length<2)return;
@@ -2515,24 +2531,29 @@ function updateStars(tod,wcat){
 }
 
 
+const _moonPhaseCache={};
 function getMoonPhase(lunarDay){
+  if(_moonPhaseCache[lunarDay])return _moonPhaseCache[lunarDay];
   const d=lunarDay;
+  let result;
   // 삭 (음력 1일, 30일)
-  if(d===1||d===30||d===0) return{type:'new',    dir:'none', illum:0};
+  if(d===1||d===30||d===0) result={type:'new',    dir:'none', illum:0};
   // 초승달 (2~6일) - 오른쪽 밝음
-  if(d<=6)  return{type:'crescent',dir:'right',illum:.04+(d-2)*.06};
+  else if(d<=6)  result={type:'crescent',dir:'right',illum:.04+(d-2)*.06};
   // 상현달 (7~8일) - 오른쪽 반
-  if(d<=8)  return{type:'half',    dir:'right',illum:.5};
+  else if(d<=8)  result={type:'half',    dir:'right',illum:.5};
   // 상현볼록달 (9~14일) - 오른쪽 볼록
-  if(d<=14) return{type:'gibbous', dir:'right',illum:.55+(d-9)*.08};
+  else if(d<=14) result={type:'gibbous', dir:'right',illum:.55+(d-9)*.08};
   // 보름달 (15일만)
-  if(d===15) return{type:'full',   dir:'none', illum:1};
+  else if(d===15) result={type:'full',   dir:'none', illum:1};
   // 하현볼록달 (16~21일) - 왼쪽 볼록
-  if(d<=21) return{type:'gibbous', dir:'left', illum:.95-(d-16)*.08};
+  else if(d<=21) result={type:'gibbous', dir:'left', illum:.95-(d-16)*.08};
   // 하현달 (22~23일) - 왼쪽 반
-  if(d<=23) return{type:'half',    dir:'left', illum:.5};
+  else if(d<=23) result={type:'half',    dir:'left', illum:.5};
   // 그믐달 (24~29일) - 왼쪽 점점 어두워짐
-  return         {type:'crescent', dir:'left', illum:.28-(d-24)*.05};
+  else result={type:'crescent', dir:'left', illum:.28-(d-24)*.05};
+  _moonPhaseCache[lunarDay]=result;
+  return result;
 }
 
 let _lastMoonDay=-1;
@@ -2754,16 +2775,27 @@ async function animateSun(wc){
   frame();
 }
 
+var _skyCloudCategory='';
 function updateSkyObjects(wc,windSpd){
   const sun=document.getElementById('sky-sun');
   const rain=document.getElementById('rain-container');
   const sky=document.getElementById('sky-objects');
-  sky.querySelectorAll('.sky-cloud').forEach(c=>c.remove());
   rain.innerHTML='';
   const isClear=wc===0,isMostlyClear=wc===1,isPartly=wc===2,isCloudy=wc===3||(wc>=45&&wc<=48),isDrizzle=wc>=51&&wc<=55,isRain=wc>=61&&wc<=65,isHeavy=wc>=80&&wc<=82,isStorm=wc>=95;
   animateSun(wc);
   const ws=windSpd||currentWindSpeed||0;
   const baseDur=Math.max(8,40-ws*2.0);
+  // 날씨 카테고리 결정
+  const cat=isClear?'clear':isMostlyClear?'mostlyClear':isPartly?'partly':isCloudy?'cloudy':(isDrizzle||isRain||isHeavy||isStorm)?'rain':'clear';
+  const needCount=cat==='clear'||cat==='mostlyClear'?0:cat==='partly'?5:cat==='cloudy'?8:8;
+  const existingClouds=sky.querySelectorAll('.sky-cloud');
+  // 카테고리가 같고 구름 수가 맞으면 재사용 (display 토글만)
+  if(_skyCloudCategory===cat&&existingClouds.length===needCount){
+    existingClouds.forEach(c=>{c.style.display=needCount>0?'':'none';});
+  }else{
+    // 카테고리 또는 수가 다를 때만 삭제 후 재생성
+    existingClouds.forEach(c=>c.remove());
+    _skyCloudCategory=cat;
   function mkC(top,w,h,op,df,blur){
     const el=document.createElement('div');
     el.className='sky-cloud';
@@ -2796,13 +2828,7 @@ function updateSkyObjects(wc,windSpd){
     setTimeout(function(){el.style.opacity=op;},100+Math.random()*300);
   }
   var r=Math.random;
-  if(isClear){
-    // 맑음(wc=0): 구름 없음
-  }
-  else if(isMostlyClear){
-    // 대체로 맑음(wc=1): 구름 없음 (태양 밝기 간섭 방지)
-  }
-  else if(isPartly){
+  if(isPartly){
     // 구름 조금: 높이 분산 + blur로 자연스럽게
     mkC((3+r()*4)+'%',100,30,.12,0,4);
     mkC((8+r()*6)+'%',180,56,.26,.15,1);
@@ -2832,6 +2858,7 @@ function updateSkyObjects(wc,windSpd){
     mkC((14+r()*4)+'%',200,55,.30,.68,4);
     mkC((3+r()*3)+'%',270,72,.44,.82,1);
   }
+  } // end of else (재생성 블록)
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
   for(let i=0;i<rc;i++){const d=document.createElement('div');d.className='raindrop';d.style.cssText=`left:${Math.random()*105}%;height:${10+Math.random()*18}px;--rd:${.5+Math.random()*.5}s;--rdelay:${-Math.random()*2}s;opacity:${.4+Math.random()*.4}`;rain.appendChild(d);}
@@ -2849,10 +2876,10 @@ function setOceanLevel(pct,isFalling,animate=true){
   const waterPct=((vh-dotY)/vh)*100;
   const horizonTop=100-waterPct;
 
-  const water=document.getElementById('ocean-water');
-  const horizon=document.getElementById('horizon');
-  const fill=document.getElementById('gauge-fill-bar');
-  const dot=document.getElementById('gauge-dot');
+  const water=_elOceanWater||(_elOceanWater=$('ocean-water'));
+  const horizon=_elHorizon||(_elHorizon=$('horizon'));
+  const fill=$('gauge-fill-bar');
+  const dot=$('gauge-dot');
 
   const apply=()=>{
     water.style.height=waterPct+'%';
@@ -2916,14 +2943,14 @@ function setOceanLevel(pct,isFalling,animate=true){
     dot.style.transition=`top ${dur} ${ease}`;
     if(boat)boat.style.transition=`top ${dur} ${ease},opacity 1.5s ease`;
     // 물 시작 시 루프 정지, dot 숨기기
-    if(window._stopGaugeDotLoop)window._stopGaugeDotLoop();
+    if(window.__app.stopGaugeDotLoop)window.__app.stopGaugeDotLoop();
     dot.style.opacity='0';
     apply();
     // 물 완료 후 dot 보이기 + 루프 시작
     setTimeout(()=>{
       dot.style.transition='top 5s cubic-bezier(.25,.46,.45,.94)';
       dot.style.opacity='1';
-      setTimeout(()=>{if(window._startGaugeDotLoop)window._startGaugeDotLoop();},300);
+      setTimeout(()=>{if(window.__app.startGaugeDotLoop)window.__app.startGaugeDotLoop();},300);
     },5200);
   },100);
 }
@@ -3087,14 +3114,13 @@ function getStationColor(name){
 
 async function loadCustomPoints(){
   if(!currentUser)return;
+  // 먼저 localStorage에서 즉시 로드 (Supabase 응답 전까지 사용)
+  try{customPoints=JSON.parse(localStorage.getItem('cp_'+currentUser.id)||'[]');}catch(e2){customPoints=[];}
   try{
     const{data,error}=await supabaseClient.from('custom_points').select('*').eq('user_id',currentUser.id).order('created_at');
-    if(!error&&data){customPoints=data;try{localStorage.setItem('cp_'+currentUser.id,JSON.stringify(data));}catch(e2){}}
-    else{
-      try{customPoints=JSON.parse(localStorage.getItem('cp_'+currentUser.id)||'[]');}catch(e2){customPoints=[];}
-    }
+    if(!error&&data){customPoints=data;safeLSSet('cp_'+currentUser.id,JSON.stringify(data));}
   }catch(e){
-    try{customPoints=JSON.parse(localStorage.getItem('cp_'+currentUser.id)||'[]');}catch(e2){customPoints=[];}
+    // Supabase 실패 시 localStorage 데이터 유지
   }
 }
 
@@ -3171,7 +3197,7 @@ function initCustomPointMap(){
     const params=calcCustomPointParams(cpSelectedLat,cpSelectedLng);
     const nearDist=findNearestStation(cpSelectedLat,cpSelectedLng).dist;
     cpNearestStation=params.nearest;
-    window._cpParams=params;
+    window.__app.cpParams=params;
     let infoHtml='기준 관측소: <span class="nearest">'+params.nearest+'</span> ('+nearDist.toFixed(1)+'km)';
     if(nearDist>50)infoHtml+='<br><span style="color:var(--danger);font-weight:700">⚠ 가까운 관측소가 멀어 정확도가 낮을 수 있어요</span>';
     if(params.second)infoHtml+='<br>반대쪽 참조: '+params.second+' (가중치 '+params.weight+'%)';
@@ -3209,7 +3235,7 @@ async function saveCustomPoint(){
   btn.textContent='저장 중...';btn.disabled=true;
 
   const nearestS=STATIONS[cpNearestStation];
-  const params=window._cpParams||{obs:nearestS.obs,scale:nearestS.scale||1,timeCorr:nearestS.timeCorr||0};
+  const params=window.__app.cpParams||{obs:nearestS.obs,scale:nearestS.scale||1,timeCorr:nearestS.timeCorr||0};
   const cpData={
     user_id:currentUser.id,
     name,
@@ -3232,7 +3258,7 @@ async function saveCustomPoint(){
     cpData.id='local_'+Date.now();
     cpData.created_at=new Date().toISOString();
     customPoints.push(cpData);
-    try{localStorage.setItem('cp_'+currentUser.id,JSON.stringify(customPoints));}catch(e2){}
+    safeLSSet('cp_'+currentUser.id,JSON.stringify(customPoints));
   }
 
   btn.textContent='저장';btn.disabled=false;
@@ -3256,7 +3282,7 @@ async function deleteCustomPoint(id){
       await supabaseClient.from('custom_points').delete().eq('id',id);
     }
   }catch(e){}
-  try{localStorage.setItem('cp_'+currentUser.id,JSON.stringify(customPoints));}catch(e){}
+  safeLSSet('cp_'+currentUser.id,JSON.stringify(customPoints));
 
   renderCustomPointList();
   showToast('포인트가 삭제됐어요');
@@ -3298,8 +3324,8 @@ async function updateLunarDisplay(){
   document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) 🌙`;
 }
 function updateDateNav(){const d=getOffsetDate(selectedDateOffset);const ds=`${d.getMonth()+1}/${d.getDate()}`;const dl=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;document.getElementById('date-solar').textContent=ds;document.getElementById('date-label').textContent=dl;const dp=document.getElementById('date-pill-text');if(dp)dp.textContent=ds;const dpl=document.getElementById('date-pill-label');if(dpl)dpl.textContent=dl;const ll=document.getElementById('level-label-text');if(ll)ll.textContent=selectedDateOffset===0?'현재 물높이':selectedDateOffset>0?'예상 물높이':'같은시각 물높이';}
-function updateClock(){const n=new Date();document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
-setInterval(updateClock,1000);updateClock();
+function updateClock(){const n=new Date();(_elClock||(_elClock=$('clock'))).textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
+let _clockInterval;if(!_clockInterval){_clockInterval=setInterval(updateClock,1000);}updateClock();
 
 /* 달 팝업 */
 function openMoonPopup(){
@@ -3354,28 +3380,32 @@ async function selectStation(name){
 }
 
 /* API */
-async function getTideData(obsCode,date,isToday=false){
+async function getTideData(obsCode,date,isToday=false,extSignal){
   try{
     const ctrl=new AbortController();
     const tid=setTimeout(()=>ctrl.abort(),8000);
+    if(extSignal)extSignal.addEventListener('abort',()=>ctrl.abort());
     const r=await fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({obsCode,date,isToday}),signal:ctrl.signal});
     clearTimeout(tid);
     const d=await r.json();if(!r.ok)return[];return d?.result?.data||[];
-  }catch(e){return[];}
+  }catch(e){if(e.name==='AbortError')throw e;return[];}
 }
 
 function showMiniLoader(){const ml=document.getElementById('mini-loader');ml.style.background=getComputedStyle(document.getElementById('ocean')).background;ml.classList.add('show');}
 function hideMiniLoader(){const ml=document.getElementById('mini-loader');ml.style.opacity='0';setTimeout(()=>{ml.classList.remove('show');ml.style.opacity='';},200);}
 async function loadTide(name){
+  if(_tideAC)_tideAC.abort();
+  _tideAC=new AbortController();
+  const tideSignal=_tideAC.signal;
   const seq=_loadSeq;
   showMiniLoader();
   showLoading();document.getElementById('hero-inner').style.display='none';
   try{
     const s=getStation(name),dateStr=dateToStr(getOffsetDate(selectedDateOffset)),isToday=selectedDateOffset===0;
     let td=[];
-    if(s.type==='blend'){const[r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true),getTideData(s.obs2,dateStr,true)]);td=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);}
-    else if(s.type==='scale'){td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale,s.timeCorr,true,s.tcH,s.tcL);}
-    else{td=scaleTides(await getTideData(s.obs,dateStr,true),s.scale||1,s.timeCorr||0,true,s.tcH,s.tcL);}
+    if(s.type==='blend'){const[r1,r2]=await Promise.all([getTideData(s.obs1,dateStr,true,tideSignal),getTideData(s.obs2,dateStr,true,tideSignal)]);td=blendTides(r1,r2,s.w1,s.w2,s.timeCorr,true);}
+    else if(s.type==='scale'){td=scaleTides(await getTideData(s.obs,dateStr,true,tideSignal),s.scale,s.timeCorr,true,s.tcH,s.tcL);}
+    else{td=scaleTides(await getTideData(s.obs,dateStr,true,tideSignal),s.scale||1,s.timeCorr||0,true,s.tcH,s.tcL);}
     td.sort((a,b)=>toMins(a)-toMins(b));
     // 레이스 컨디션 방지: 이미 새 요청이 시작됐으면 중단
     if(seq!==_loadSeq){hideMiniLoader();return;}
@@ -3387,8 +3417,8 @@ async function loadTide(name){
       // 성공 시 캐시 저장
       cacheTideData(name,dateStr,td);
     }
-    window._lastTideData=td;
-    window._lastTideRaw=td.filter(d=>!d.isCurrent);
+    window.__app.lastTideData=td;
+    window.__app.lastTideRaw=td.filter(d=>!d.isCurrent);
     // 현재/미래 모두 현재시각 기준 수위 계산
     if(td.length>0){const now=new Date(),nm=now.getHours()*60+now.getMinutes(),lv=calcLive(td);td.push({isCurrent:true,level:lv,time:minsToTime(nm),type:'current',mins:nm});td.sort((a,b)=>toMins(a)-toMins(b));}
     const cl=td.filter(d=>d&&(d.isCurrent||d.time));
@@ -3398,6 +3428,8 @@ async function loadTide(name){
     const luEl=document.getElementById('last-update');if(luEl&&isToday)luEl.textContent='마지막 업데이트 '+new Date().toLocaleTimeString('ko-KR');
     hideMiniLoader();
   }catch(e){
+    // AbortError는 무시 (새 요청에 의해 취소된 경우)
+    if(e.name==='AbortError'){hideMiniLoader();return;}
     // 레이스 컨디션 방지: 이미 새 요청이 시작됐으면 중단
     if(seq!==_loadSeq){hideMiniLoader();return;}
     // 에러 시 캐시 복원 시도
@@ -3414,7 +3446,7 @@ async function loadTide(name){
         hideMiniLoader();return;
       }
     }catch(e2){}
-    showError('오류: '+e.message);showToast('조석 데이터 로딩 실패');hideMiniLoader();
+    if(!navigator.onLine){showError('오프라인 상태입니다. 인터넷 연결 후 다시 시도해 주세요');showToast('오프라인 상태입니다',3000);}else{showError('오류: '+e.message);showToast('조석 데이터 로딩 실패');}hideMiniLoader();
   }
 }
 
@@ -3517,11 +3549,11 @@ function renderTide(data,name,isToday,isRealToday){
   if(isToday){
     const cur=data.find(d=>d.isCurrent);
     if(!cur){showError('현재 데이터 없음');return;}
-    const lb=document.getElementById('level-big');lb.dataset.raw=cur.level;lb.textContent=unitM?(cur.level/100).toFixed(2):cur.level;
-    const lu=document.getElementById('level-unit');if(lu)lu.textContent=unitM?'m':'cm';
+    const lb=_elLevelBig||(_elLevelBig=$('level-big'));lb.dataset.raw=cur.level;lb.textContent=unitM?(cur.level/100).toFixed(2):cur.level;
+    const lu=_elLevelUnit||(_elLevelUnit=$('level-unit'));if(lu)lu.textContent=unitM?'m':'cm';
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm),isFalling=nextTide?.type==='low';
     const prevTide=[...data].reverse().find(d=>!d.isCurrent&&toMins(d)<=nm);
-    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;document.getElementById('status-pill').textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';document.getElementById('timeleft-pill').textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window._nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=document.getElementById('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#7ab3f5':'#ff7a95',nl=nextTide.type==='high'?'만조':'간조';znt.innerHTML=`<div><span style="color:${nc}">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;}const ta=document.getElementById('tide-arrow');if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window._nextTideLabel=null;const ta=document.getElementById('tide-arrow');if(ta)ta.style.display='none';}
+    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;(_elStatusPill||(_elStatusPill=$('status-pill'))).textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';(_elTimeleftPill||(_elTimeleftPill=$('timeleft-pill'))).textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window.__app.nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=$('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#7ab3f5':'#ff7a95',nl=nextTide.type==='high'?'만조':'간조';znt.innerHTML=`<div><span style="color:${nc}">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;}const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff7a95':'#7ab3f5';}}else{window.__app.nextTideLabel=null;const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta)ta.style.display='none';}
     document.getElementById('tide-panel').style.marginTop='-55px';
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';
@@ -3534,8 +3566,8 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('gauge-dot').style.display='block';
     document.getElementById('gauge-high-label').style.display='flex';
     document.getElementById('gauge-low-label').style.display='flex';
-    document.getElementById('ocean-water').style.opacity='1';
-    document.getElementById('horizon').style.opacity='1';
+    (_elOceanWater||(_elOceanWater=$('ocean-water'))).style.opacity='1';
+    (_elHorizon||(_elHorizon=$('horizon'))).style.opacity='1';
     const _sb=document.getElementById('sailboat');_sb.style.display='block';setTimeout(()=>_sb.classList.add('ready'),500);
     const pct=maxL>minL?((cur.level-minL)/(maxL-minL))*100:50;
     setOceanLevel(pct,isFalling,true);
@@ -3571,8 +3603,8 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('gauge-dot').style.display='none';
     document.getElementById('gauge-high-label').style.display='none';
     document.getElementById('gauge-low-label').style.display='none';
-    document.getElementById('ocean-water').style.opacity='0';
-    document.getElementById('horizon').style.opacity='0';
+    (_elOceanWater||(_elOceanWater=$('ocean-water'))).style.opacity='0';
+    (_elHorizon||(_elHorizon=$('horizon'))).style.opacity='0';
     const sb=document.getElementById('sailboat');if(sb){sb.classList.remove('show');sb.style.display='none';}
     // 미래: 태양 숨기고 구름만 표시
     document.getElementById('sky-objects').style.opacity='1';
@@ -3587,11 +3619,11 @@ function renderTide(data,name,isToday,isRealToday){
     const moonPhaseName = futureLd===30?'삭':moonPhaseNames[futureLd]||'';
 
     // level-big 스타일 리셋 + 최저·최고 수위 표시 (현재와 동일한 큰 숫자 스타일)
-    const lb=document.getElementById('level-big');
-    const lu=document.getElementById('level-unit');
+    const lb=_elLevelBig||(_elLevelBig=$('level-big'));
+    const lu=_elLevelUnit||(_elLevelUnit=$('level-unit'));
     if(lb){
       lb.style.fontSize='';lb.style.letterSpacing='';lb.style.lineHeight='';
-      const futureTides=window._lastTideData||[];
+      const futureTides=window.__app.lastTideData||[];
       const highs=futureTides.filter(t=>t.type==='high'||t.hl==='H');
       const lows=futureTides.filter(t=>t.type==='low'||t.hl==='L');
       const maxH=highs.length?Math.max(...highs.map(t=>t.level)):'--';
@@ -3604,9 +3636,9 @@ function renderTide(data,name,isToday,isRealToday){
     // 상태 row 대신 최저·최고 요약 pill 표시
     const statusRow=document.querySelector('.tide-status-row');
     statusRow.style.display='flex';
-    const sp=document.getElementById('status-pill');
-    const tp=document.getElementById('timeleft-pill');
-    const futureTides2=window._lastTideData||[];
+    const sp=_elStatusPill||(_elStatusPill=$('status-pill'));
+    const tp=_elTimeleftPill||(_elTimeleftPill=$('timeleft-pill'));
+    const futureTides2=window.__app.lastTideData||[];
     const highs2=futureTides2.filter(t=>t.type==='high'||t.hl==='H');
     const lows2=futureTides2.filter(t=>t.type==='low'||t.hl==='L');
     const maxH2=highs2.length?Math.max(...highs2.map(t=>t.level)):'--';
@@ -3639,7 +3671,7 @@ function renderTide(data,name,isToday,isRealToday){
   document.getElementById('tide-list').innerHTML=listData.map(item=>{
     if(item.isCurrent){
       const now=new Date(),ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-      const ntl=isRealToday&&window._nextTideLabel?`<div class="tr-next-tide">${window._nextTideLabel}</div>`:'';
+      const ntl=isRealToday&&window.__app.nextTideLabel?`<div class="tr-next-tide">${window.__app.nextTideLabel}</div>`:'';
       return `<div class="tide-row is-current">
         <div class="tr-icon" style="color:var(--accent)">◉</div>
         <div class="tr-body"><div class="tr-level">${item.level}cm</div><div class="tr-label">${isRealToday?'현재 예상 수위':'이 시각 예상 수위'}</div></div>
@@ -3682,7 +3714,7 @@ async function loadWeather(lat,lng){
     const cacheKey=`${lat.toFixed(2)}_${lng.toFixed(2)}_${new Date().toDateString()}`;
     let data=wxCache[cacheKey];
     // Marine API — 캐시 여부와 무관하게 항상 호출
-    window._currentWaveHeight=null;window._marineData=null;
+    window.__app.currentWaveHeight=null;window.__app.marineData=null;
     const marineUrl=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&hourly=wave_height&timezone=Asia/Seoul`;
     const marinePromise=(async()=>{for(let i=0;i<3;i++){try{const r=await fetch(marineUrl);if(r.ok)return await r.json();}catch(e){}if(i<2)await new Promise(r=>setTimeout(r,800*(i+1)));}return null;})();
     if(!data){
@@ -3697,13 +3729,13 @@ async function loadWeather(lat,lng){
           if(attempt<2)await new Promise(r=>setTimeout(r,1200*(attempt+1)));
         }
       }
-      if(!res)throw new Error('날씨 서버 응답 없음');
+      if(!res)throw new Error(navigator.onLine?'날씨 서버 응답 없음':'오프라인 상태입니다');
       data=await res.json();
       wxCache[cacheKey]=data;
     }
     const dailyDates=data.daily?.time||[];const max=dailyDates.length;
-    const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
-    if(selectedDateOffset<0||selectedDateOffset>=max){wi.style.display='none';wx.textContent=selectedDateOffset<0?'과거 날씨 조회 불가':'예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(getStation(currentStation)?.region,0);updateSkyObjects(0);document.getElementById('weather').classList.add('show');return;}
+    const wx=_elWxText||(_elWxText=$('wx-text')),wi=_elWxIcon||(_elWxIcon=$('wx-icon'));
+    if(selectedDateOffset<0||selectedDateOffset>=max){wi.style.display='none';wx.textContent=selectedDateOffset<0?'과거 날씨 조회 불가':'예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(getStation(currentStation)?.region,0);updateSkyObjects(0);$('weather').classList.add('show');return;}
     let wCode,wSpeed,wDir;
     if(selectedDateOffset===0){wCode=data.current.weather_code;wSpeed=data.current.wind_speed_10m;wDir=data.current.wind_direction_10m;}
     else{
@@ -3736,16 +3768,16 @@ async function loadWeather(lat,lng){
     // Marine 데이터 대기 (날씨와 병렬로 이미 시작됨)
     const md=await marinePromise;
     if(md&&md.hourly&&md.hourly.wave_height&&md.hourly.time){
-      window._marineData=md;
+      window.__app.marineData=md;
       const nowH2=new Date().getHours();const today2=new Date();
       const tStr2=`${today2.getFullYear()}-${String(today2.getMonth()+1).padStart(2,'0')}-${String(today2.getDate()).padStart(2,'0')}T${String(nowH2).padStart(2,'0')}:00`;
       const mIdx=md.hourly.time.indexOf(tStr2);
-      if(mIdx>=0&&md.hourly.wave_height[mIdx]!=null)window._currentWaveHeight=md.hourly.wave_height[mIdx];
+      if(mIdx>=0&&md.hourly.wave_height[mIdx]!=null)window.__app.currentWaveHeight=md.hourly.wave_height[mIdx];
     }
     updateSailboat(wSpeed, wDir);
     // 헤더 좌측 날씨 표시
     {const ws=(wSpeed??0).toFixed(1);
-    const wv=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(1)+'m':'--';
+    const wv=window.__app.currentWaveHeight!=null?window.__app.currentWaveHeight.toFixed(1)+'m':'--';
     const hwEl=document.getElementById('hdr-wx');
     const heroWxEl=document.getElementById('hero-wx');
     const rot=(wDir+180)%360;
@@ -3766,9 +3798,9 @@ async function loadWeather(lat,lng){
     if(anyCache){
       return;
     }
-    const wx=document.getElementById('wx-text'),wi=document.getElementById('wx-icon');
+    const wx=_elWxText||(_elWxText=$('wx-text')),wi=_elWxIcon||(_elWxIcon=$('wx-icon'));
     if(wx){wi.style.display='none';wx.innerHTML='<span style="cursor:pointer;text-decoration:underline" onclick="if(currentStation){const s=getStation(currentStation);loadWeather(s.lat,s.lng);}">날씨 로드 실패 — 다시 시도</span>';}
-    document.getElementById('weather').classList.add('show');
+    $('weather').classList.add('show');
     if(currentStation)applyTheme(getStation(currentStation)?.region,0,0);
     // 날씨 실패해도 기본 맑음으로 태양 표시
     currentWeatherCode=0;
@@ -3793,7 +3825,7 @@ function openWeatherSheet(){
   document.getElementById('wxs-uv').textContent=`UV ${d.uv} (${uvLabel(+d.uv)})`;
   document.getElementById('wxs-wind').textContent=d.wind;
   // 히어로 풍향·풍속·파고
-  const waveVal=window._currentWaveHeight!=null?window._currentWaveHeight.toFixed(2)+'m':'--';
+  const waveVal=window.__app.currentWaveHeight!=null?window.__app.currentWaveHeight.toFixed(2)+'m':'--';
   const _wdRot=((d.wDeg||0)+180)%360;
   const heroSvg=`<svg style="width:12px;height:12px;vertical-align:-2px;color:rgba(255,255,255,.6);transform:rotate(${_wdRot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
   document.getElementById('wxs-hero-wind').innerHTML=`<span class="wxhw-dir">${heroSvg} ${d.dir}</span> ${(d.wSpeed??0).toFixed(1)}m/s <span class="wxhw-wave">파고 ${waveVal}</span>`;
@@ -3811,7 +3843,7 @@ function renderHourlyForecast(){
   const data=wxCache[cacheKey];
   if(!data||!data.hourly){el.innerHTML='<div style="font-size:.5rem;color:rgba(255,255,255,.2)">시간별 데이터 없음</div>';return;}
   const h=data.hourly;
-  const marine=window._marineData;
+  const marine=window.__app.marineData;
   const nowH=new Date().getHours();
   // 오늘 날짜에 해당하는 시간 인덱스 찾기
   const targetDate=getOffsetDate(selectedDateOffset);
@@ -3858,6 +3890,7 @@ function closeCalendar(){document.getElementById('cal-overlay').classList.remove
 function calShiftMonth(d){let nM=calM+d,nY=calY;if(nM>11){nM=0;nY++;}if(nM<0){nM=11;nY--;}const t=new Date();t.setHours(0,0,0,0);const mn=new Date(t);mn.setDate(mn.getDate()-1);if(nY<mn.getFullYear()||(nY===mn.getFullYear()&&nM<mn.getMonth()))return;calM=nM;calY=nY;renderCal();}
 function calGoToday(){closeCalendar();goToday();}
 let _loadSeq=0;
+let _tideAC=null;
 function shiftDate(d){
   if(selectedDateOffset+d<-1)return;
   if(d>0&&selectedDateOffset+d>0&&!currentUser){openAuth();showLoginNudge();return;}
@@ -3908,16 +3941,29 @@ function renderCal(){
   document.getElementById('cal-grid').innerHTML=h;
 }
 
-async function refresh(){if(!currentStation)return;const btn=document.getElementById('refresh-btn');btn.classList.add('spinning');setTimeout(()=>btn.classList.remove('spinning'),700);const s=getStation(currentStation);await Promise.all([loadTide(currentStation),loadWeather(s.lat,s.lng)]);}
+let _refreshing=false;
+async function refresh(){if(_refreshing||!currentStation)return;_refreshing=true;try{const btn=document.getElementById('refresh-btn');btn.classList.add('spinning');setTimeout(()=>btn.classList.remove('spinning'),700);const s=getStation(currentStation);await Promise.all([loadTide(currentStation),loadWeather(s.lat,s.lng)]);}finally{_refreshing=false;}}
 
 /* 스플래시 */
 function setSplashProg(pct,text,dur){const w=document.getElementById('splash-water'),d=dur??1.1;w.style.transition=pct===0?'none':`height ${d}s cubic-bezier(.2,.8,.3,1)`;w.style.height=(pct*.62)+'%';if(text)document.getElementById('splash-status').textContent=text;}
-function hideSplash(){if(window._splashHidden)return;window._splashHidden=true;if(window._splashSafeTimer)clearTimeout(window._splashSafeTimer);const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';document.body.classList.remove('splash-active');if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
+function hideSplash(){if(window.__app.splashHidden)return;window.__app.splashHidden=true;if(window.__app.splashSafeTimer)clearTimeout(window.__app.splashSafeTimer);const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';document.body.classList.remove('splash-active');if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
 
 /* 시작 */
 window.addEventListener('DOMContentLoaded',async()=>{
+  // DOM 캐싱 — 자주 쓰는 요소 한 번만 조회
+  _elLevelBig=$('level-big');
+  _elLevelUnit=$('level-unit');
+  _elTideArrow=$('tide-arrow');
+  _elStatusPill=$('status-pill');
+  _elTimeleftPill=$('timeleft-pill');
+  _elWxText=$('wx-text');
+  _elWxIcon=$('wx-icon');
+  _elClock=$('clock');
+  _elOceanWater=$('ocean-water');
+  _elHorizon=$('horizon');
+
   // 스플래시 강제 타임아웃 — 6초 후 무조건 넘김
-  window._splashSafeTimer=setTimeout(()=>{try{hideSplash();}catch(e){}},6000);
+  window.__app.splashSafeTimer=setTimeout(()=>{try{hideSplash();}catch(e){}},6000);
 
   // 초기 UI 상태 설정 — 항상 먼저 실행
   updateLunarDisplay();
@@ -3972,19 +4018,20 @@ window.addEventListener('DOMContentLoaded',async()=>{
       },1600));
     }
 
-    window._startGaugeDotLoop=function(){
-      clearTimers();
+    window.__app.startGaugeDotLoop=function(){
+      if(window.__app.stopGaugeDotLoop) window.__app.stopGaugeDotLoop();
       if(svg){svg.style.transition='opacity .5s ease-in-out, transform .5s ease-in-out';}
       runLoop();
     };
-    window._stopGaugeDotLoop=function(){
+    window.__app.stopGaugeDotLoop=function(){
       clearTimers();
+      if(svg){svg.style.opacity='';svg.style.transform='';}
       dot.style.transition='top 5s cubic-bezier(.25,.46,.45,.94)';
     };
   })();
 
   // Supabase 워밍업
-  fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({obsCode:'DT_0004',date:dateToStr(getOffsetDate(0)),isToday:true})}).catch(()=>{});
+  {const _ac=new AbortController();setTimeout(()=>_ac.abort(),5000);fetch('https://raykkfvchlfsjtlkbpji.supabase.co/functions/v1/get-tide-data',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_KEY}`},body:JSON.stringify({obsCode:'DT_0004',date:dateToStr(getOffsetDate(0)),isToday:true}),signal:_ac.signal}).catch(()=>{});}
 
   await new Promise(r=>setTimeout(r,400));
 
@@ -4055,8 +4102,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
 
   if(td&&td.length>0){
     td.sort((a,b)=>toMins(a)-toMins(b));
-    window._lastTideData=td;
-    window._lastTideRaw=td.filter(d=>!d.isCurrent);
+    window.__app.lastTideData=td;
+    window.__app.lastTideRaw=td.filter(d=>!d.isCurrent);
     const now=new Date(),nm=now.getHours()*60+now.getMinutes(),lv=calcLive(td);
     td.push({isCurrent:true,level:lv,time:minsToTime(nm),type:'current',mins:nm});
     td.sort((a,b)=>toMins(a)-toMins(b));
@@ -4080,16 +4127,39 @@ window.addEventListener('DOMContentLoaded',async()=>{
 });
 
 setInterval(()=>{if(currentStation&&selectedDateOffset===0)refresh();},600000); // 오늘만 자동갱신
+
+// ESC 키로 오버레이 닫기 (가장 위에 있는 것만 닫기)
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  // 우선순위: 가장 위에 떠있는 오버레이부터 닫기
+  const moonOv=document.getElementById('moon-popup-overlay');
+  if(moonOv&&moonOv.classList.contains('open')){closeMoonPopup();return;}
+  const ciOv=document.getElementById('ci-graph-overlay');
+  if(ciOv&&ciOv.classList.contains('open')){closeTideGraph();return;}
+  const authSheet=document.getElementById('auth-sheet');
+  if(authSheet&&authSheet.classList.contains('open')){closeAuth();return;}
+  const termsOv=document.getElementById('terms-overlay');
+  if(termsOv&&termsOv.classList.contains('open')){closeTerms();return;}
+  const drawerOv=document.getElementById('drawer-overlay');
+  if(drawerOv&&drawerOv.classList.contains('open')){closeDrawer();return;}
+  // 기타 sheet-overlay 닫기
+  const openSheets=document.querySelectorAll('.sheet-overlay.open, #log-overlay.open, #loglist-overlay.open, #myinfo-overlay.open');
+  if(openSheets.length){const last=openSheets[openSheets.length-1];const closeBtn=last.getAttribute('onclick');if(closeBtn)new Function(closeBtn)();return;}
+});
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/seatime/sw.js').then(reg=>{
     reg.addEventListener('updatefound',()=>{
       const nw=reg.installing;
       if(nw)nw.addEventListener('statechange',()=>{
         if(nw.state==='installed'&&navigator.serviceWorker.controller){
-          showToast('새 버전이 있어요. 새로고침하면 적용됩니다',4000);
+          showToast('새 버전이 있어요. 새로고침 해주세요',4000);
         }
       });
     });
+    // 주기적 업데이트 확인 (1시간마다)
+    setInterval(()=>{reg.update().catch(()=>{});},3600000);
+    // 페이지 포커스 시에도 업데이트 확인
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
   }).catch(()=>{});
 }
 
@@ -4104,8 +4174,9 @@ if('serviceWorker' in navigator){
   window.addEventListener('offline',updateOnline);
   updateOnline();
 })();
+function safeLSSet(key,val){try{localStorage.setItem(key,val);}catch(e){const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('tide_')||k.startsWith('wx_'))keys.push(k);}keys.forEach(k=>localStorage.removeItem(k));try{localStorage.setItem(key,val);}catch(e2){}}}
 function cacheTideData(name,dateStr,data){
-  try{localStorage.setItem('tide_cache_'+name+'_'+dateStr,JSON.stringify({ts:Date.now(),data}));}catch(e){}
+  safeLSSet('tide_cache_'+name+'_'+dateStr,JSON.stringify({ts:Date.now(),data}));
 }
 function getCachedTide(name,dateStr){
   try{const raw=localStorage.getItem('tide_cache_'+name+'_'+dateStr);if(!raw)return null;const o=JSON.parse(raw);if(Date.now()-o.ts>86400000)return null;return o.data;}catch(e){return null;}
@@ -4330,7 +4401,7 @@ async function saveLog(){
   const key='tidelog_'+currentUser.id;
   const logs=JSON.parse(localStorage.getItem(key)||'[]');
   logs.unshift(entry);
-  localStorage.setItem(key,JSON.stringify(logs.slice(0,200)));
+  safeLSSet(key,JSON.stringify(logs.slice(0,200)));
   // Supabase에도 시도
   try{
     const {error}=await supabaseClient.from('tide_logs').insert(entry);
@@ -4413,7 +4484,7 @@ async function renderLogList(){
   }
   let html=visibleLogs.map(buildLogCard).join('');
   if(hasMore){
-    window._loglistRemaining=filtered.slice(LOG_PAGE_SIZE);
+    window.__app.loglistRemaining=filtered.slice(LOG_PAGE_SIZE);
     html+=`<button id="loglist-more-btn" style="width:100%;padding:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:.75rem;cursor:pointer;font-family:'Pretendard Variable','Pretendard',sans-serif" onclick="loadMoreLogs(this)">더보기 (나머지 ${filtered.length-LOG_PAGE_SIZE}개)</button>`;
   }
   body.innerHTML=html;
@@ -4422,7 +4493,7 @@ async function renderLogList(){
 function loadMoreLogs(btn){
   btn.disabled=true;btn.textContent='불러오는 중...';
   const body=document.getElementById('loglist-body');
-  const rest=window._loglistRemaining||[];
+  const rest=window.__app.loglistRemaining||[];
   const frag=document.createDocumentFragment();
   const tmp=document.createElement('div');
   tmp.innerHTML=rest.map(l=>{
@@ -4433,7 +4504,7 @@ function loadMoreLogs(btn){
   while(tmp.firstChild)frag.appendChild(tmp.firstChild);
   btn.parentNode.removeChild(btn);
   body.appendChild(frag);
-  delete window._loglistRemaining;
+  delete window.__app.loglistRemaining;
 }
 
 async function deleteLog(savedAt,e){
@@ -4441,7 +4512,7 @@ async function deleteLog(savedAt,e){
   if(!confirm('이 기록을 삭제할까요?'))return;
   const key='tidelog_'+currentUser.id;
   const logs=JSON.parse(localStorage.getItem(key)||'[]');
-  localStorage.setItem(key,JSON.stringify(logs.filter(l=>l.saved_at!==savedAt)));
+  safeLSSet(key,JSON.stringify(logs.filter(l=>l.saved_at!==savedAt)));
   try{await supabaseClient.from('tide_logs').delete().eq('user_id',currentUser.id).eq('saved_at',savedAt);}catch(e2){}
   await renderLogList();
 }
@@ -4626,15 +4697,13 @@ function spawnFishSchool(){
     school.appendChild(f);
   }
 
-  const cleanupTime=(latestEnd+0.5)*1000;
+  const cleanupTime=Math.min((latestEnd+0.5)*1000,8000);
   setTimeout(()=>{
     school.innerHTML='';
     fishActive=false;
     const b=document.getElementById('sailboat');
     if(b){b.classList.remove('active');b.classList.add('ready');}
   },cleanupTime);
-  // 안전장치: 최대 8초 후 강제 해제
-  setTimeout(()=>{if(fishActive){school.innerHTML='';fishActive=false;const b=document.getElementById('sailboat');if(b){b.classList.remove('active');b.classList.add('ready');}}},8000);
 }
 
 /* ═══ 드로어 ═══ */
@@ -4767,12 +4836,12 @@ async function toggleFav(){
   if(isFav){
     favorites=favorites.filter(f=>f!==currentStation);
     try{await supabaseClient.from('favorites').delete().eq('user_id',currentUser.id).eq('station',currentStation);}
-    catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}
+    catch(e){safeLSSet('fav_'+currentUser.id,JSON.stringify(favorites));}
   }else{
     if(favorites.length>=3){showToast('즐겨찾기는 최대 3개까지 가능해요');return;}
     favorites.push(currentStation);
     try{await supabaseClient.from('favorites').insert({user_id:currentUser.id,station:currentStation});}
-    catch(e){localStorage.setItem('fav_'+currentUser.id,JSON.stringify(favorites));}
+    catch(e){safeLSSet('fav_'+currentUser.id,JSON.stringify(favorites));}
   }
   updateFavStar();
   renderFavGrid();
@@ -5030,16 +5099,23 @@ function onAuthSuccess(user){
       const realKey='tidelog_'+user.id;
       const existing=JSON.parse(localStorage.getItem(realKey)||'[]');
       const migrated=JSON.parse(orphan);
-      localStorage.setItem(realKey,JSON.stringify([...migrated,...existing].slice(0,200)));
+      safeLSSet(realKey,JSON.stringify([...migrated,...existing].slice(0,200)));
       localStorage.removeItem(badKey);
     }
   }catch(e){}
   const name=user.user_metadata?.name||user.email.split('@')[0];
   const sub=document.getElementById('hdr-sub');
   if(sub)sub.textContent=name+'님 환영해요';
-  loadFavorites();
-  loadCustomPoints();
   updateDrawerProfile();
+  // 즐겨찾기/사용자포인트 로딩 중 동기화 피드백
+  const _syncEl=document.getElementById('drawer-email');
+  const _syncOrig=_syncEl?_syncEl.textContent:'';
+  if(_syncEl)_syncEl.textContent='동기화 중...';
+  Promise.all([loadFavorites(),loadCustomPoints()]).then(()=>{
+    if(_syncEl)_syncEl.textContent=_syncOrig||currentUser?.email||'';
+  }).catch(()=>{
+    if(_syncEl)_syncEl.textContent=_syncOrig||currentUser?.email||'';
+  });
 }
 
 function showLoginNudge(){

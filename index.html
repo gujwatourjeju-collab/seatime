@@ -429,7 +429,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #zen-next-tide div{display:flex;align-items:center;gap:0}
 #zen-next-tide div span{display:inline-block;width:2.2em;text-align:left;flex-shrink:0}
 #zen-station{display:none;font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.9rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:1.2px;white-space:nowrap;position:fixed;top:18%;left:50%;transform:translateX(-50%);z-index:25;padding:7px 19px;border-radius:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-shadow:0 2px 8px rgba(0,0,0,.5)}
-body.zen-mode #zen-next-tide{display:block}
 body.zen-mode #zen-station{display:block}
 .level-label{font-size:.85rem;color:rgba(255,255,255,.55);letter-spacing:1.5px;font-weight:500;margin-bottom:2px;padding-left:3px}
 #level-big{
@@ -1139,6 +1138,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 @keyframes zenBlink{0%,100%{opacity:.18}50%{opacity:.4}}
 body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
 body.zen-mode #app .level-group{visibility:visible}
+body.zen-mode #app #tide-panel{visibility:visible}
 body.zen-mode #app #hdr-wx{visibility:visible}
 body.zen-mode #app #station-pill{visibility:hidden}
 body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
@@ -1149,7 +1149,8 @@ body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!im
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
 body.zen-mode #refresh-btn{opacity:0;pointer-events:none;transition:none!important}
 body.zen-mode #zen-hint{opacity:0;transition:none!important}
-body.zen-mode #sailboat{pointer-events:auto;z-index:10002}
+body.zen-mode #sailboat{pointer-events:auto;z-index:25}
+body.splash-active #sailboat{opacity:0!important;pointer-events:none!important}
 body.zen-mode #drawer-overlay{opacity:0!important;pointer-events:none!important;transition:none!important}
 body.zen-mode #ci-graph-overlay{display:none!important}
 
@@ -3897,7 +3898,7 @@ async function refresh(){if(!currentStation)return;const btn=document.getElement
 
 /* 스플래시 */
 function setSplashProg(pct,text,dur){const w=document.getElementById('splash-water'),d=dur??1.1;w.style.transition=pct===0?'none':`height ${d}s cubic-bezier(.2,.8,.3,1)`;w.style.height=(pct*.62)+'%';if(text)document.getElementById('splash-status').textContent=text;}
-function hideSplash(){if(window._splashHidden)return;window._splashHidden=true;if(window._splashSafeTimer)clearTimeout(window._splashSafeTimer);const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
+function hideSplash(){if(window._splashHidden)return;window._splashHidden=true;if(window._splashSafeTimer)clearTimeout(window._splashSafeTimer);const el=document.getElementById('splash');el.classList.add('hide');setTimeout(()=>{el.style.display='none';document.body.classList.remove('splash-active');if(!localStorage.getItem('fontPicked'))setTimeout(showFontPick,300);},900);}
 
 /* 시작 */
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -4412,23 +4413,21 @@ async function deleteLog(savedAt,e){
 
 
 /* ═══ 관상 모드 ═══ */
-let zenMode=false;
+let zenMode=true;
+
+// 시작 시 관상모드(심플뷰) 적용 + 스플래시 중 돛단배 숨김
+document.body.classList.add('zen-mode','splash-active');
 
 function toggleZenMode(){
-  if(selectedDateOffset!==0)return;
   zenMode=!zenMode;
   if(navigator.vibrate)navigator.vibrate(zenMode?[10,30,10]:15);
   if(zenMode)closeTideGraph();
   document.body.style.setProperty('--zen-t','0s');
   document.body.classList.toggle('zen-mode',zenMode);
   requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.style.removeProperty('--zen-t')));
-  if(zenMode&&!localStorage.getItem('zenTipShown')){
-    showToast('다시 탭하면 돌아갑니다',2500);
-    localStorage.setItem('zenTipShown','1');
-  }
 }
 
-// 관상모드: 돗단배 제외 어디든 클릭 시 해제 (캡처 단계에서 차단)
+// 심플뷰(관상모드)에서 탭 → 상세 UI 표시
 document.addEventListener('click',function(e){
   if(!zenMode)return;
   if(e.target.closest('#sailboat'))return;
@@ -4437,7 +4436,7 @@ document.addEventListener('click',function(e){
   toggleZenMode();
 },true);
 
-// hero 빈 영역 탭 → 관상모드 진입
+// 상세 UI에서 바다/하늘 빈 영역 탭 → 심플뷰 복귀
 (function setupZenTap(){
   function attach(){
     const ocean=document.getElementById('ocean');

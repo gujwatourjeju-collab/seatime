@@ -3849,6 +3849,8 @@ function shiftDate(d){
   if(selectedDateOffset+d<-1)return;
   if(d>0&&selectedDateOffset+d>0&&!currentUser){openAuth();showLoginNudge();return;}
   selectedDateOffset+=d;updateLunarDisplay();updateDateNav();
+  // 날짜 변경 즉시 테마 반영 (fetch 기다리지 않고)
+  if(currentStation){const s=getStation(currentStation);applyTheme(s?.region,currentWeatherCode,currentWindSpeed);}
   if(currentStation){++_loadSeq;loadTide(currentStation);const s=getStation(currentStation);loadWeather(s.lat,s.lng);}
 }
 function goToday(){if(selectedDateOffset===0)return;selectedDateOffset=0;updateLunarDisplay();updateDateNav();if(currentStation){++_loadSeq;loadTide(currentStation);const s=getStation(currentStation);loadWeather(s.lat,s.lng);}}

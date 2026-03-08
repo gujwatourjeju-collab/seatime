@@ -4599,13 +4599,15 @@ async function deleteLog(savedAt,e){
 
 
 /* ═══ 관상 모드 ═══ */
-let zenMode=true;
+let zenMode=localStorage.getItem('zenMode')!=='false';
 
-// 시작 시 관상모드(심플뷰) 적용 + 스플래시 중 돛단배 숨김
-document.body.classList.add('zen-mode','splash-active');
+// 시작 시 모드 적용 + 스플래시 중 돛단배 숨김
+document.body.classList.toggle('zen-mode',zenMode);
+document.body.classList.add('splash-active');
 
 function toggleZenMode(){
   zenMode=!zenMode;
+  localStorage.setItem('zenMode',zenMode);
   if(navigator.vibrate)navigator.vibrate(zenMode?[10,30,10]:15);
   if(zenMode)closeTideGraph();
   document.body.style.setProperty('--zen-t','0s');

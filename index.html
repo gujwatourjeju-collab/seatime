@@ -4811,13 +4811,22 @@ let currentUser=null;
 let authTab='login';
 
 function openAuth(){
+  // 항상 로그인 탭으로 초기화
+  switchAuthTab('login');
+  // 입력값 초기화
+  document.getElementById('auth-pw').value='';
+  document.getElementById('auth-pw2').value='';
+  document.getElementById('auth-name').value='';
+  document.getElementById('auth-phone').value='';
+  document.getElementById('auth-err').textContent='';
+  // 저장된 이메일 복원 또는 초기화
+  const saved=localStorage.getItem('bada_saved_email');
+  document.getElementById('auth-email').value=saved||'';
+  document.getElementById('auth-remember').checked=!!saved;
+  // OTP 뷰 숨기기
+  if(_otpEmail)hideOtpView();
   document.getElementById('auth-overlay').classList.add('open');
   document.getElementById('auth-sheet').classList.add('open');
-  document.getElementById('auth-err').textContent='';
-  // 로그인 탭일 때만 remember/forgot 표시
-  const isLogin=(authTab==='login');
-  document.getElementById('auth-remember-wrap').style.display=isLogin?'flex':'none';
-  document.getElementById('auth-forgot-btn').style.display=isLogin?'block':'none';
 }
 
 // 모바일 키보드 올라올 때 입력창 스크롤

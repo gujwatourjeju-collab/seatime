@@ -388,6 +388,13 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* ══════════════════════════════════
    히어로 — 핵심 정보 영역
 ══════════════════════════════════ */
+#onboarding{display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding:0 24px}
+.ob-logo{width:72px;height:72px;border-radius:20px;opacity:.9;animation:spFloat 3s ease-in-out infinite;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.ob-title{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:1.6rem;letter-spacing:3px;color:rgba(255,255,255,.9);line-height:1}
+.ob-sub{font-size:.62rem;color:rgba(255,255,255,.35);margin-top:6px;line-height:1.7;font-weight:400}
+.ob-btn{margin-top:4px;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));border:1px solid rgba(0,229,195,.4);backdrop-filter:blur(16px);color:var(--accent);font-size:.75rem;font-weight:700;padding:12px 24px;border-radius:50px;font-family:'Pretendard Variable','Pretendard',sans-serif;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 24px rgba(0,229,195,.15);transition:all .2s}
+.ob-note{font-size:.52rem;color:rgba(255,255,255,.18);font-weight:400}
+.ob-features{margin-top:12px;font-size:.5rem;color:rgba(255,255,255,.22);line-height:1.8;font-weight:400}
 #hero{
   flex:1;display:flex;flex-direction:column;
   justify-content:center;align-items:center;
@@ -424,11 +431,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .station-pill:active{background:rgba(0,229,195,.12);border-color:rgba(0,229,195,.3)}
 
 /* 조류 설명 한 줄 */
-.tide-desc{
-  font-size:.6rem;color:rgba(255,255,255,.38);font-weight:400;
-  margin-bottom:8px;letter-spacing:.2px;
-  display:none!important;
-}
 
 /* 수위 숫자 */
 .level-group{display:flex;flex-direction:column;align-items:flex-start;position:relative}
@@ -493,7 +495,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   box-shadow:0 8px 32px rgba(0,0,0,.3);
 }
 #ci-graph-overlay.open #ci-graph-card{transform:scale(1)}
-#ci-graph-title{display:none}
 #ci-graph-timebar{position:relative;width:100%;height:16px;margin-bottom:2px;padding:0 12px;box-sizing:border-box}
 #ci-graph-timebar span{font-size:.52rem;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.3px}
 #ci-graph-card canvas{width:100%;border-radius:12px;}
@@ -677,9 +678,14 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .ld-dots{display:flex;gap:5px}
 .ld-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.2;animation:ldP 1.2s ease-in-out infinite}
 .ld-dot:nth-child(2){animation-delay:.2s}.ld-dot:nth-child(3){animation-delay:.4s}
+.skel-row{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.skel-block{border-radius:6px;background:rgba(255,255,255,.06);animation:skelPulse 1.5s ease-in-out infinite}
+@keyframes skelPulse{0%,100%{opacity:.4}50%{opacity:.8}}
 @keyframes ldP{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
 .ld-text{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.55rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:2px}
 .err-msg{text-align:center;padding:16px;color:#ff6b6b;font-size:.72rem;font-weight:700}
+.retry-btn{margin-top:10px;padding:8px 20px;border-radius:20px;border:1px solid rgba(0,229,195,.3);background:rgba(0,229,195,.1);color:var(--accent);font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Pretendard Variable','Pretendard',sans-serif}
+.retry-btn:active{background:rgba(0,229,195,.25)}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:80px;gap:8px;color:rgba(255,255,255,.15)}
 .empty-icon{font-size:1.6rem;opacity:.25}
 .empty-text{font-size:.65rem;font-weight:700;text-align:center;line-height:1.7}
@@ -716,7 +722,6 @@ html.large-text .tr-time{font-size:.92rem}
 html.large-text .tr-label{font-size:.6rem}
 html.large-text #level-big{font-size:3.8rem}
 html.large-text .tide-badge{font-size:.7rem}
-html.large-text .tide-desc{font-size:.68rem}
 html.large-text .status-pill{font-size:.72rem}
 html.large-text .timeleft-pill{font-size:.68rem}
 html.large-text .ci-desc{font-size:.65rem}
@@ -894,6 +899,15 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 .log-snap-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
 .log-snap-tag{font-size:.46rem;padding:2px 7px;border-radius:20px;background:rgba(0,229,195,.12);color:var(--accent);font-weight:700;border:1px solid rgba(0,229,195,.2)}
 .log-memo-label{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:6px}
+.log-memo-hint{font-size:11px;color:rgba(255,255,255,.35);font-weight:400}
+.log-photo-label{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:12px;border:1px dashed rgba(0,229,195,.3);color:rgba(0,229,195,.6);font-size:13px;cursor:pointer;box-sizing:border-box;margin-bottom:12px;transition:all .2s}
+.log-photo-preview{display:none;position:relative;margin-bottom:12px}
+.log-photo-img{width:100%;border-radius:12px;max-height:180px;object-fit:cover}
+.log-photo-del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px;line-height:1}
+.log-photo-size{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:rgba(255,255,255,.7);font-size:10px;padding:2px 6px;border-radius:6px}
+.log-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 14px;font-size:.75rem;color:#fff;font-family:'Pretendard Variable','Pretendard',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s}
+.loglist-filter{padding:8px 16px;display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.loglist-select{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:#fff;font-size:.7rem;font-family:'Pretendard Variable','Pretendard',sans-serif;outline:none}
 #log-memo{
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
   border-radius:12px;padding:11px 14px;
@@ -977,6 +991,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
   font-family:'Pretendard Variable','Pretendard',sans-serif;
   font-size:1.3rem;letter-spacing:2px;color:#fff;line-height:1;
 }
+.drawer-logo{width:28px;height:28px;border-radius:8px;vertical-align:middle;margin-right:8px}
 .drawer-profile-email{
   font-size:.5rem;color:rgba(255,255,255,.45);
   margin-top:4px;letter-spacing:.3px;
@@ -1090,6 +1105,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
   padding:16px 20px calc(env(safe-area-inset-bottom,16px) + 16px);
   border-top:1px solid rgba(255,255,255,.05);
 }
+.drawer-credit{font-size:.52rem;color:rgba(255,255,255,.4);margin-top:8px;line-height:1.8}
 .drawer-logout-btn{
   background:none;border:none;
   font-size:.62rem;color:rgba(255,100,100,.65);
@@ -1131,7 +1147,6 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 #future-lunar-label{display:none;position:absolute;top:calc(15% + 58px);right:22%;transform:translateX(50%);font-size:.62rem;color:rgba(255,255,255,.55);font-weight:400;letter-spacing:.4px;white-space:nowrap;z-index:3;text-shadow:0 1px 6px rgba(0,0,0,.8);}
 
 /* ═══ 관상 모드 ═══ */
-@keyframes zenBlink{0%,100%{opacity:.18}50%{opacity:.4}}
 body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
 body.zen-mode #app .level-group{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header{visibility:visible;pointer-events:auto}
@@ -1174,17 +1189,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 /* 공유 버튼 */
 #wx-share-row{display:flex;align-items:flex-start;justify-content:space-between;padding:4px 14px 0;flex-shrink:0}
-#share-row{display:none}
-#share-btn{
-  background:none;border:none;
-  font-size:.5rem;font-weight:600;
-  color:rgba(255,255,255,.22);
-  cursor:pointer;padding:0;
-  letter-spacing:.3px;
-  font-family:'Pretendard Variable','Pretendard',sans-serif;
-  transition:color .2s;
-}
-#share-btn:active{color:rgba(0,229,195,.7)}
 
 
 #toast{
@@ -1529,7 +1533,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 <div id="app">
   <div id="header">
     <div class="hdr-left-wrap">
-      <div class="hdr-left" onclick="openDrawer()">
+      <div class="hdr-left" onclick="openDrawer()" role="button" aria-label="메뉴">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         <span id="hdr-sub" style="display:none"></span>
       </div>
@@ -1538,7 +1542,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     <div class="hdr-right">
       <div id="clock">--:--:--</div>
       <div id="lunar">음력 --월 --일 (-)</div>
-      <div class="unit-switch" id="zen-switch" onclick="toggleZenMode()">
+      <div class="unit-switch" id="zen-switch" onclick="toggleZenMode()" role="button" aria-label="단순/디테일 모드 전환">
         <div class="unit-opt" data-val="simple">단순</div>
         <div class="unit-opt" data-val="detail">디테일</div>
         <div class="unit-slider"></div>
@@ -1558,35 +1562,20 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   </div>
 
   <div id="weather" onclick="openWeatherSheet()"><span class="wx-icon" id="wx-icon">🌤</span><span class="wx-text" id="wx-text">--</span></div>
-  <div id="share-row">
-    <button id="share-btn" onclick="shareApp()" title="공유">🔗 공유하기</button>
-  </div>
 
   <div id="hero">
     <!-- 온보딩: 관측소 미선택 상태 -->
-    <div id="onboarding" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding:0 24px">
-      <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" style="width:72px;height:72px;border-radius:20px;opacity:.9;animation:spFloat 3s ease-in-out infinite;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+    <div id="onboarding">
+      <img class="ob-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">
       <div>
-        <div style="font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:1.6rem;letter-spacing:3px;color:rgba(255,255,255,.9);line-height:1">바당때에 오신걸 환영해요</div>
-        <div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-top:6px;line-height:1.7;font-weight:400">바다 앞에 서기 전,<br>조석과 물때를 미리 확인하세요</div>
+        <div class="ob-title">바당때에 오신걸 환영해요</div>
+        <div class="ob-sub">바다 앞에 서기 전,<br>조석과 물때를 미리 확인하세요</div>
       </div>
-      <button onclick="openSheet()" style="
-        margin-top:4px;
-        display:flex;align-items:center;gap:8px;
-        background:linear-gradient(135deg,rgba(0,229,195,.2),rgba(0,180,216,.15));
-        border:1px solid rgba(0,229,195,.4);
-        backdrop-filter:blur(16px);
-        color:var(--accent);font-size:.75rem;font-weight:700;
-        padding:12px 24px;border-radius:50px;
-        font-family:'Pretendard Variable','Pretendard',sans-serif;
-        cursor:pointer;letter-spacing:.5px;
-        box-shadow:0 4px 24px rgba(0,229,195,.15);
-        transition:all .2s;
-      ">
+      <button class="ob-btn" onclick="openSheet()">
         <span>📍</span> 관측소 선택하기
       </button>
-      <div style="font-size:.52rem;color:rgba(255,255,255,.18);font-weight:400">제주 · 서해 · 남해 · 동해 34개 관측소</div>
-      <div style="margin-top:12px;font-size:.5rem;color:rgba(255,255,255,.22);line-height:1.8;font-weight:400">
+      <div class="ob-note">제주 · 서해 · 남해 · 동해 34개 관측소</div>
+      <div class="ob-features">
         🌊 실시간 물높이 · 간만조 시간<br>
         🎣 낚시·체험 적합도 안내<br>
         🌅 단순/디테일 모드 전환
@@ -1598,7 +1587,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
         <!-- 날짜 + 관측소 -->
         <div class="hero-top-row">
           <div class="date-pill"><span class="dp-arr" onclick="shiftDate(-1)">‹</span><span id="date-pill-text" onclick="openCalendar()">--/--</span><span class="date-pill-label" id="date-pill-label" onclick="openCalendar()">오늘</span><span class="dp-arr" onclick="shiftDate(+1)">›</span></div>
-          <div class="station-pill" id="station-pill" onclick="openSheet()"></div><span id="fav-star" onclick="toggleFav()">☆</span>
+          <div class="station-pill" id="station-pill" onclick="openSheet()" role="button" aria-label="관측소 선택"></div><span id="fav-star" onclick="toggleFav()" role="button" aria-label="즐겨찾기">☆</span>
         </div>
         <!-- 날씨 -->
         <div id="hero-wx" onclick="openWeatherSheet()"></div>
@@ -1732,20 +1721,20 @@ body.zen-mode #ci-graph-overlay{display:none!important}
       <div class="log-snap-tags" id="log-snap-tags"></div>
     </div>
     <div>
-      <div class="log-memo-label">사진 <span style="font-size:11px;color:rgba(255,255,255,.35);font-weight:400;">(선택, 자동 압축)</span></div>
-      <label id="log-photo-label" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:12px;border:1px dashed rgba(0,229,195,.3);color:rgba(0,229,195,.6);font-size:13px;cursor:pointer;box-sizing:border-box;margin-bottom:12px;transition:all .2s;">
+      <div class="log-memo-label">사진 <span class="log-memo-hint">(선택, 자동 압축)</span></div>
+      <label id="log-photo-label" class="log-photo-label">
         📷 사진 추가
-        <input type="file" id="log-photo-input" accept="image/*" style="display:none;" onchange="handlePhotoSelect(this)">
+        <input type="file" id="log-photo-input" accept="image/*" style="display:none" onchange="handlePhotoSelect(this)">
       </label>
-      <div id="log-photo-preview" style="display:none;position:relative;margin-bottom:12px;">
-        <img id="log-photo-img" style="width:100%;border-radius:12px;max-height:180px;object-fit:cover;" />
-        <button onclick="clearPhoto()" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px;line-height:1;">✕</button>
-        <div id="log-photo-size" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:rgba(255,255,255,.7);font-size:10px;padding:2px 6px;border-radius:6px;"></div>
+      <div id="log-photo-preview" class="log-photo-preview">
+        <img id="log-photo-img" class="log-photo-img">
+        <button class="log-photo-del" onclick="clearPhoto()">✕</button>
+        <div id="log-photo-size" class="log-photo-size"></div>
       </div>
     </div>
     <div>
-      <div class="log-memo-label">포인트명 <span style="font-size:11px;color:rgba(255,255,255,.35);font-weight:400;">(선택)</span></div>
-      <input id="log-point" type="text" placeholder="예) 방파제 끝, 동쪽 갯바위..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 14px;font-size:.75rem;color:#fff;font-family:'Pretendard Variable','Pretendard',sans-serif;outline:none;box-sizing:border-box;transition:border-color .2s;" onfocus="this.style.borderColor='rgba(0,229,195,.4)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+      <div class="log-memo-label">포인트명 <span class="log-memo-hint">(선택)</span></div>
+      <input id="log-point" class="log-input" type="text" placeholder="예) 방파제 끝, 동쪽 갯바위..." onfocus="this.style.borderColor='rgba(0,229,195,.4)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
     </div>
     <div>
       <div class="log-memo-label">메모</div>
@@ -1763,9 +1752,9 @@ body.zen-mode #ci-graph-overlay{display:none!important}
     <div class="loglist-title">출조 기록</div>
     <button class="loglist-close" onclick="closeLogList()">✕</button>
   </div>
-  <div style="padding:8px 16px;display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)">
-    <select id="loglist-year" onchange="renderLogList()" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:#fff;font-size:.7rem;font-family:'Pretendard Variable','Pretendard',sans-serif;outline:none"></select>
-    <select id="loglist-month" onchange="renderLogList()" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:#fff;font-size:.7rem;font-family:'Pretendard Variable','Pretendard',sans-serif;outline:none">
+  <div class="loglist-filter">
+    <select id="loglist-year" class="loglist-select" onchange="renderLogList()"></select>
+    <select id="loglist-month" class="loglist-select" onchange="renderLogList()">
       <option value="">전체</option>
       <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option><option value="4">4월</option><option value="5">5월</option><option value="6">6월</option><option value="7">7월</option><option value="8">8월</option><option value="9">9월</option><option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
     </select>
@@ -1777,7 +1766,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 <div id="drawer-overlay" onclick="closeDrawer()"></div>
 <div id="drawer">
   <div class="drawer-profile" id="drawer-profile">
-    <div class="drawer-profile-name" id="drawer-name"><img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" style="width:28px;height:28px;border-radius:8px;vertical-align:middle;margin-right:8px">바당때</div>
+    <div class="drawer-profile-name" id="drawer-name"><img class="drawer-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">바당때</div>
     <div class="drawer-profile-email" id="drawer-email"></div>
     <div class="drawer-profile-login" id="drawer-login-link" onclick="openAuth();closeDrawer()">로그인</div>
   </div>
@@ -1840,7 +1829,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   </div>
   <div class="drawer-footer">
     <button class="drawer-logout-btn" id="drawer-logout-btn" onclick="drawerLogout()" style="display:none">로그아웃</button>
-    <div style="font-size:.52rem;color:rgba(255,255,255,.4);margin-top:8px;line-height:1.8">
+    <div class="drawer-credit">
       조석 데이터 · 국립해양조사원 KHOA<br>Made by Boungje Min
     </div>
   </div>
@@ -3475,13 +3464,10 @@ function renderTide(data,name,isToday,isRealToday){
   const hi=document.getElementById('hero-inner');
   hi.style.display='flex';hi.style.flexDirection='column';hi.style.gap='0';
 
-  const badge=document.getElementById('tide-badge'),descEl=document.getElementById('tide-desc');
+  const badge=document.getElementById('tide-badge');
   if(tn){
     badge.textContent=tn;badge.style.display='inline-flex';
-    const td=TIDE_DATA[tn];
-    if(descEl&&td){descEl.textContent=td.desc;descEl.style.display='block';}
-    else if(descEl)descEl.style.display='none';
-  }else{badge.style.display='none';if(descEl)descEl.style.display='none';}
+  }else{badge.style.display='none';}
   const _s=getStation(name),_ri=_s?RI[_s.region]:null;
   document.getElementById('station-pill').textContent=`📍 ${_ri?_ri.label+' · ':''}${name}`;
 
@@ -3647,8 +3633,18 @@ function renderTide(data,name,isToday,isRealToday){
   }).join('');
 }
 
-function showLoading(){document.getElementById('tide-list').innerHTML=`<div class="loading"><div class="ld-dots"><div class="ld-dot"></div><div class="ld-dot"></div><div class="ld-dot"></div></div><div class="ld-text">LOADING</div></div>`;}
-function showError(msg){document.getElementById('tide-list').innerHTML=`<div class="err-msg">⚠ ${msg}</div>`;document.getElementById('hero-inner').style.display='none';}
+function showLoading(){
+  const rows=Array.from({length:5},(_,i)=>`<div class="skel-row" style="animation-delay:${i*.1}s">
+    <div class="skel-block" style="width:20px;height:20px;border-radius:50%"></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+      <div class="skel-block" style="width:${60+i*8}%;height:10px"></div>
+      <div class="skel-block" style="width:${40+i*5}%;height:8px"></div>
+    </div>
+    <div class="skel-block" style="width:50px;height:10px"></div>
+  </div>`).join('');
+  document.getElementById('tide-list').innerHTML=rows;
+}
+function showError(msg){document.getElementById('tide-list').innerHTML=`<div class="err-msg">⚠ ${msg}<br><button class="retry-btn" onclick="refresh()">다시 시도</button></div>`;document.getElementById('hero-inner').style.display='none';}
 
 /* 날씨 */
 let wxCache={};
@@ -4503,6 +4499,9 @@ function updateUnitSwitch(){
   sw.querySelectorAll('.unit-opt').forEach(o=>o.classList.toggle('active',o.dataset.val===(unitM?'m':'cm')));
 }
 
+window.addEventListener('offline',()=>showToast('오프라인 상태입니다',3000));
+window.addEventListener('online',()=>showToast('다시 연결되었습니다',2000));
+
 function showToast(msg,dur=2000){
   const t=document.getElementById('toast');
   if(!t)return;
@@ -4615,7 +4614,7 @@ function updateDrawerProfile(){
     if(loginLink)loginLink.style.display='none';
     if(logoutBtn)logoutBtn.style.display='block';
   }else{
-    if(nameEl){nameEl.innerHTML='<img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" style="width:28px;height:28px;border-radius:8px;vertical-align:middle;margin-right:8px">바당때';nameEl.classList.remove('clickable');nameEl.onclick=null;}
+    if(nameEl){nameEl.innerHTML='<img class="drawer-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">바당때';nameEl.classList.remove('clickable');nameEl.onclick=null;}
     if(emailEl)emailEl.textContent='';
     if(loginLink)loginLink.style.display='block';
     if(logoutBtn)logoutBtn.style.display='none';
@@ -4791,8 +4790,6 @@ async function fetchMoonMonth(year,month){
   return null;
 }
 
-// API age → drawMoon용 lunarDay 변환 (age 0~29 → 1~30)
-function ageToLunarDay(age){ return age===0?30:age; }
 
 let currentUser=null;
 let authTab='login';
@@ -4977,14 +4974,13 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
   <div id="ci-graph-card" onclick="event.stopPropagation()">
     <div id="ci-graph-top"><div id="ci-graph-station"></div><div id="ci-graph-datetime"></div></div>
     <div id="ci-graph-wx"></div>
-    <div id="ci-graph-title">조석 그래프</div>
     <div id="ci-graph-timebar"></div>
     <canvas id="tide-graph" height="200"></canvas>
     <div id="ci-graph-hint">바깥을 탭하여 닫기</div>
   </div>
 </div>
 
-<button id="refresh-btn" onclick="refresh()">
+<button id="refresh-btn" onclick="refresh()" aria-label="새로고침">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
   </svg>

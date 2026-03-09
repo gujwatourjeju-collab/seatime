@@ -244,16 +244,16 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 .hdr-left-wrap{display:flex;flex-direction:column;gap:6px}
 .hdr-left{display:flex;align-items:center;gap:8px;padding:4px;cursor:pointer}
-.hdr-left svg{opacity:.85;transition:opacity .2s}
+.hdr-left svg{opacity:.85;transition:opacity .2s;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
 .hdr-left:active svg{opacity:1}
 #hdr-wx{display:none;flex-direction:column;gap:2px;padding:0 4px;cursor:pointer;white-space:nowrap}
 #hdr-wx.show{display:flex}
 #hdr-wx:active{opacity:.7;transition:opacity .1s}
-#hdr-wx .hw-line1{display:flex;align-items:center;gap:5px;font-size:.74rem;color:rgba(255,255,255,.55);text-shadow:0 1px 3px rgba(0,0,0,.45)}
-#hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.45);text-shadow:0 1px 3px rgba(0,0,0,.45)}
+#hdr-wx .hw-line1{display:flex;align-items:center;gap:5px;font-size:.74rem;color:rgba(255,255,255,.55);text-shadow:0 1px 3px rgba(0,0,0,.45);-webkit-text-stroke:.3px rgba(0,0,0,.25)}
+#hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.45);text-shadow:0 1px 3px rgba(0,0,0,.45);-webkit-text-stroke:.3px rgba(0,0,0,.25)}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-#clock{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.88rem;font-weight:400;color:rgba(255,255,255,.65);letter-spacing:1.5px;line-height:1}
-#lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px;cursor:pointer}
+#clock{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.88rem;font-weight:400;color:rgba(255,255,255,.65);letter-spacing:1.5px;line-height:1;text-shadow:0 1px 3px rgba(0,0,0,.45);-webkit-text-stroke:.3px rgba(0,0,0,.25)}
+#lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px;cursor:pointer;text-shadow:0 1px 2px rgba(0,0,0,.4);-webkit-text-stroke:.2px rgba(0,0,0,.2)}
 #lunar:active{color:rgba(255,255,255,.4)}
 #zen-switch{margin-top:12px}
 
@@ -404,7 +404,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   box-shadow:0 1px 6px rgba(0,0,0,.35),0 0 12px rgba(0,229,195,.2);
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
-.date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5),0 0 8px rgba(0,0,0,.25)}
+.date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5),0 0 8px rgba(0,0,0,.25);-webkit-text-stroke:.3px rgba(0,0,0,.25)}
 .dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.32rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.6rem;color:var(--accent);font-weight:700}
@@ -1037,11 +1037,12 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
   width:72px;height:28px;border-radius:14px;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
   cursor:pointer;overflow:hidden;flex-shrink:0;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
 }
 .unit-opt{
   flex:1;text-align:center;font-size:.55rem;font-weight:700;
   color:rgba(255,255,255,.35);position:relative;z-index:1;
-  transition:color .2s;line-height:28px;
+  transition:color .2s;line-height:28px;text-shadow:0 1px 2px rgba(0,0,0,.4);-webkit-text-stroke:.2px rgba(0,0,0,.2);
 }
 .unit-opt.active{color:#fff}
 .unit-slider{
@@ -2355,24 +2356,24 @@ const SKY_PAL={
     storm:  {sky:'linear-gradient(180deg,#100c14 0%,#181418 30%,#242028 60%,#302830 100%)',wt:'rgba(35,35,55,.07)'},
   },
   morning:{
-    clear:  {sky:'linear-gradient(180deg,#0e3468 0%,#1e6498 18%,#4498c4 40%,#78c0e0 58%,#a0d8f0 72%,#c8eaf6 86%,#e0f2fa 100%)',wt:'rgba(90,170,215,.2)'},
-    mostlyclear: {sky:'linear-gradient(180deg,#0e3468 0%,#1e6498 18%,#4498c4 40%,#78c0e0 58%,#a0d8f0 72%,#c8eaf6 86%,#e0f2fa 100%)',wt:'rgba(90,170,215,.2)'},
-    partly: {sky:'linear-gradient(180deg,#123468 0%,#1e5a90 18%,#3a88b8 40%,#68b4d4 58%,#90cce4 72%,#b8e0f0 86%,#d4eef8 100%)',wt:'rgba(80,150,195,.17)'},
-    cloudy: {sky:'linear-gradient(180deg,#1e2e42 0%,#2c4050 25%,#506878 50%,#708898 72%,#8ea4b4 88%,#a0b4c2 100%)',wt:'rgba(70,100,125,.14)'},
+    clear:  {sky:'linear-gradient(180deg,#e8f4fa 0%,#a0d8f0 15%,#78c0e0 35%,#4498c4 55%,#1e6498 80%,#0e3468 100%)',wt:'rgba(90,170,215,.2)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#e8f4fa 0%,#a0d8f0 15%,#78c0e0 35%,#4498c4 55%,#1e6498 80%,#0e3468 100%)',wt:'rgba(90,170,215,.2)'},
+    partly: {sky:'linear-gradient(180deg,#d8eef6 0%,#90cce4 15%,#68b4d4 35%,#3a88b8 55%,#1e5a90 80%,#123468 100%)',wt:'rgba(80,150,195,.17)'},
+    cloudy: {sky:'linear-gradient(180deg,#8ea0b0 0%,#708898 20%,#506878 45%,#2c4050 75%,#1e2e42 100%)',wt:'rgba(70,100,125,.14)'},
     drizzle:{sky:'linear-gradient(180deg,#182230 0%,#263440 30%,#405060 60%,#587078 100%)',wt:'rgba(60,90,115,.11)'},
     rain:   {sky:'linear-gradient(180deg,#121c28 0%,#1c2830 30%,#303c4c 60%,#405060 100%)',wt:'rgba(50,80,105,.09)'},
     shower: {sky:'linear-gradient(180deg,#101820 0%,#182028 30%,#243038 60%,#344048 100%)',wt:'rgba(42,72,95,.08)'},
     storm:  {sky:'linear-gradient(180deg,#0a1018 0%,#12181e 30%,#1c2028 60%,#242a32 100%)',wt:'rgba(28,45,65,.07)'},
   },
   day:{
-    clear:  {sky:'linear-gradient(180deg,#2878b8 0%,#4a9cd0 15%,#72bce0 35%,#a8daf0 52%,#d0eef8 68%,#e4f4fb 82%,#f0f9fe 100%)',wt:'rgba(120,190,230,.2)'},
-    mostlyclear: {sky:'linear-gradient(180deg,#2878b8 0%,#4a9cd0 15%,#72bce0 35%,#a8daf0 52%,#d0eef8 68%,#e4f4fb 82%,#f0f9fe 100%)',wt:'rgba(120,190,230,.2)'},
-    partly: {sky:'linear-gradient(180deg,#2870a8 0%,#4490c0 15%,#68aed4 35%,#98cee8 52%,#c0e4f2 68%,#d8eff8 82%,#eaf6fc 100%)',wt:'rgba(100,170,210,.17)'},
-    cloudy: {sky:'linear-gradient(180deg,#3a4858 0%,#506878 25%,#708898 50%,#90a4b4 72%,#a8b8c6 88%,#b8c8d4 100%)',wt:'rgba(75,105,135,.15)'},
-    drizzle:{sky:'linear-gradient(180deg,#2a3848 0%,#3a4c5c 30%,#506878 60%,#688090 100%)',wt:'rgba(60,90,120,.12)'},
-    rain:   {sky:'linear-gradient(180deg,#1e2830 0%,#283440 30%,#364450 60%,#485868 100%)',wt:'rgba(45,65,95,.1)'},
-    shower: {sky:'linear-gradient(180deg,#141c24 0%,#1e2830 30%,#2a3440 60%,#384450 100%)',wt:'rgba(32,50,80,.08)'},
-    storm:  {sky:'linear-gradient(180deg,#0e1218 0%,#141a22 30%,#1e242e 60%,#282e38 100%)',wt:'rgba(20,30,58,.07)'},
+    clear:  {sky:'linear-gradient(180deg,#e0f2fa 0%,#88d4f4 12%,#70c4ee 30%,#2888c8 55%,#1460a0 80%,#0c3468 100%)',wt:'rgba(70,150,205,.22)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#e0f2fa 0%,#88d4f4 12%,#70c4ee 30%,#2888c8 55%,#1460a0 80%,#0c3468 100%)',wt:'rgba(70,150,205,.22)'},
+    partly: {sky:'linear-gradient(180deg,#d4eef8 0%,#74c2e6 12%,#60b4dc 30%,#2878b0 55%,#1a5088 80%,#103460 100%)',wt:'rgba(62,130,185,.18)'},
+    cloudy: {sky:'linear-gradient(180deg,#7e8e9e 0%,#587080 20%,#3a5068 45%,#263848 75%,#1a2838 100%)',wt:'rgba(55,82,115,.15)'},
+    drizzle:{sky:'linear-gradient(180deg,#141e2a 0%,#1e2c3a 30%,#304050 60%,#445868 100%)',wt:'rgba(44,72,106,.12)'},
+    rain:   {sky:'linear-gradient(180deg,#0e1420 0%,#182028 30%,#242e3a 60%,#323c48 100%)',wt:'rgba(35,55,86,.1)'},
+    shower: {sky:'linear-gradient(180deg,#0a0e14 0%,#14181e 30%,#1e2430 60%,#2a3038 100%)',wt:'rgba(26,44,76,.08)'},
+    storm:  {sky:'linear-gradient(180deg,#080a10 0%,#0e1218 30%,#161a22 60%,#1e222a 100%)',wt:'rgba(16,26,55,.07)'},
   },
   dusk:{
     clear:  {sky:'linear-gradient(180deg,#0a1830 0%,#2a2050 18%,#8a3828 42%,#d06030 62%,#e89050 82%,#f0b870 100%)',wt:'rgba(215,95,45,.2)'},
@@ -2407,10 +2408,10 @@ const SKY_PAL={
 };
 
 const REGION_WATER={
-  jeju: {w1c:'0,235,200',  w2c:'0,195,180',  wbc:'0,180,175',  wbd:'0,85,130',  accent:'#00e5c3',hc:'rgba(0,229,195,.9)', skyTint:'0,200,180'},
-  west: {w1c:'120,165,240',w2c:'90,130,215',  wbc:'75,115,185',  wbd:'20,42,105', accent:'#7ab3f0',hc:'rgba(122,179,240,.9)', skyTint:'90,140,220'},
-  south:{w1c:'40,215,240', w2c:'20,180,218',  wbc:'18,148,180',  wbd:'5,50,100',  accent:'#40c8e0',hc:'rgba(64,200,224,.9)', skyTint:'40,195,220'},
-  east: {w1c:'70,115,240', w2c:'45,85,210',   wbc:'30,70,170',   wbd:'5,28,82',   accent:'#5b9cf5',hc:'rgba(91,156,245,.9)', skyTint:'65,110,210'},
+  jeju: {w1c:'0,220,195',  w2c:'0,185,185',  wbc:'0,175,178',  wbd:'0,88,138',  accent:'#00e5c3',hc:'rgba(0,229,195,.6)'},
+  west: {w1c:'110,158,230',w2c:'85,125,205',  wbc:'72,112,178',  wbd:'22,46,100', accent:'#7ab3f0',hc:'rgba(122,179,240,.6)'},
+  south:{w1c:'55,205,232', w2c:'30,170,210',  wbc:'26,142,175',  wbd:'7,54,98',   accent:'#40c8e0',hc:'rgba(64,200,224,.6)'},
+  east: {w1c:'65,125,228', w2c:'44,96,200',   wbc:'30,78,162',   wbd:'7,32,78',   accent:'#5b9cf5',hc:'rgba(91,156,245,.6)'},
 };
 
 let currentRegion='jeju',currentWeatherCode=0,currentWindSpeed=0,currentMoonrise=null,currentMoonset=null;
@@ -2439,9 +2440,7 @@ async function applyTheme(region,wCode,windSpeed){
   const wt=pal.wt;
 
   const sky=document.getElementById('ocean-sky');
-  const tintOp=(tod==='night'||tod==='evening')?0.04:(tod==='dawn'||tod==='dusk')?0.06:0.10;
-  sky.style.background=`${pal.sky}`;
-  sky.style.backgroundImage=`linear-gradient(180deg,rgba(${rw.skyTint},${tintOp}) 0%,rgba(${rw.skyTint},${(tintOp*1.8).toFixed(2)}) 50%,rgba(${rw.skyTint},${(tintOp*2.5).toFixed(2)}) 100%),${pal.sky}`;
+  sky.style.background=pal.sky;
   sky.style.filter='none';
   // 다이내믹 아일랜드 / 상태바 색상 동기화
   const skyTop=pal.sky.match(/#[0-9a-f]{6}/i)?.[0]||'#060f1e';

@@ -249,8 +249,8 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #hdr-wx{display:none;flex-direction:column;gap:2px;padding:0 4px;cursor:pointer;white-space:nowrap}
 #hdr-wx.show{display:flex}
 #hdr-wx:active{opacity:.7;transition:opacity .1s}
-#hdr-wx .hw-line1{display:flex;align-items:center;gap:5px;font-size:.74rem;color:rgba(255,255,255,.55)}
-#hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.45)}
+#hdr-wx .hw-line1{display:flex;align-items:center;gap:5px;font-size:.74rem;color:rgba(255,255,255,.55);text-shadow:0 1px 3px rgba(0,0,0,.45)}
+#hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:rgba(255,255,255,.45);text-shadow:0 1px 3px rgba(0,0,0,.45)}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 #clock{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.88rem;font-weight:400;color:rgba(255,255,255,.65);letter-spacing:1.5px;line-height:1}
 #lunar{font-size:.5rem;font-weight:400;color:rgba(255,255,255,.25);letter-spacing:.3px;margin-top:1px;cursor:pointer}
@@ -400,9 +400,11 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   border:1px solid rgba(0,229,195,.35);
   backdrop-filter:blur(12px);
   color:var(--accent);font-size:.6rem;font-weight:900;
+  text-shadow:0 1px 3px rgba(0,0,0,.5),0 0 8px rgba(0,0,0,.25);
+  box-shadow:0 1px 6px rgba(0,0,0,.35),0 0 12px rgba(0,229,195,.2);
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
-.date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer}
+.date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;text-shadow:0 1px 3px rgba(0,0,0,.5),0 0 8px rgba(0,0,0,.25)}
 .dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.32rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.6rem;color:var(--accent);font-weight:700}
@@ -1192,6 +1194,7 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   color:#ff6b5b;
   font-weight:600;
   text-align:left;
+  text-shadow:0 1px 4px rgba(0,0,0,.5),0 0 8px rgba(0,0,0,.25);
   width:auto;
   animation:alertPulse 2s ease-in-out infinite;
 }

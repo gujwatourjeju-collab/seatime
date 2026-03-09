@@ -1351,19 +1351,10 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 /* 관측소 선택 시트 내 커스텀 포인트 그리드 */
 #step-custom-points{display:none}
 
-/* 가로 모드 차단 */
-#landscape-block{display:none;position:fixed;inset:0;z-index:99999;background:#060f1e;color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:.9rem;font-weight:600;text-align:center}
-#landscape-block span{font-size:2rem}
-@media(orientation:landscape){
-  #landscape-block{display:flex!important}
-  #app,#ocean,#ocean-water,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label{visibility:hidden!important}
-}
-
 </style>
 </head>
 <body>
 
-<div id="landscape-block"><span>📱</span>세로 모드로 돌려주세요</div>
 
 <div id="mini-loader">
   <img src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png" alt="">

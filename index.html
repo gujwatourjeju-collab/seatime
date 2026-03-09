@@ -186,15 +186,15 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
    게이지 — 우측 슬림 바
 ══════════════════════════════════ */
 #gauge-rail{position:fixed;left:12px;top:0;bottom:0;width:3px;z-index:20;pointer-events:none}
-#gauge-track{position:absolute;top:32%;bottom:11%;width:3px;background:rgba(80,140,200,.25);border-radius:1.5px}
-#gauge-mid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:1.5px;background:rgba(255,255,255,.25);border-radius:1px}
-#gauge-top-tick,#gauge-bot-tick{position:absolute;left:50%;transform:translateX(-50%);width:10px;height:1.5px;background:rgba(255,255,255,.25);border-radius:1px}
+#gauge-track{position:absolute;top:32%;bottom:11%;width:3px;background:rgba(80,140,200,.4);border-radius:1.5px}
+#gauge-mid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:1.5px;background:rgba(255,255,255,.4);border-radius:1px}
+#gauge-top-tick,#gauge-bot-tick{position:absolute;left:50%;transform:translateX(-50%);width:10px;height:1.5px;background:rgba(255,255,255,.4);border-radius:1px}
 #gauge-top-tick{top:0}
 #gauge-bot-tick{bottom:0}
-#gauge-25,#gauge-75{position:absolute;left:50%;transform:translateX(-50%);width:6px;height:1px;background:rgba(255,255,255,.15);border-radius:1px}
+#gauge-25,#gauge-75{position:absolute;left:50%;transform:translateX(-50%);width:6px;height:1px;background:rgba(255,255,255,.25);border-radius:1px}
 #gauge-25{top:25%}
 #gauge-75{top:75%}
-#gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1.5px;background:linear-gradient(180deg,rgba(100,180,255,.35),rgba(40,120,220,.75));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
+#gauge-fill-bar{position:absolute;bottom:0;left:0;right:0;border-radius:1.5px;background:linear-gradient(180deg,rgba(100,180,255,.5),rgba(40,120,220,.85));height:40%;transition:height 5s cubic-bezier(.25,.46,.45,.94)}
 #gauge-dot{
   position:fixed;left:4px;
   width:18px;height:18px;
@@ -212,9 +212,9 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 }
 #gauge-high-label{top:32%;transform:translateY(-50%)}
 #gauge-low-label{bottom:11%;transform:translateY(50%)}
-.g-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.8);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
-.g-time{font-size:.8rem;font-weight:500;color:rgba(255,255,255,.5);line-height:1;text-shadow:0 0 12px rgba(0,0,0,.6)}
-.g-name{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:1px;text-shadow:0 0 12px rgba(0,0,0,.6)}
+.g-val{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.9);line-height:1;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.g-time{font-size:.8rem;font-weight:500;color:rgba(255,255,255,.65);line-height:1;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.g-name{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:1px;text-shadow:0 1px 8px rgba(0,0,0,.7)}
 
 /* ══ 돛단배 ══ */
 #sailboat{
@@ -406,6 +406,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #hero>*{pointer-events:auto}
 #hero-inner{display:none;flex-direction:column;align-items:center;text-align:center;gap:0;position:relative;width:100%}
 #hero-glass{
+  position:relative;
   display:flex;flex-direction:column;align-items:center;gap:0;
   width:72%;padding:12px 16px;border-radius:18px;
   background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
@@ -424,7 +425,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   padding:3px 10px;border-radius:20px;letter-spacing:.5px;
 }
 .date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer}
-.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.1rem}
+.dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.32rem}
 .dp-arr:active{color:var(--accent)}
 .date-pill-label{font-size:.6rem;color:var(--accent);font-weight:700}
 .station-pill{font-size:.82rem;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;overflow:hidden;text-overflow:ellipsis}
@@ -721,14 +722,15 @@ html.large-text{font-size:125%}
 html.large-text .tr-level{font-size:1.05rem}
 html.large-text .tr-time{font-size:.92rem}
 html.large-text .tr-label{font-size:.6rem}
-html.large-text #level-big{font-size:3.8rem}
+html.large-text #level-big{font-size:3.6rem}
 html.large-text .tide-badge{font-size:.7rem}
 html.large-text .status-pill{font-size:.72rem}
 html.large-text .timeleft-pill{font-size:.68rem}
 html.large-text .ci-desc{font-size:.65rem}
 html.large-text .ci-act-desc{font-size:.62rem}
 html.large-text .panel-title{font-size:.72rem}
-html.large-text #hero{margin-top:-25px}
+html.large-text #hero-glass{width:82%}
+html.large-text #hero{margin-top:-10px}
 html.large-text #tide-panel{margin-top:-45px}
 html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
 html.large-text #current-info{padding:8px 12px;gap:6px}
@@ -1227,11 +1229,14 @@ body.zen-mode #ci-graph-overlay{display:none!important}
   color:#ff6b5b;
   font-weight:600;
   text-align:center;
-  margin-bottom:8px;
   width:auto;
+  position:absolute;
+  top:0;left:0;right:0;
+  z-index:10;
   animation:alertPulse 2s ease-in-out infinite;
 }
 #wx-alert.show{display:block}
+#wx-alert.show~.hero-top-row:first-of-type{margin-top:18px}
 @keyframes alertPulse{0%,100%{opacity:1}50%{opacity:.7}}
 
 
@@ -1804,6 +1809,11 @@ body.zen-mode #ci-graph-overlay{display:none!important}
       <span class="drawer-item-text">달 위상 보기</span>
       <span class="drawer-item-arrow">›</span>
     </div>
+    <div class="drawer-item" onclick="toggleNightMode()">
+      <span class="drawer-item-icon">🌃</span>
+      <span class="drawer-item-text">밤 모드</span>
+      <span class="drawer-item-arrow" id="night-mode-status">OFF</span>
+    </div>
     <div class="drawer-item" onclick="openTerms()">
       <span class="drawer-item-icon">📖</span>
       <span class="drawer-item-text">조석 용어 설명</span>
@@ -2361,6 +2371,7 @@ function getSunTimes(){
 }
 
 function getTimeOfDay(){
+  if(window.__app.forceNight) return 'night';
   const now=new Date();
   const h=now.getHours()+now.getMinutes()/60;
   const {rise,set}=getSunTimes();
@@ -2668,6 +2679,9 @@ function updateMoon(tod, wcat, lunarDay){
     posStyle='position:absolute;top:7%;right:25%;';
   }
 
+  // 항상 달 모양 업데이트 (캐시 stale 방지)
+  drawMoon(lunarDay);
+
   if(!show || baseOp < 0.04){
     el.style.opacity='0';
     return;
@@ -2675,7 +2689,6 @@ function updateMoon(tod, wcat, lunarDay){
 
   // 위치 설정
   el.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease;'+posStyle;
-  drawMoon(lunarDay);
   el.style.opacity=String(baseOp);
 }
 
@@ -3463,7 +3476,9 @@ function calcLive(data){
   const nm=new Date().getHours()*60+new Date().getMinutes();
   const past=[...data].reverse().find(d=>!d.isCurrent&&toMins(d)<=nm);
   const future=data.find(d=>!d.isCurrent&&toMins(d)>nm);
-  if(!past||!future)return data[0]?.level||0;
+  if(!past&&!future)return data[0]?.level||0;
+  if(!future)return past.level;
+  if(!past)return future.level;
   const prog=(nm-toMins(past))/(toMins(future)-toMins(past));
   return Math.round(past.level+(future.level-past.level)*(1-Math.cos(prog*Math.PI))/2);
 }
@@ -3544,9 +3559,10 @@ function renderTide(data,name,isToday,isRealToday){
   // min/max (현재 시각 기준 가장 가까운 간조/만조)
   const nm2=new Date().getHours()*60+new Date().getMinutes();
   const todayTides=data.filter(d=>!d.isCurrent&&!d.isYesterday&&!d.isNextDay&&d.level!==undefined);
-  // 오늘: 현재 시각 기준 가장 가까운 만조/간조 (게이지 계산용)
-  const nearLow=todayTides.filter(d=>d.type==='low').sort((a,b)=>Math.abs(toMins(a)-nm2)-Math.abs(toMins(b)-nm2))[0];
-  const nearHigh=todayTides.filter(d=>d.type==='high').sort((a,b)=>Math.abs(toMins(a)-nm2)-Math.abs(toMins(b)-nm2))[0];
+  // 오늘: 현재 시각 기준 가장 가까운 만조/간조 (게이지 계산용, 자정 근처엔 어제/내일 포함)
+  const allTidesForGauge=data.filter(d=>!d.isCurrent&&d.level!==undefined);
+  const nearLow=allTidesForGauge.filter(d=>d.type==='low').sort((a,b)=>Math.abs(toMins(a)-nm2)-Math.abs(toMins(b)-nm2))[0];
+  const nearHigh=allTidesForGauge.filter(d=>d.type==='high').sort((a,b)=>Math.abs(toMins(a)-nm2)-Math.abs(toMins(b)-nm2))[0];
   const minL=nearLow?nearLow.level:0,maxL=nearHigh?nearHigh.level:0;
   // 미래: 당일 전체 최고 만조 / 최저 간조
   const allHighs=todayTides.filter(d=>d.type==='high');
@@ -3592,8 +3608,8 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('sky-objects').style.opacity='1';
     const moonEl2=document.getElementById('sky-moon');
     if(moonEl2){moonEl2.style.cssText='position:absolute;z-index:5;pointer-events:none;transition:opacity 2s ease,top .5s ease,right .5s ease;opacity:0;';moonEl2.innerHTML='';}
-    // 오늘로 돌아올 때 달 다시 그리기
-    {const _tod=getTimeOfDay(),_wcat=getWeatherCat(currentWeatherCode),_ld=getLunarDay(getOffsetDate(0));updateMoon(_tod,_wcat,_ld);}
+    // 달 다시 그리기 (선택된 날짜 기준)
+    {const _tod=getTimeOfDay(),_wcat=getWeatherCat(currentWeatherCode),_ld=getLunarDay(getOffsetDate(selectedDateOffset));updateMoon(_tod,_wcat,_ld);}
   }else{
     // 미래 날짜 — hero-inner를 직접 위로, 데이터 영역 밀착
     document.getElementById('hero').style.flex='1';
@@ -4605,6 +4621,12 @@ let zenMode=localStorage.getItem('zenMode')!=='false';
 document.body.classList.toggle('zen-mode',zenMode);
 document.body.classList.add('splash-active');
 
+function toggleNightMode(){
+  window.__app.forceNight=!window.__app.forceNight;
+  document.getElementById('night-mode-status').textContent=window.__app.forceNight?'ON':'OFF';
+  if(currentStation){const s=getStation(currentStation);applyTheme(s?.region,currentWeatherCode,currentWindSpeed);}
+  closeDrawer();
+}
 function toggleZenMode(){
   zenMode=!zenMode;
   localStorage.setItem('zenMode',zenMode);
@@ -4622,6 +4644,13 @@ function updateZenSwitch(){
   sw.querySelectorAll('.unit-opt').forEach(o=>o.classList.toggle('active',o.dataset.val===(isSimple?'simple':'detail')));
 }
 updateZenSwitch();
+
+/* 위아래 스와이프로 단순/디테일 전환 */
+{let _swY0=null,_swActive=false;
+document.addEventListener('touchstart',e=>{if(e.touches.length===1){_swY0=e.touches[0].clientY;_swActive=true;}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!_swActive||_swY0===null)return;const dy=e.touches[0].clientY-_swY0;if(Math.abs(dy)>60){_swActive=false;if(dy<0&&!zenMode)toggleZenMode();else if(dy>0&&zenMode)toggleZenMode();}},{passive:true});
+document.addEventListener('touchend',()=>{_swY0=null;_swActive=false;},{passive:true});
+}
 
 /* 배 클릭 — 용수철 점프 */
 (function(){

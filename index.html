@@ -1752,6 +1752,11 @@ body.zen-mode #ci-graph-overlay{display:none!important}
       <span class="drawer-item-text">밤 모드</span>
       <span class="drawer-item-arrow" id="night-mode-status">OFF</span>
     </div>
+    <div class="drawer-item" onclick="toggleDayMode()">
+      <span class="drawer-item-icon">☀️</span>
+      <span class="drawer-item-text">낮 모드</span>
+      <span class="drawer-item-arrow" id="day-mode-status">OFF</span>
+    </div>
     <div class="drawer-item" onclick="openTerms()">
       <span class="drawer-item-icon">📖</span>
       <span class="drawer-item-text">조석 용어 설명</span>
@@ -1984,7 +1989,8 @@ window.__app={
   lastTideData:null, lastTideRaw:null, nextTideLabel:null,
   currentWaveHeight:null, marineData:null, loglistRemaining:null,
   splashHidden:false, splashSafeTimer:null, cpParams:null,
-  stopGaugeDotLoop:null, startGaugeDotLoop:null
+  stopGaugeDotLoop:null, startGaugeDotLoop:null,
+  forceNight:false, forceDay:false
 };
 
 /* ═══ DOM 캐싱 ═══ */
@@ -2310,6 +2316,7 @@ function getSunTimes(){
 
 function getTimeOfDay(){
   if(window.__app.forceNight) return 'night';
+  if(window.__app.forceDay) return 'day';
   const now=new Date();
   const h=now.getHours()+now.getMinutes()/60;
   const {rise,set}=getSunTimes();
@@ -4510,6 +4517,16 @@ document.body.classList.add('splash-active');
 
 function toggleNightMode(){
   window.__app.forceNight=!window.__app.forceNight;
+  if(window.__app.forceNight) window.__app.forceDay=false;
+  document.getElementById('night-mode-status').textContent=window.__app.forceNight?'ON':'OFF';
+  document.getElementById('day-mode-status').textContent=window.__app.forceDay?'ON':'OFF';
+  if(currentStation){const s=getStation(currentStation);applyTheme(s?.region,currentWeatherCode,currentWindSpeed);}
+  closeDrawer();
+}
+function toggleDayMode(){
+  window.__app.forceDay=!window.__app.forceDay;
+  if(window.__app.forceDay) window.__app.forceNight=false;
+  document.getElementById('day-mode-status').textContent=window.__app.forceDay?'ON':'OFF';
   document.getElementById('night-mode-status').textContent=window.__app.forceNight?'ON':'OFF';
   if(currentStation){const s=getStation(currentStation);applyTheme(s?.region,currentWeatherCode,currentWindSpeed);}
   closeDrawer();

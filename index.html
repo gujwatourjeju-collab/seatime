@@ -2891,7 +2891,8 @@ let _lastPct=40,_isFalling=false;
 
 function setOceanLevel(pct,isFalling,animate=true){
   pct=Math.max(0,Math.min(100,pct));
-  _lastPct=pct;_isFalling=isFalling;
+  const dirChanged=_isFalling!==!!isFalling;_lastPct=pct;_isFalling=isFalling;
+  if(dirChanged){const bc=document.getElementById('bubbles');if(bc)bc.innerHTML='';}
   const vh=window.innerHeight;
   const tTop=vh*.32,tBot=vh*.89,tH=tBot-tTop;
   const dotY=tBot-(pct/100)*tH;

@@ -221,33 +221,6 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .g-name{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:1px;text-shadow:0 1px 8px rgba(0,0,0,.7)}
 
 /* ══ 돛단배 ══ */
-#sailboat{
-  position:fixed;z-index:8;
-  pointer-events:auto;
-  cursor:pointer;
-  transform:translate(-50%,-52%);
-  transition:top 5s cubic-bezier(.25,.46,.45,.94),opacity 1.5s ease;
-  opacity:0;
-  animation:boatSail var(--sail-dur,34s) ease-in-out infinite;
-  will-change:left,top,opacity;
-}
-@keyframes boatSail{
-  0%  {left:8%}
-  50% {left:92%}
-  100%{left:8%}
-}
-#sailboat.show{opacity:1}
-.boat-wrap{
-  position:relative;
-  animation:boatBob var(--bob-dur,4s) ease-in-out infinite;
-  transform-origin:center bottom;
-}
-#boat-drift{ /* drift는 이제 boatSail이 대체 — 래퍼는 유지 */ }
-@keyframes boatBob{
-  0%,100%{transform:translateY(0) rotate(var(--bob-tilt,0deg))}
-  25%{transform:translateY(-3px) rotate(calc(var(--bob-tilt,0deg) + var(--tilt-extra,1deg)))}
-  75%{transform:translateY(2px) rotate(calc(var(--bob-tilt,0deg) - var(--tilt-extra,1deg)))}
-}
 
 
 /* ══════════════════════════════════
@@ -1159,14 +1132,12 @@ body.zen-mode #app #header{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header>*{visibility:visible}
 body.zen-mode #app #hero-glass>.hero-top-row{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header #wx-alert{visibility:visible}
-body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;transform:translateY(150px)}
+body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;transform:translateY(190px)}
 body.zen-mode #gauge-rail{opacity:.7;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!important}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
-body.zen-mode #sailboat{pointer-events:auto;z-index:25}
-body.splash-active #sailboat{opacity:0!important;pointer-events:none!important}
 body.zen-mode #drawer-overlay:not(.open){opacity:0!important;pointer-events:none!important;transition:none!important}
 body.zen-mode #ci-graph-overlay{display:none!important}
 
@@ -1181,21 +1152,8 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 
 /* 배 클릭 애니메이션 */
 
-@keyframes boatJump{
-  0%  {margin-top:0;   scale:1}
-  35% {margin-top:-32px;scale:1.05}
-  70% {margin-top:-4px; scale:1.0}
-  100%{margin-top:0;   scale:1}
-}
-#sailboat.jumping{
-  animation:boatJump .55s cubic-bezier(.33,1.4,.68,1) forwards,
-            boatSail var(--sail-dur,34s) ease-in-out infinite;
-  transform-origin:center bottom;
-}
 
 
-/* 공유 버튼 */
-#wx-share-row{display:flex;align-items:flex-start;justify-content:space-between;padding:4px 14px 0;flex-shrink:0}
 
 
 #toast{
@@ -1286,15 +1244,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 }
 
 
-/* 배 글로우 */
-#sailboat.ready .boat-wrap{
-  filter:drop-shadow(0 0 8px rgba(0,229,195,.9)) drop-shadow(0 0 20px rgba(0,229,195,.5));
-  transition:filter 1s ease;
-}
-#sailboat.active .boat-wrap{
-  filter:drop-shadow(0 0 2px rgba(255,255,255,.2));
-  transition:filter .4s ease;
-}
 
 /* 미니 로딩 오버레이 */
 #mini-loader{
@@ -1403,7 +1352,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 #step-custom-points{display:none}
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1493,19 +1441,6 @@ body.zen-mode #ci-graph-overlay{display:none!important}
 </div>
 
   <!-- 돛단배 -->
-  <div id="sailboat">
-    <div id="boat-drift">
-      <div class="boat-wrap" id="boat-wrap">
-        <svg id="boat-svg" viewBox="0 0 60 50" width="52" height="44" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-          <line id="boat-mast" x1="28" y1="32" x2="28" y2="6" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round"/>
-          <path id="boat-sail" d="M28,8 Q18,18 20,32 L28,32 Z" fill="rgba(255,255,255,.55)" stroke="rgba(255,255,255,.3)" stroke-width=".8"/>
-          <path d="M14,34 Q16,40 28,41 Q40,40 42,34 Z" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.2)" stroke-width=".8"/>
-          <line x1="16" y1="34" x2="40" y2="34" stroke="rgba(255,255,255,.5)" stroke-width="1" stroke-linecap="round"/>
-          <ellipse cx="28" cy="43" rx="14" ry="2.5" fill="rgba(255,255,255,.06)"/>
-        </svg>
-      </div>
-    </div>
-  </div>
 
 <div id="toast"></div>
 <div id="fish-school"></div>
@@ -2927,22 +2862,13 @@ function setOceanLevel(pct,isFalling,animate=true){
         if(arrowLine){arrowLine.setAttribute('x1','8');arrowLine.setAttribute('y1','5');arrowLine.setAttribute('x2','8');arrowLine.setAttribute('y2','13');arrowLine.setAttribute('stroke','rgba(0,229,195,.5)');}
       }
     }
-    // 돛단배 수면에 동기화
-    const boat=document.getElementById('sailboat');
-    if(boat){
-      boat.style.top=horizonTop+'%';
-      boat.classList.add('show');
-    }
   };
 
   if(!animate){
     [water,horizon,fill,dot].forEach(el=>el.style.transition='none');
-    const boat=document.getElementById('sailboat');
-    if(boat)boat.style.transition='none';
     void water.offsetWidth;apply();
     setTimeout(()=>{
       [water,horizon,fill,dot].forEach(el=>el.style.transition='');
-      if(boat)boat.style.transition='top 5s cubic-bezier(.25,.46,.45,.94),opacity 1.5s ease';
     },50);
     return;
   }
@@ -2954,8 +2880,6 @@ function setOceanLevel(pct,isFalling,animate=true){
   const iHorizon=(100-iWp)+'%';
 
   [water,horizon,fill,dot].forEach(el=>el.style.transition='none');
-  const boat=document.getElementById('sailboat');
-  if(boat){boat.style.transition='none';boat.style.top=iHorizon;}
   void water.offsetWidth;
   water.style.height=iWp+'%';horizon.style.top=iHorizon;fill.style.height=iP+'%';dot.style.top=iHorizon;
   void water.offsetWidth;
@@ -2964,7 +2888,6 @@ function setOceanLevel(pct,isFalling,animate=true){
     horizon.style.transition=`top ${dur} ${ease}`;
     fill.style.transition=`height ${dur} ${ease}`;
     dot.style.transition=`top ${dur} ${ease}`;
-    if(boat)boat.style.transition=`top ${dur} ${ease},opacity 1.5s ease`;
     // 물 시작 시 루프 정지, dot 숨기기
     if(window.__app.stopGaugeDotLoop)window.__app.stopGaugeDotLoop();
     dot.style.opacity='0';
@@ -2978,45 +2901,6 @@ function setOceanLevel(pct,isFalling,animate=true){
   },100);
 }
 
-function updateSailboat(windSpeed, windDir){
-  const wrap=document.getElementById('boat-wrap');
-  const boat=document.getElementById('sailboat');
-  const waves=document.getElementById('waves');
-  if(!wrap||!boat)return;
-
-  const fromWest=windDir>=200&&windDir<=340;
-  const side=fromWest?-1:1;
-  let bobDur,tilt,tiltExtra,sailDur;
-  let waveDur1,waveDur2,waveDur3,waveAmp,waveShift;
-
-  if(windSpeed<3){
-    bobDur='5.5s';tilt='0deg';tiltExtra='0.6deg';sailDur='46s';
-    waveDur1='4.5s';waveDur2='6.5s';waveDur3='9s';waveAmp='0.7';waveShift='-4%';
-  }else if(windSpeed<5){
-    bobDur='4s';tilt=`${side*1.5}deg`;tiltExtra='1deg';sailDur='34s';
-    waveDur1='3.2s';waveDur2='4.8s';waveDur3='6.5s';waveAmp='0.9';waveShift='-5%';
-  }else if(windSpeed<8){
-    bobDur='3s';tilt=`${side*2.5}deg`;tiltExtra='1.8deg';sailDur='24s';
-    waveDur1='2.2s';waveDur2='3.3s';waveDur3='4.8s';waveAmp='1.15';waveShift='-7%';
-  }else{
-    bobDur='1.6s';tilt=`${side*5}deg`;tiltExtra='3deg';sailDur='11s';
-    waveDur1='1.4s';waveDur2='2.1s';waveDur3='3s';waveAmp='1.4';waveShift='-10%';
-  }
-
-  wrap.style.setProperty('--bob-dur',bobDur);
-  wrap.style.setProperty('--bob-tilt',tilt);
-  wrap.style.setProperty('--tilt-extra',tiltExtra);
-  boat.style.setProperty('--sail-dur',sailDur);
-  wrap.style.transform=`rotate(${tilt})`;
-
-  if(waves){
-    waves.style.setProperty('--wave-dur1',waveDur1);
-    waves.style.setProperty('--wave-dur2',waveDur2);
-    waves.style.setProperty('--wave-dur3',waveDur3);
-    waves.style.setProperty('--wave-amp',waveAmp);
-    waves.style.setProperty('--wave-shift',waveShift);
-  }
-}
 
 function updateGaugeLabels(data,current){
   const tides=data.filter(d=>!d.isCurrent),now=toMins(current);
@@ -3595,7 +3479,6 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('gauge-low-label').style.display='flex';
     (_elOceanWater||(_elOceanWater=$('ocean-water'))).style.opacity='1';
     (_elHorizon||(_elHorizon=$('horizon'))).style.opacity='1';
-    const _sb=document.getElementById('sailboat');_sb.style.display='block';setTimeout(()=>_sb.classList.add('ready'),500);
     const pct=maxL>minL?((cur.level-minL)/(maxL-minL))*100:50;
     setOceanLevel(pct,isFalling,true);
     updateGaugeLabels(data,cur);
@@ -3632,7 +3515,6 @@ function renderTide(data,name,isToday,isRealToday){
     document.getElementById('gauge-low-label').style.display='none';
     (_elOceanWater||(_elOceanWater=$('ocean-water'))).style.opacity='0';
     (_elHorizon||(_elHorizon=$('horizon'))).style.opacity='0';
-    const sb=document.getElementById('sailboat');if(sb){sb.classList.remove('show');sb.style.display='none';}
     // 미래: 태양 숨기고 구름만 표시
     document.getElementById('sky-objects').style.opacity='1';
     const futureSun=document.getElementById('sky-sun');
@@ -3866,7 +3748,6 @@ async function loadWeather(lat,lng){
       const mIdx=md.hourly.time.indexOf(tStr2);
       if(mIdx>=0&&md.hourly.wave_height[mIdx]!=null)window.__app.currentWaveHeight=md.hourly.wave_height[mIdx];
     }
-    updateSailboat(wSpeed, wDir);
     // 헤더 좌측 날씨 표시
     {const ws=(wSpeed??0).toFixed(1);
     const wv=window.__app.currentWaveHeight!=null?window.__app.currentWaveHeight.toFixed(1)+'m':'--';
@@ -4655,55 +4536,8 @@ document.addEventListener('touchmove',e=>{if(!_swActive||_swX0===null)return;con
 document.addEventListener('touchend',()=>{_swX0=null;_swY0=null;_swActive=false;},{passive:true});
 }
 
-/* 배 클릭 — 용수철 점프 */
-(function(){
-  function attach(){
-    const boat=document.getElementById('sailboat');
-    if(!boat){setTimeout(attach,300);return;}
-    let jumping=false;
-    boat.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});
-    boat.addEventListener('touchend',function(e){e.stopPropagation();},{passive:true});
-    boat.addEventListener('click',function(e){
-      e.stopPropagation();
-      if(jumping||fishActive)return;
-      if(navigator.vibrate)navigator.vibrate(18);
-      setTimeout(spawnFishSchool, 200);
-      jumping=true;
-      boat.classList.add('jumping');
-      setTimeout(()=>{
-        boat.classList.remove('jumping');
-        jumping=false;
-      },580);
-    });
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',attach);
-  }else{attach();}
-})();
 
 
-/* 공유 */
-async function shareApp(){
-  if(navigator.vibrate)navigator.vibrate(15);
-  showToast('화면 캡처 중...',2500);
-  try{
-    const canvas=await html2canvas(document.body,{backgroundColor:null,scale:2,useCORS:true,allowTaint:true});
-    canvas.toBlob(async function(blob){
-      if(!blob)return;
-      const file=new File([blob],'badangtae.png',{type:'image/png'});
-      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-        try{
-          await navigator.share({files:[file],title:'바당때',text:'바다 앞에 서기 전, 바당때 먼저'});
-          showToast('공유 완료 ✓');
-        }catch(e){
-          if(e.name!='AbortError'){const a=document.createElement('a');a.download='badangtae.png';a.href=canvas.toDataURL();a.click();showToast('이미지 저장됨 ✓');}
-        }
-      }else{
-        const a=document.createElement('a');a.download='badangtae.png';a.href=canvas.toDataURL();a.click();showToast('이미지 저장됨 ✓');
-      }
-    },'image/png');
-  }catch(e){console.error(e);showToast('캡처 실패');}
-}
 
 /* 단위 전환 cm ↔ m */
 let unitM = false;
@@ -4813,8 +4647,6 @@ function spawnFishSchool(){
   if(waterBot<=waterTop){fishActive=false;return;}
 
   fishActive=true;
-  const boat=document.getElementById('sailboat');
-  if(boat){boat.classList.remove('ready');boat.classList.add('active');}
 
   // 수면 아래만 보이도록 clip
   school.style.clipPath=`inset(${Math.round(surfaceY+35)}px 0 0 0)`;
@@ -4851,8 +4683,6 @@ function spawnFishSchool(){
   setTimeout(()=>{
     school.innerHTML='';
     fishActive=false;
-    const b=document.getElementById('sailboat');
-    if(b){b.classList.remove('active');b.classList.add('ready');}
   },cleanupTime);
 }
 

@@ -2362,14 +2362,14 @@ const SKY_PAL={
     storm:  {sky:'linear-gradient(180deg,#0a1018 0%,#12181e 30%,#1c2028 60%,#242a32 100%)',wt:'rgba(28,45,65,.07)'},
   },
   day:{
-    clear:  {sky:'linear-gradient(180deg,#0c3468 0%,#1460a0 25%,#2888c8 55%,#48a8de 80%,#70c4ee 100%)',wt:'rgba(70,150,205,.22)'},
-    mostlyclear: {sky:'linear-gradient(180deg,#0c3468 0%,#1460a0 25%,#2888c8 55%,#48a8de 80%,#70c4ee 100%)',wt:'rgba(70,150,205,.22)'},
-    partly: {sky:'linear-gradient(180deg,#103460 0%,#1a5088 25%,#2878b0 55%,#4098c8 80%,#60b4dc 100%)',wt:'rgba(62,130,185,.18)'},
-    cloudy: {sky:'linear-gradient(180deg,#1a2838 0%,#263848 30%,#3a5068 60%,#587080 100%)',wt:'rgba(55,82,115,.15)'},
-    drizzle:{sky:'linear-gradient(180deg,#141e2a 0%,#1e2c3a 30%,#304050 60%,#445868 100%)',wt:'rgba(44,72,106,.12)'},
-    rain:   {sky:'linear-gradient(180deg,#0e1420 0%,#182028 30%,#242e3a 60%,#323c48 100%)',wt:'rgba(35,55,86,.1)'},
-    shower: {sky:'linear-gradient(180deg,#0a0e14 0%,#14181e 30%,#1e2430 60%,#2a3038 100%)',wt:'rgba(26,44,76,.08)'},
-    storm:  {sky:'linear-gradient(180deg,#080a10 0%,#0e1218 30%,#161a22 60%,#1e222a 100%)',wt:'rgba(16,26,55,.07)'},
+    clear:  {sky:'linear-gradient(180deg,#3a8cc8 0%,#5eaad8 20%,#82c4e8 45%,#a8daf0 70%,#d0eef8 100%)',wt:'rgba(120,190,230,.2)'},
+    mostlyclear: {sky:'linear-gradient(180deg,#3a8cc8 0%,#5eaad8 20%,#82c4e8 45%,#a8daf0 70%,#d0eef8 100%)',wt:'rgba(120,190,230,.2)'},
+    partly: {sky:'linear-gradient(180deg,#3880b8 0%,#5098c8 20%,#70b4d8 45%,#98cee8 70%,#c0e4f2 100%)',wt:'rgba(100,170,210,.17)'},
+    cloudy: {sky:'linear-gradient(180deg,#3a4858 0%,#506878 30%,#708898 60%,#90a4b4 100%)',wt:'rgba(75,105,135,.15)'},
+    drizzle:{sky:'linear-gradient(180deg,#2a3848 0%,#3a4c5c 30%,#506878 60%,#688090 100%)',wt:'rgba(60,90,120,.12)'},
+    rain:   {sky:'linear-gradient(180deg,#1e2830 0%,#283440 30%,#364450 60%,#485868 100%)',wt:'rgba(45,65,95,.1)'},
+    shower: {sky:'linear-gradient(180deg,#141c24 0%,#1e2830 30%,#2a3440 60%,#384450 100%)',wt:'rgba(32,50,80,.08)'},
+    storm:  {sky:'linear-gradient(180deg,#0e1218 0%,#141a22 30%,#1e242e 60%,#282e38 100%)',wt:'rgba(20,30,58,.07)'},
   },
   dusk:{
     clear:  {sky:'linear-gradient(180deg,#0a1830 0%,#2a2050 18%,#8a3828 42%,#d06030 62%,#e89050 82%,#f0b870 100%)',wt:'rgba(215,95,45,.2)'},
@@ -2404,10 +2404,10 @@ const SKY_PAL={
 };
 
 const REGION_WATER={
-  jeju: {w1c:'0,220,195',  w2c:'0,185,185',  wbc:'0,175,178',  wbd:'0,88,138',  accent:'#00e5c3',hc:'rgba(0,229,195,.6)'},
-  west: {w1c:'110,158,230',w2c:'85,125,205',  wbc:'72,112,178',  wbd:'22,46,100', accent:'#7ab3f0',hc:'rgba(122,179,240,.6)'},
-  south:{w1c:'55,205,232', w2c:'30,170,210',  wbc:'26,142,175',  wbd:'7,54,98',   accent:'#40c8e0',hc:'rgba(64,200,224,.6)'},
-  east: {w1c:'65,125,228', w2c:'44,96,200',   wbc:'30,78,162',   wbd:'7,32,78',   accent:'#5b9cf5',hc:'rgba(91,156,245,.6)'},
+  jeju: {w1c:'0,235,200',  w2c:'0,195,180',  wbc:'0,180,175',  wbd:'0,85,130',  accent:'#00e5c3',hc:'rgba(0,229,195,.9)', skyTint:'0,200,180'},
+  west: {w1c:'120,165,240',w2c:'90,130,215',  wbc:'75,115,185',  wbd:'20,42,105', accent:'#7ab3f0',hc:'rgba(122,179,240,.9)', skyTint:'90,140,220'},
+  south:{w1c:'40,215,240', w2c:'20,180,218',  wbc:'18,148,180',  wbd:'5,50,100',  accent:'#40c8e0',hc:'rgba(64,200,224,.9)', skyTint:'40,195,220'},
+  east: {w1c:'70,115,240', w2c:'45,85,210',   wbc:'30,70,170',   wbd:'5,28,82',   accent:'#5b9cf5',hc:'rgba(91,156,245,.9)', skyTint:'65,110,210'},
 };
 
 let currentRegion='jeju',currentWeatherCode=0,currentWindSpeed=0,currentMoonrise=null,currentMoonset=null;
@@ -2436,7 +2436,9 @@ async function applyTheme(region,wCode,windSpeed){
   const wt=pal.wt;
 
   const sky=document.getElementById('ocean-sky');
-  sky.style.background=pal.sky;
+  const tintOp=(tod==='night'||tod==='evening')?0.04:(tod==='dawn'||tod==='dusk')?0.06:0.10;
+  sky.style.background=`${pal.sky}`;
+  sky.style.backgroundImage=`linear-gradient(180deg,rgba(${rw.skyTint},${tintOp}) 0%,rgba(${rw.skyTint},${(tintOp*1.8).toFixed(2)}) 50%,rgba(${rw.skyTint},${(tintOp*2.5).toFixed(2)}) 100%),${pal.sky}`;
   sky.style.filter='none';
   // 다이내믹 아일랜드 / 상태바 색상 동기화
   const skyTop=pal.sky.match(/#[0-9a-f]{6}/i)?.[0]||'#060f1e';

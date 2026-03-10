@@ -181,7 +181,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .sun-rays{position:absolute;inset:-50%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,120,.12) 40%,transparent 70%);animation:sunP 4s ease-in-out infinite;will-change:transform,opacity}
 @keyframes sunP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
 .sky-cloud{position:absolute;animation:cDrift var(--cd,28s) linear var(--cdelay,0s) infinite;transition:opacity 2s ease;pointer-events:none;overflow:visible;will-change:transform}
-@keyframes cDrift{0%{transform:translateX(-100%)}100%{transform:translateX(100vw)}}
+@keyframes cDrift{0%{transform:translateX(-40vw)}100%{transform:translateX(100vw)}}
 #rain-container{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity 2s ease;pointer-events:none}
 .raindrop{position:absolute;top:-20px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(180,220,255,.45));animation:rFall var(--rd,.8s) linear var(--rdelay,0s) infinite}
 @keyframes rFall{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(110vh) translateX(-30px);opacity:0}}
@@ -2745,8 +2745,9 @@ async function animateSun(wc){
   frame();
 }
 
-var _skyCloudCategory='';
-function updateSkyObjects(wc,windSpd){
+var _skyCloudKey='';
+var _cloudFilterId=0;
+function updateSkyObjects(wc,windSpd,cloudData){
   const sun=document.getElementById('sky-sun');
   const rain=document.getElementById('rain-container');
   const sky=document.getElementById('sky-objects');
@@ -2755,79 +2756,85 @@ function updateSkyObjects(wc,windSpd){
   animateSun(wc);
   const ws=windSpd||currentWindSpeed||0;
   const baseDur=Math.max(8,40-ws*2.0);
-  // 날씨 카테고리 결정
-  const cat=isClear?'clear':isMostlyClear?'mostlyClear':isPartly?'partly':isCloudy?'cloudy':(isDrizzle||isRain||isHeavy||isStorm)?'rain':'clear';
-  const needCount=cat==='clear'||cat==='mostlyClear'?0:cat==='partly'?5:cat==='cloudy'?8:8;
-  const existingClouds=sky.querySelectorAll('.sky-cloud');
-  // 카테고리가 같고 구름 수가 맞으면 재사용 (display 토글만)
-  if(_skyCloudCategory===cat&&existingClouds.length===needCount){
-    existingClouds.forEach(c=>{c.style.display=needCount>0?'':'none';});
+
+  // 구름량: API 데이터 우선, 없으면 weather_code 기반 추정
+  let cTotal,cLow,cMid,cHigh;
+  if(cloudData){
+    cTotal=cloudData.total;cLow=cloudData.low;cMid=cloudData.mid;cHigh=cloudData.high;
   }else{
-    // 카테고리 또는 수가 다를 때만 삭제 후 재생성
+    cTotal=isClear?10:isMostlyClear?25:isPartly?50:isCloudy?80:(isDrizzle||isRain)?88:isStorm||isHeavy?95:10;
+    cLow=isDrizzle||isRain||isHeavy||isStorm?cTotal*0.7:isCloudy?cTotal*0.5:isPartly?cTotal*0.25:cTotal*0.1;
+    cMid=isCloudy?cTotal*0.55:isPartly?cTotal*0.35:cTotal*0.15;
+    cHigh=isClear?cTotal*1.0:isMostlyClear?cTotal*0.8:isPartly?cTotal*0.55:cTotal*0.3;
+  }
+
+  // 구름 카테고리 키 (재사용 판단)
+  const cKey=`${Math.round(cTotal/10)}_${wc}_${Math.round(ws)}`;
+  const existingClouds=sky.querySelectorAll('.sky-cloud');
+  if(_skyCloudKey===cKey&&existingClouds.length>0){
+    existingClouds.forEach(c=>{c.style.display=cTotal>5?'':'none';});
+  }else{
     existingClouds.forEach(c=>c.remove());
-    _skyCloudCategory=cat;
-  function mkC(top,w,h,op,df,blur){
-    const el=document.createElement('div');
-    el.className='sky-cloud';
-    const dur=(baseDur*(0.75+Math.random()*0.5)).toFixed(1);
-    const delay=(-(baseDur*df)).toFixed(1);
-    const bl=blur||0;
-    el.style.cssText='position:absolute;top:'+top+';left:0;width:100%;height:'+h+'px;--cd:'+dur+'s;--cdelay:'+delay+'s;opacity:0;transition:opacity 2s ease'+(bl?';filter:blur('+bl+'px)':'');
-    const xOff=(10+Math.random()*70).toFixed(0);
-    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('viewBox','0 0 '+w+' '+h);
-    svg.setAttribute('width',w);svg.setAttribute('height',h);
-    svg.style.cssText='display:block;position:absolute;left:'+xOff+'%;transform:translateX(-50%) scaleX('+(0.85+Math.random()*0.3).toFixed(2)+')';
-    const by=h*0.78;
-    const shapes=[
-      [[w*.2,by-h*.3,w*.16,h*.34],[w*.36,by-h*.5,w*.2,h*.48],[w*.52,by-h*.38,w*.18,h*.4],[w*.68,by-h*.24,w*.14,h*.3],[w*.5,by,w*.46,h*.26]],
-      [[w*.18,by-h*.28,w*.14,h*.32],[w*.32,by-h*.48,w*.18,h*.44],[w*.48,by-h*.55,w*.24,h*.52],[w*.66,by-h*.36,w*.16,h*.36],[w*.5,by,w*.5,h*.24]],
-      [[w*.24,by-h*.32,w*.2,h*.36],[w*.42,by-h*.52,w*.2,h*.46],[w*.6,by-h*.44,w*.22,h*.44],[w*.5,by,w*.44,h*.26]],
-      [[w*.16,by-h*.26,w*.12,h*.28],[w*.3,by-h*.44,w*.16,h*.42],[w*.46,by-h*.5,w*.22,h*.5],[w*.62,by-h*.38,w*.18,h*.38],[w*.76,by-h*.22,w*.12,h*.26],[w*.5,by,w*.52,h*.22]]
-    ];
-    const shape=shapes[Math.floor(Math.random()*shapes.length)];
-    const cloudFill=isStorm||isHeavy?'rgba(140,155,175,'+op+')':isRain||isDrizzle?'rgba(180,195,215,'+op+')':isCloudy?'rgba(200,215,235,'+op+')':isPartly?'rgba(218,232,252,'+op+')':'rgba(230,242,255,'+op+')';
-    shape.forEach(function(b){
-      const e=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-      e.setAttribute('cx',b[0].toFixed(1));e.setAttribute('cy',b[1].toFixed(1));
-      e.setAttribute('rx',(b[2]*(0.9+Math.random()*0.2)).toFixed(1));e.setAttribute('ry',(b[3]*(0.9+Math.random()*0.2)).toFixed(1));
-      e.setAttribute('fill',cloudFill);
-      svg.appendChild(e);
-    });
-    el.appendChild(svg);sky.insertBefore(el,rain);
-    setTimeout(function(){el.style.opacity=op;},100+Math.random()*300);
+    _skyCloudKey=cKey;
+
+  // CSS div 기반 뭉실 구름 생성
+  function mkCloud(layer,coverPct){
+    if(coverPct<5)return;
+    const isHi=layer==='high',isMi=layer==='mid';
+    const topRange=isHi?[1,6]:isMi?[4,12]:[2,14];
+    // count: 구름량에 따라 점진적 (max는 레이어별)
+    const maxC=isHi?4:isMi?5:6;
+    const count=Math.max(1,Math.round((coverPct/100)*maxC));
+    // 색상
+    const br=isStorm?60:isHeavy?75:isRain?90:isDrizzle?120:isCloudy?175:225;
+    const bg=isStorm?65:isHeavy?80:isRain?95:isDrizzle?125:isCloudy?185:238;
+    const bb=isStorm?80:isHeavy?95:isRain?110:isDrizzle?140:isCloudy?200:252;
+    // opacity: 비/폭풍은 더 불투명
+    const baseOp=isStorm||isHeavy?(isHi?0.5:isMi?0.7:0.85):isRain||isDrizzle?(isHi?0.4:isMi?0.6:0.75):(isHi?0.3:isMi?0.45:0.6);
+    const opMul=Math.min(1,coverPct/80); // 80%에서 max
+    const cssBlur=isHi?5:isMi?3:2;
+
+    for(let i=0;i<count;i++){
+      const el=document.createElement('div');
+      el.className='sky-cloud';
+      const dur=(baseDur*(isHi?1.2:isMi?1.0:0.8)*(0.7+Math.random()*0.6)).toFixed(1);
+      // 음수 delay = 이미 진행 중인 위치에서 시작 (화면 밖에서 안 보이게)
+      const delay=(-(Math.random()*parseFloat(dur))).toFixed(1);
+      const top=(topRange[0]+Math.random()*(topRange[1]-topRange[0])).toFixed(1);
+      const op=(baseOp*opMul*(0.7+Math.random()*0.3)).toFixed(2);
+
+      // 구름 크기: 크게 + 구름량 비례
+      const sizeMul=0.8+0.2*(coverPct/100);
+      const bodyW=Math.round((isHi?(220+Math.random()*140):(280+Math.random()*180))*sizeMul);
+      const bodyH=Math.round((isHi?(50+Math.random()*30):(70+Math.random()*50))*sizeMul);
+
+      // cDrift 애니메이션이 translateX로 이동시킴
+      el.style.cssText=`position:absolute;top:${top}%;left:0;width:${bodyW}px;height:${bodyH}px;--cd:${dur}s;--cdelay:${delay}s;opacity:0;transition:opacity 2s ease;filter:blur(${cssBlur}px)`;
+
+      // 큰 puff 소수로 겹쳐서 덩어리감 있게
+      const puffs=isHi?3:(isMi?4:5);
+      const c=`rgba(${br},${bg},${bb},`;
+      for(let p=0;p<puffs;p++){
+        const puff=document.createElement('div');
+        const pw=(0.5+Math.random()*0.4)*bodyW;
+        const ph=(0.6+Math.random()*0.6)*bodyH;
+        const px=(Math.random()*0.5)*bodyW;
+        const py=(Math.random()*0.3)*bodyH;
+        const pop=0.45+Math.random()*0.45;
+        puff.style.cssText=`position:absolute;left:${px}px;top:${py}px;width:${pw}px;height:${ph}px;border-radius:50%;background:radial-gradient(ellipse at 45% 40%,${c}${pop.toFixed(2)}) 0%,${c}${(pop*0.55).toFixed(2)}) 50%,${c}0) 100%)`;
+        el.appendChild(puff);
+      }
+
+      sky.insertBefore(el,rain);
+      setTimeout(function(){el.style.opacity=op;},50+Math.random()*200);
+    }
   }
-  var r=Math.random;
-  if(isPartly){
-    // 구름 조금: 높이 분산 + blur로 자연스럽게
-    mkC((3+r()*4)+'%',100,30,.12,0,4);
-    mkC((8+r()*6)+'%',180,56,.26,.15,1);
-    mkC((14+r()*6)+'%',140,44,.20,.35,2);
-    mkC((6+r()*5)+'%',160,42,.22,.55,1);
-    mkC((18+r()*5)+'%',110,34,.10,.75,3);
-  }
-  else if(isCloudy){
-    // 흐림: 다양한 높이 + 크기 차이 + blur 레이어
-    mkC((2+r()*3)+'%',120,40,.18,0,4);
-    mkC((5+r()*4)+'%',260,72,.40,.1,1);
-    mkC((10+r()*5)+'%',220,62,.36,.2,0);
-    mkC((3+r()*3)+'%',240,68,.34,.32,2);
-    mkC((14+r()*5)+'%',200,58,.30,.44,1);
-    mkC((8+r()*4)+'%',180,50,.26,.56,3);
-    mkC((18+r()*4)+'%',150,44,.18,.7,4);
-    mkC((6+r()*3)+'%',230,65,.34,.84,1);
-  }
-  else if(isDrizzle||isRain||isHeavy||isStorm){
-    // 비/폭풍: 두껍고 어두운 구름, 높이 분산
-    mkC((1+r()*3)+'%',160,50,.28,0,4);
-    mkC((3+r()*3)+'%',300,85,.50,.1,1);
-    mkC((7+r()*4)+'%',280,78,.46,.2,0);
-    mkC((4+r()*3)+'%',260,75,.44,.32,2);
-    mkC((10+r()*5)+'%',290,80,.42,.44,1);
-    mkC((5+r()*3)+'%',240,68,.38,.56,3);
-    mkC((14+r()*4)+'%',200,55,.30,.68,4);
-    mkC((3+r()*3)+'%',270,72,.44,.82,1);
-  }
+
+  // 3개 레이어 렌더링
+  mkCloud('high',cHigh);
+  mkCloud('mid',cMid);
+  mkCloud('low',cLow);
+
   } // end of else (재생성 블록)
   const rc=isStorm?100:isHeavy?75:isRain?55:isDrizzle?28:0;
   rain.style.opacity=rc>0?'1':'0';
@@ -3705,7 +3712,7 @@ async function loadWeather(lat,lng){
     const marineUrl=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&current=sea_surface_temperature&hourly=wave_height&timezone=Asia/Seoul`;
     const marinePromise=(async()=>{for(let i=0;i<3;i++){try{const r=await fetch(marineUrl);if(r.ok)return await r.json();}catch(e){}if(i<2)await new Promise(r=>setTimeout(r,800*(i+1)));}return null;})();
     if(!data){
-      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code,temperature_2m,relative_humidity_2m,apparent_temperature&hourly=weather_code,temperature_2m,wind_speed_10m,wind_direction_10m,precipitation&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max&wind_speed_unit=ms&timezone=Asia/Seoul`;
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=wind_speed_10m,wind_direction_10m,weather_code,temperature_2m,relative_humidity_2m,apparent_temperature&hourly=weather_code,temperature_2m,wind_speed_10m,wind_direction_10m,precipitation,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&daily=weather_code,wind_speed_10m_max,wind_direction_10m_dominant,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max&wind_speed_unit=ms&timezone=Asia/Seoul`;
       // 실패시 최대 2회 재시도
       let res=null;
       for(let attempt=0;attempt<3;attempt++){
@@ -3733,7 +3740,15 @@ async function loadWeather(lat,lng){
       if(di>=max){wi.style.display='none';wx.textContent='예보 기간 초과';currentWeatherCode=0;if(currentStation)applyTheme(getStation(currentStation)?.region,0);updateSkyObjects(0);document.getElementById('weather').classList.add('show');return;}
       wCode=data.daily.weather_code[di];wSpeed=data.daily.wind_speed_10m_max[di];wDir=data.daily.wind_direction_10m_dominant[di];
     }
-    currentWeatherCode=wCode;if(currentStation)applyTheme(getStation(currentStation)?.region,wCode,wSpeed);updateSkyObjects(wCode,wSpeed);checkWeatherAlert(wCode,wSpeed);
+    // 구름량 추출 (hourly 데이터에서 현재 시간)
+    let cloudData=null;
+    if(data.hourly&&data.hourly.cloud_cover){
+      const nowH=new Date().getHours();
+      const todayISO=(()=>{const d=getOffsetDate(selectedDateOffset);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(nowH).padStart(2,'0')}:00`})();
+      const ci=data.hourly.time?data.hourly.time.indexOf(todayISO):-1;
+      if(ci>=0){cloudData={total:data.hourly.cloud_cover[ci]||0,low:data.hourly.cloud_cover_low?.[ci]||0,mid:data.hourly.cloud_cover_mid?.[ci]||0,high:data.hourly.cloud_cover_high?.[ci]||0};}
+    }
+    currentWeatherCode=wCode;if(currentStation)applyTheme(getStation(currentStation)?.region,wCode,wSpeed);updateSkyObjects(wCode,wSpeed,cloudData);checkWeatherAlert(wCode,wSpeed);
     const dir=windDir(wDir);
     // 날씨 상세 저장
     {
@@ -3769,12 +3784,12 @@ async function loadWeather(lat,lng){
     const rot=(wDir+180)%360;
     const svgA=`<svg style="width:14px;height:14px;flex-shrink:0;color:rgba(255,255,255,.5);transform:rotate(${rot}deg)" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4.5 20.3l.7.4L12 16l6.8 4.7.7-.4Z"/></svg>`;
     const wxIcon=wxEmoji(wCode);
-    const wxTemp=selectedDateOffset===0?Math.round(data.current.temperature_2m)+'°':'';
+    const wxTemp=selectedDateOffset===0?Math.round(data.current.temperature_2m)+'°':(()=>{const di2=(()=>{const t=dateToStr(getOffsetDate(selectedDateOffset)),iso=`${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;let i=dailyDates.indexOf(iso);return i<0?selectedDateOffset:i;})();const hi=Math.round(data.daily.temperature_2m_max[di2]),lo=Math.round(data.daily.temperature_2m_min[di2]);return `${hi}°/${lo}°`;})();
     const seaTemp=md&&md.current&&md.current.sea_surface_temperature!=null?` 💧${Math.round(md.current.sea_surface_temperature)}°`:'';
     const _wxName=wxName(wCode);
     if(hwEl){hwEl.innerHTML=`<div class="hw-line1">${wxIcon} ${_wxName} ${wxTemp}${seaTemp}</div><div class="hw-line2">${svgA} ${dir} ${ws}m/s &nbsp;〜 ${wv}</div>`;hwEl.classList.add('show');}
     if(heroWxEl){heroWxEl.style.display='none';}}
-    const tempStr=selectedDateOffset===0?` ${Math.round(data.current.temperature_2m)}°`:'';
+    const tempStr=selectedDateOffset===0?` ${Math.round(data.current.temperature_2m)}°`:(()=>{const di2=(()=>{const t=dateToStr(getOffsetDate(selectedDateOffset)),iso=`${t.slice(0,4)}-${t.slice(4,6)}-${t.slice(6,8)}`;let i=dailyDates.indexOf(iso);return i<0?selectedDateOffset:i;})();const hi=Math.round(data.daily.temperature_2m_max[di2]),lo=Math.round(data.daily.temperature_2m_min[di2]);return ` ${hi}°/${lo}°`;})();
     wx.textContent=`${wxName(wCode)}${tempStr}`;
     document.getElementById('weather').classList.add('show');
   }catch(e){

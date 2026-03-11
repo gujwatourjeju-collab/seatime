@@ -1128,21 +1128,68 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 
 
 
-/* ═══ 관상 모드 ═══ */
+/* ═══ 관상 모드 — Apple Weather 스타일 ═══ */
 body.zen-mode #app{visibility:hidden;pointer-events:none;transition:none!important}
 body.zen-mode #app .level-group{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header>*{visibility:visible}
 body.zen-mode #app #hero-glass>.hero-top-row{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header #wx-alert{visibility:visible}
-body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;transform:translateY(190px)}
-body.zen-mode #gauge-rail{opacity:.7;pointer-events:none;transition:none!important}
-body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:none!important}
-body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
-body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!important}
+body.zen-mode #app #hero-glass{
+  background:rgba(255,255,255,.08)!important;
+  border-color:rgba(255,255,255,.12)!important;
+  backdrop-filter:blur(40px)!important;-webkit-backdrop-filter:blur(40px)!important;
+  box-shadow:0 2px 20px rgba(0,0,0,.08)!important;
+  border-radius:24px!important;
+  padding:14px 20px 18px!important;
+  width:auto!important;min-width:200px;max-width:80%;
+  transform:translateY(190px);
+  gap:2px!important;
+}
+body.zen-mode #app #hero-glass>.hero-top-row{
+  margin-bottom:4px!important;gap:4px!important;
+}
+body.zen-mode .date-pill{
+  font-size:.72rem!important;opacity:.7;font-weight:400!important;letter-spacing:0!important;
+}
+body.zen-mode .dp-arr{font-size:1rem!important;opacity:.4}
+body.zen-mode .date-pill-label{font-size:.55rem!important;opacity:.6}
+body.zen-mode .station-pill{
+  font-size:.72rem!important;opacity:.7;font-weight:400!important;
+}
+body.zen-mode #fav-star{display:none!important}
+body.zen-mode .level-label{
+  font-size:.65rem!important;opacity:.5;font-weight:400!important;letter-spacing:.5px!important;margin-bottom:0!important;
+}
+body.zen-mode #level-big{
+  font-size:4rem!important;font-weight:200!important;letter-spacing:-1px!important;
+  line-height:1!important;
+}
+body.zen-mode #level-unit{
+  font-size:1.2rem!important;font-weight:300!important;opacity:.35!important;padding-bottom:8px!important;
+}
+body.zen-mode #tide-arrow{
+  font-size:1rem!important;opacity:.6!important;
+}
+body.zen-mode #zen-next-tide{
+  display:block;font-size:.78rem!important;font-weight:400!important;
+  opacity:.65;margin-top:6px!important;letter-spacing:0!important;
+}
+body.zen-mode #zen-next-tide div{gap:4px!important}
+body.zen-mode .hg-divider{display:none!important}
+body.zen-mode .tide-badge{display:none!important}
+body.zen-mode #gauge-rail{opacity:.5;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-dot{opacity:.6!important;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-high-label{opacity:.6;pointer-events:none;transition:none!important}
+body.zen-mode #gauge-low-label{opacity:.6;pointer-events:none;transition:none!important}
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
 body.zen-mode #drawer-overlay:not(.open){opacity:0!important;pointer-events:none!important;transition:none!important}
 body.zen-mode #ci-graph-overlay{display:none!important}
+/* 헤더 심플화 */
+body.zen-mode #header{opacity:.7}
+body.zen-mode #hdr-wx{font-size:.65rem!important}
+body.zen-mode #clock{font-size:.85rem!important;font-weight:300!important;letter-spacing:0!important}
+body.zen-mode #lunar{font-size:.55rem!important;opacity:.5!important}
 
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,

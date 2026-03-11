@@ -3674,16 +3674,14 @@ function toggleTideAlarm(btn,time,type,dateStr){
       notifications:[{title:'바당때',body:`${label} ${time} — 30분 전이에요`,id:notiId,schedule:{at:new Date(alertTime)}}]
     });
   }
-  registerPushAlarm(dateStr,time,type);
   btn.classList.add('active');
   const minLeft=Math.floor(delay/60000);
   const hourLeft=Math.floor(minLeft/60);
   const timeLabel=hourLeft>0?`${hourLeft}시간 ${minLeft%60}분 후`:`${minLeft}분 후`;
   showToast(`${label} ${time} 30분 전에 알려드릴게요 (${timeLabel})`);
   if(navigator.vibrate)navigator.vibrate(15);
-  if(typeof Notification!=='undefined'&&Notification.permission==='default'){
-    Notification.requestPermission().then(p=>{if(p==='granted'&&_swReg)subscribePush(_swReg).then(()=>registerPushAlarm(dateStr,time,type));});
-  }
+  // 푸시 구독 → 알람 등록 (권한 없으면 요청)
+  ensurePushAndRegister(dateStr,time,type);
 }
 
 function showLoading(){
@@ -4213,6 +4211,19 @@ async function subscribePush(reg){
       updated_at:new Date().toISOString()
     },{onConflict:'user_id'});
   }catch(e){console.warn('Push subscribe failed:',e);}
+}
+
+async function ensurePushAndRegister(dateStr,time,type){
+  try{
+    if(!_pushSub&&_swReg){
+      if(typeof Notification!=='undefined'){
+        let perm=Notification.permission;
+        if(perm==='default')perm=await Notification.requestPermission();
+        if(perm==='granted')await subscribePush(_swReg);
+      }
+    }
+    await registerPushAlarm(dateStr,time,type);
+  }catch(e){console.warn('ensurePush:',e);}
 }
 
 async function registerPushAlarm(dateStr,time,type){

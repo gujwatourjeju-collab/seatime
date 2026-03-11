@@ -1766,6 +1766,11 @@ body.zen-mode #ci-graph-overlay{display:none!important}
       <span class="drawer-item-text">조석 용어 설명</span>
       <span class="drawer-item-arrow">›</span>
     </div>
+    <div class="drawer-item" onclick="closeDrawer();testPush1min()">
+      <span class="drawer-item-icon">🔔</span>
+      <span class="drawer-item-text">푸시 테스트 (1분 후)</span>
+      <span class="drawer-item-arrow">›</span>
+    </div>
     <div class="drawer-item" style="cursor:default">
       <span class="drawer-item-icon">🔠</span>
       <span class="drawer-item-text">글자 크기</span>
@@ -4211,6 +4216,31 @@ async function subscribePush(reg){
       updated_at:new Date().toISOString()
     },{onConflict:'endpoint'});
   }catch(e){console.warn('Push subscribe failed:',e);}
+}
+
+async function testPush1min(){
+  try{
+    if(!_swReg){showToast('서비스워커 없음');return;}
+    if(!_pushSub){
+      let perm=typeof Notification!=='undefined'?Notification.permission:'denied';
+      if(perm==='default')perm=await Notification.requestPermission();
+      if(perm==='granted')await subscribePush(_swReg);
+    }
+    const{data:{user}}=await supabaseClient.auth.getUser();
+    if(!user){showToast('로그인 필요');return;}
+    if(!_pushSub){showToast('푸시 구독 실패');return;}
+    const alertAt=new Date(Date.now()+60000);
+    const key='test_'+Date.now();
+    await supabaseClient.from('push_alarms').insert({
+      user_id:user.id,
+      alarm_key:key,
+      alert_at:alertAt.toISOString(),
+      title:'바당때 테스트',
+      body:'🔔 1분 후 테스트 알림이에요!',
+      sent:false
+    });
+    showToast('1분 후 푸시 알림이 옵니다!');
+  }catch(e){console.error('testPush:',e);showToast('테스트 실패: '+e.message);}
 }
 
 async function ensurePushAndRegister(dateStr,time,type){

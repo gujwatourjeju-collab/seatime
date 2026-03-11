@@ -1143,6 +1143,17 @@ body.zen-mode #gauge-low-label{opacity:.8;pointer-events:none;transition:none!im
 body.zen-mode .text-toggle-btn{opacity:0;pointer-events:none;transition:none!important}
 body.zen-mode #drawer-overlay:not(.open){opacity:0!important;pointer-events:none!important;transition:none!important}
 body.zen-mode #ci-graph-overlay{display:none!important}
+/* 단순모드: 날짜 위, 지역 아래, 가운데 정렬 */
+body.zen-mode #hero-glass>.hero-top-row:first-child{
+  flex-direction:column;align-items:center;gap:4px;
+}
+body.zen-mode .date-pill{font-size:1.23rem!important;font-weight:600!important}
+body.zen-mode .date-pill-label{font-size:.9rem!important;font-weight:600!important}
+body.zen-mode .dp-arr{display:none!important}
+body.zen-mode #date-pill-text{display:none!important}
+body.zen-mode .station-pill{font-size:1.23rem!important;font-weight:600!important}
+body.zen-mode .sp-pin{display:none!important}
+body.zen-mode #fav-star{display:none!important}
 
 /* 트랜지션 */
 #app,#gauge-rail,#gauge-dot,#gauge-high-label,#gauge-low-label,
@@ -3308,7 +3319,7 @@ async function selectStation(name){
   const s=getStation(name);
   if(!s)return;
   const region=s.region,ri=RI[region];
-  document.getElementById('station-pill').textContent=`📍 ${ri.label} · ${name}`;
+  document.getElementById('station-pill').innerHTML=`<span class="sp-pin">📍 </span>${ri.label} · ${name}`;
   applyTheme(region,currentWeatherCode,currentWindSpeed);
   await Promise.all([loadTide(name),loadWeather(s.lat,s.lng)]);
 }
@@ -3468,7 +3479,7 @@ function renderTide(data,name,isToday,isRealToday){
     badge.textContent=tn;badge.style.display='inline-flex';
   }else{badge.style.display='none';}
   const _s=getStation(name),_ri=_s?RI[_s.region]:null;
-  document.getElementById('station-pill').textContent=`📍 ${_ri?_ri.label+' · ':''}${name}`;
+  document.getElementById('station-pill').innerHTML=`<span class="sp-pin">📍 </span>${_ri?_ri.label+' · ':''}${name}`;
 
   // min/max (현재 시각 기준 가장 가까운 간조/만조)
   const nm2=new Date().getHours()*60+new Date().getMinutes();

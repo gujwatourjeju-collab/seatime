@@ -3682,7 +3682,7 @@ function toggleTideAlarm(btn,time,type,dateStr){
   showToast(`${label} ${time} 30분 전에 알려드릴게요 (${timeLabel})`);
   if(navigator.vibrate)navigator.vibrate(15);
   if(typeof Notification!=='undefined'&&Notification.permission==='default'){
-    Notification.requestPermission();
+    Notification.requestPermission().then(p=>{if(p==='granted'&&_swReg)subscribePush(_swReg).then(()=>registerPushAlarm(dateStr,time,type));});
   }
 }
 

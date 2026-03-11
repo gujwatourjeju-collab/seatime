@@ -38,13 +38,12 @@ serve(async (_req) => {
 
     let sentCount = 0
     for (const alarm of alarms) {
-      const { data: sub } = await supabase
+      const { data: subs } = await supabase
         .from('push_subscriptions')
         .select('*')
         .eq('user_id', alarm.user_id)
-        .single()
 
-      if (sub) {
+      if (subs && subs.length > 0) {
         const payload = JSON.stringify({
           title: alarm.title,
           body: alarm.body,
@@ -52,22 +51,24 @@ serve(async (_req) => {
           url: '/seatime/'
         })
 
-        const pushSub = {
-          endpoint: sub.endpoint,
-          keys: {
-            p256dh: sub.keys_p256dh,
-            auth: sub.keys_auth
+        for (const sub of subs) {
+          const pushSub = {
+            endpoint: sub.endpoint,
+            keys: {
+              p256dh: sub.keys_p256dh,
+              auth: sub.keys_auth
+            }
           }
-        }
 
-        try {
-          await webpush.sendNotification(pushSub, payload)
-          sentCount++
-        } catch (e: unknown) {
-          const err = e as { statusCode?: number }
-          console.error(`Push failed for ${alarm.user_id}:`, err)
-          if (err.statusCode === 410 || err.statusCode === 404) {
-            await supabase.from('push_subscriptions').delete().eq('user_id', alarm.user_id)
+          try {
+            await webpush.sendNotification(pushSub, payload)
+            sentCount++
+          } catch (e: unknown) {
+            const err = e as { statusCode?: number }
+            console.error(`Push failed for ${alarm.user_id}:`, err)
+            if (err.statusCode === 410 || err.statusCode === 404) {
+              await supabase.from('push_subscriptions').delete().eq('id', sub.id)
+            }
           }
         }
       }

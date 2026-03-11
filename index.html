@@ -4209,7 +4209,7 @@ async function subscribePush(reg){
       keys_p256dh:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
       keys_auth:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth')))),
       updated_at:new Date().toISOString()
-    },{onConflict:'user_id'});
+    },{onConflict:'endpoint'});
   }catch(e){console.warn('Push subscribe failed:',e);}
 }
 

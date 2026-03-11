@@ -13,21 +13,22 @@ webpush.setVapidDetails(
   VAPID_PRIVATE
 )
 
+function base64ToBase64Url(b64: string): string {
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+}
+
 serve(async (_req) => {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
     // 현재 시각 기준 ±1분 이내의 미발송 알람 조회
-    const now = new Date()
-    const from = new Date(now.getTime() - 60000).toISOString()
-    const to = new Date(now.getTime() + 60000).toISOString()
+    const now = new Date().toISOString()
 
     const { data: alarms, error: alarmErr } = await supabase
       .from('push_alarms')
       .select('*')
       .eq('sent', false)
-      .gte('alert_at', from)
-      .lte('alert_at', to)
+      .lte('alert_at', now)
 
     if (alarmErr) throw alarmErr
     if (!alarms || alarms.length === 0) {
@@ -55,8 +56,8 @@ serve(async (_req) => {
           const pushSub = {
             endpoint: sub.endpoint,
             keys: {
-              p256dh: sub.keys_p256dh,
-              auth: sub.keys_auth
+              p256dh: base64ToBase64Url(sub.keys_p256dh),
+              auth: base64ToBase64Url(sub.keys_auth)
             }
           }
 

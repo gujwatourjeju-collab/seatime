@@ -4208,13 +4208,12 @@ async function subscribePush(reg){
     // 서버에 구독 정보 저장
     const{data:{user}}=await supabaseClient.auth.getUser();
     if(!user)return;
-    await supabaseClient.from('push_subscriptions').upsert({
-      user_id:user.id,
-      endpoint:sub.endpoint,
-      keys_p256dh:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
-      keys_auth:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth')))),
-      updated_at:new Date().toISOString()
-    },{onConflict:'endpoint'});
+    await supabaseClient.rpc('upsert_push_subscription',{
+      p_user_id:user.id,
+      p_endpoint:sub.endpoint,
+      p_keys_p256dh:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
+      p_keys_auth:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth'))))
+    });
   }catch(e){console.warn('Push subscribe failed:',e);}
 }
 

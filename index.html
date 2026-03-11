@@ -2005,6 +2005,7 @@ let _elLevelBig,_elLevelUnit,_elTideArrow,_elStatusPill,_elTimeleftPill,
 const SUPABASE_URL='https://raykkfvchlfsjtlkbpji.supabase.co';
 const SUPABASE_KEY='sb_publishable_HV81jL04Eq8m52cMm-LhSw_FX9pSikn';
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const VAPID_PUBLIC='BOjGmff0uphqOEfgGYezZ_gal5j-ZFp_Fu1Q8JFAgbi0yH05efGAV5aQR3BJsefpLp0KnpRYZ12rt1RMQD-d7xs';
 
 /* ═══ 물때 데이터 ═══ */
 const TIDE_DATA={
@@ -3643,6 +3644,7 @@ function toggleTideAlarm(btn,time,type,dateStr){
     btn.classList.remove('active');
     showToast('알림이 취소되었어요');
     if(navigator.vibrate)navigator.vibrate(10);
+    cancelPushAlarm(dateStr,time);
     if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications){
       window.Capacitor.Plugins.LocalNotifications.cancel({notifications:[{id:notiId}]});
     }
@@ -3672,6 +3674,7 @@ function toggleTideAlarm(btn,time,type,dateStr){
       notifications:[{title:'바당때',body:`${label} ${time} — 30분 전이에요`,id:notiId,schedule:{at:new Date(alertTime)}}]
     });
   }
+  registerPushAlarm(dateStr,time,type);
   btn.classList.add('active');
   const minLeft=Math.floor(delay/60000);
   const hourLeft=Math.floor(minLeft/60);
@@ -4167,7 +4170,77 @@ if('serviceWorker' in navigator){
     setInterval(()=>{reg.update().catch(()=>{});},3600000);
     // 페이지 포커스 시에도 업데이트 확인
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
+    // 푸시 구독 자동 시도 (로그인 상태일 때)
+    _swReg=reg;
+    supabaseClient.auth.getUser().then(({data})=>{if(data&&data.user)subscribePush(reg);});
   }).catch(()=>{});
+}
+
+/* ═══ Web Push 구독 ═══ */
+let _swReg=null;
+let _pushSub=null;
+
+function urlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw=atob(base64);
+  const arr=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;++i)arr[i]=raw.charCodeAt(i);
+  return arr;
+}
+
+async function subscribePush(reg){
+  try{
+    if(!('PushManager' in window))return;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub){
+      const perm=await Notification.requestPermission();
+      if(perm!=='granted')return;
+      sub=await reg.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC)
+      });
+    }
+    _pushSub=sub;
+    // 서버에 구독 정보 저장
+    const{data:{user}}=await supabaseClient.auth.getUser();
+    if(!user)return;
+    await supabaseClient.from('push_subscriptions').upsert({
+      user_id:user.id,
+      endpoint:sub.endpoint,
+      keys_p256dh:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('p256dh')))),
+      keys_auth:btoa(String.fromCharCode(...new Uint8Array(sub.getKey('auth')))),
+      updated_at:new Date().toISOString()
+    },{onConflict:'user_id'});
+  }catch(e){console.warn('Push subscribe failed:',e);}
+}
+
+async function registerPushAlarm(dateStr,time,type){
+  try{
+    const{data:{user}}=await supabaseClient.auth.getUser();
+    if(!user||!_pushSub)return;
+    const[h,m]=time.split(':').map(Number);
+    const[y,mo,d]=dateStr.split('-').map(Number);
+    const target=new Date(y,mo-1,d,h,m,0,0);
+    const alertAt=new Date(target.getTime()-30*60000);
+    const label=type==='high'?'만조':'간조';
+    await supabaseClient.from('push_alarms').upsert({
+      user_id:user.id,
+      alarm_key:dateStr+'_'+time,
+      alert_at:alertAt.toISOString(),
+      title:'바당때',
+      body:`${label} ${time} — 30분 전이에요`,
+      sent:false
+    },{onConflict:'user_id,alarm_key'});
+  }catch(e){console.warn('Push alarm register failed:',e);}
+}
+
+async function cancelPushAlarm(dateStr,time){
+  try{
+    const{data:{user}}=await supabaseClient.auth.getUser();
+    if(!user)return;
+    await supabaseClient.from('push_alarms').delete().eq('user_id',user.id).eq('alarm_key',dateStr+'_'+time);
+  }catch(e){}
 }
 
 /* ═══ 1. 오프라인 감지 + 조석 캐시 ═══ */
@@ -5152,7 +5225,7 @@ supabaseClient.auth.getSession().then(({data:{session}})=>{
   if(session?.user)onAuthSuccess(session.user);
 });
 supabaseClient.auth.onAuthStateChange((_,session)=>{
-  if(session?.user)onAuthSuccess(session.user);
+  if(session?.user){onAuthSuccess(session.user);if(_swReg)subscribePush(_swReg);}
 });
 
 </script>

@@ -1,4 +1,4 @@
-const CACHE = 'badangttae-v28';
+const CACHE = 'badangttae-v29';
 const API_CACHE = 'badangttae-api-v1';
 const ASSETS = [
   '/seatime/',
@@ -62,6 +62,36 @@ self.addEventListener('fetch', e => {
   // 정적 자산: 캐시 우선, 없으면 네트워크
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
+  );
+});
+
+// ═══ Web Push 알림 수신 ═══
+self.addEventListener('push', e => {
+  let data = { title: '바당때', body: '알림이 도착했어요' };
+  try { data = e.data.json(); } catch (_) {}
+  const options = {
+    body: data.body || '',
+    icon: '/seatime/icon-192.png',
+    badge: '/seatime/icon-192.png',
+    tag: data.tag || 'badangttae-noti',
+    data: { url: data.url || '/seatime/' },
+    vibrate: [200, 100, 200],
+    requireInteraction: true
+  };
+  e.waitUntil(self.registration.showNotification(data.title || '바당때', options));
+});
+
+// 알림 클릭 → 앱 열기
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/seatime/';
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const c of list) {
+        if (c.url.includes('/seatime') && 'focus' in c) return c.focus();
+      }
+      return clients.openWindow(url);
+    })
   );
 });
 

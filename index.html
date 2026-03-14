@@ -49,15 +49,15 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 /* 하늘 사이클 배경 */
 #sp-sky{
   position:absolute;inset:0;z-index:0;
-  animation:spSky 4s ease-in-out forwards;
+  animation:spSky 2.5s ease-in-out forwards;
 }
 @keyframes spSky{
-  0%{background:linear-gradient(180deg,#0d1b2a 0%,#1b2838 50%,#2a1a1a 100%)}
-  15%{background:linear-gradient(180deg,#1a2a4a 0%,#e08050 40%,#f4a460 70%,#ffcc88 100%)}
-  30%{background:linear-gradient(180deg,#4a90c8 0%,#6bb5e8 40%,#a0d4f0 100%)}
+  0%{background:linear-gradient(180deg,#0d1b2a 0%,#1b2838 50%,#1a1520 100%)}
+  12%{background:linear-gradient(180deg,#2a3560 0%,#c08090 40%,#e8a0a0 70%,#ffd4b0 100%)}
+  28%{background:linear-gradient(180deg,#4a90c8 0%,#6bb5e8 40%,#a0d4f0 100%)}
   55%{background:linear-gradient(180deg,#5a9fd4 0%,#87ceeb 50%,#b0e0f0 100%)}
   72%{background:linear-gradient(180deg,#2a4070 0%,#d46040 40%,#f08050 60%,#ffaa55 100%)}
-  88%{background:linear-gradient(180deg,#0d1b3a 0%,#1a2548 40%,#2a1a3a 100%)}
+  86%{background:linear-gradient(180deg,#0d1b3a 0%,#1a2548 40%,#2a1a3a 100%)}
   100%{background:linear-gradient(180deg,#060f1e 0%,#0a1628 50%,#0d1b30 100%)}
 }
 
@@ -67,31 +67,31 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   width:48px;height:48px;border-radius:50%;
   background:radial-gradient(circle,#fff 30%,#ffe066 60%,rgba(255,180,50,0) 100%);
   box-shadow:0 0 40px 15px rgba(255,200,60,.5),0 0 80px 30px rgba(255,150,50,.2);
-  animation:spSunMove 4s ease-in-out forwards;
+  animation:spSunMove 2.5s ease-in-out forwards;
   opacity:0;
 }
 @keyframes spSunMove{
-  0%{right:-50px;top:35%;opacity:0}
-  10%{right:8%;top:28%;opacity:1}
-  25%{right:25%;top:22%;opacity:1;
+  0%{right:-50px;top:38%;opacity:0}
+  8%{right:8%;top:34%;opacity:1}
+  20%{right:22%;top:30%;opacity:1;
     background:radial-gradient(circle,#fff 30%,#ffe066 60%,rgba(255,180,50,0) 100%);
     box-shadow:0 0 40px 15px rgba(255,200,60,.5),0 0 80px 30px rgba(255,150,50,.2)}
-  45%{right:45%;top:19%;opacity:1}
-  58%{right:58%;top:20%;opacity:1}
-  66%{right:66%;top:21%;opacity:1;
-    background:radial-gradient(circle,#ffaa55 30%,#ff8844 60%,rgba(255,120,50,0) 100%);
+  38%{right:42%;top:28%;opacity:1}
+  52%{right:55%;top:28%;opacity:1}
+  62%{right:64%;top:29%;opacity:1;
+    background:radial-gradient(circle,#fff 30%,#ffe066 60%,rgba(255,180,50,0) 100%);
+    box-shadow:0 0 40px 15px rgba(255,200,60,.5),0 0 80px 30px rgba(255,150,50,.2)}
+  72%{right:72%;top:31%;opacity:1;
+    background:radial-gradient(circle,#ffcc66 30%,#ff9944 60%,rgba(255,120,50,0) 100%);
     box-shadow:0 0 50px 18px rgba(255,150,50,.5),0 0 100px 40px rgba(255,100,40,.2)}
-  74%{right:74%;top:23%;opacity:1;
-    background:radial-gradient(circle,#ff8844 30%,#ff6633 60%,rgba(255,80,30,0) 100%);
-    box-shadow:0 0 60px 20px rgba(255,100,40,.6),0 0 120px 50px rgba(255,60,30,.2)}
-  82%{right:82%;top:26%;opacity:.8;
-    background:radial-gradient(circle,#ff6633 30%,#ee4422 60%,rgba(220,50,20,0) 100%);
-    box-shadow:0 0 55px 18px rgba(255,80,30,.5)}
-  89%{right:89%;top:29%;opacity:.5;
+  80%{right:80%;top:34%;opacity:.8;
+    background:radial-gradient(circle,#ff8844 30%,#ff5533 60%,rgba(255,60,30,0) 100%);
+    box-shadow:0 0 60px 20px rgba(255,80,30,.6)}
+  88%{right:88%;top:37%;opacity:.4;
     background:radial-gradient(circle,#ff5522 30%,#cc3300 60%,rgba(200,30,0,0) 100%);
     box-shadow:0 0 50px 15px rgba(255,60,20,.4)}
-  95%{right:94%;top:32%;opacity:.15}
-  100%{right:100%;top:34%;opacity:0}
+  94%{right:94%;top:39%;opacity:.1}
+  100%{right:100%;top:40%;opacity:0}
 }
 
 /* 노을 글로우 */
@@ -99,12 +99,12 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   position:absolute;z-index:0;bottom:0;left:0;right:0;height:50%;
   opacity:0;
   background:radial-gradient(ellipse 120% 80% at 20% 100%,rgba(255,100,40,.4),rgba(255,60,30,.1),transparent);
-  animation:spGlow 4s ease-in-out forwards;
+  animation:spGlow 2.5s ease-in-out forwards;
 }
 @keyframes spGlow{
-  0%,55%{opacity:0}
-  70%{opacity:1}
-  85%{opacity:.6}
+  0%,65%{opacity:0}
+  75%{opacity:1}
+  88%{opacity:.6}
   100%{opacity:0}
 }
 
@@ -115,10 +115,10 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   background:radial-gradient(circle at 35% 35%,#f0f0e8,#d8d8c8);
   box-shadow:0 0 20px 8px rgba(200,200,180,.3),0 0 50px 15px rgba(180,180,160,.1);
   opacity:0;
-  animation:spMoonMove 4s ease-in-out forwards;
+  animation:spMoonMove 2.5s ease-in-out forwards;
 }
 @keyframes spMoonMove{
-  0%,80%{right:-40px;top:30%;opacity:0}
+  0%,78%{right:-40px;top:30%;opacity:0}
   90%{right:18%;top:22%;opacity:.8}
   100%{right:28%;top:18%;opacity:1}
 }
@@ -127,18 +127,18 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .sp-star{
   position:absolute;z-index:1;width:2px;height:2px;
   background:#fff;border-radius:50%;opacity:0;
-  animation:spStarIn 4s ease-in-out forwards;
+  animation:spStarIn 2.5s ease-in-out forwards;
 }
 @keyframes spStarIn{
-  0%,82%{opacity:0}
-  92%{opacity:.7}
+  0%,80%{opacity:0}
+  90%{opacity:.7}
   100%{opacity:.5}
 }
 
 #splash-water{
   position:absolute;bottom:0;left:0;right:0;height:0%;z-index:2;
   pointer-events:none;
-  animation:spWaterRise 4s ease-in-out forwards;
+  animation:spWaterRise 2.5s ease-in-out forwards;
 }
 @keyframes spWaterRise{
   0%{height:0%}
@@ -332,6 +332,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #hdr-wx .hw-line2{display:flex;align-items:center;gap:8px;font-size:.74rem;color:#fff;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 #clock{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.88rem;font-weight:500;color:#fff;letter-spacing:1.5px;line-height:1;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+#solar-date{font-size:.72rem;font-weight:500;color:#fff;letter-spacing:.3px;margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 #lunar{font-size:.5rem;font-weight:500;color:#fff;letter-spacing:.3px;margin-top:1px;cursor:pointer;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 #lunar:active{color:rgba(255,255,255,.7)}
 #zen-switch{margin-top:12px}
@@ -543,11 +544,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
   color:rgba(255,255,255,.92);font-size:.68rem;font-weight:700;
   padding:5px 14px;border-radius:20px;letter-spacing:.8px;
 }
-.tide-badge.tb-jogeun{background:rgba(0,229,195,.18);border-color:rgba(0,229,195,.3);color:#6ffce4}
-.tide-badge.tb-calm{background:rgba(0,229,195,.14);border-color:rgba(0,229,195,.22);color:#80edd8}
-.tide-badge.tb-mid{background:rgba(100,170,255,.14);border-color:rgba(100,170,255,.22);color:#a0ccff}
-.tide-badge.tb-strong{background:rgba(70,120,235,.16);border-color:rgba(70,120,235,.25);color:#8eaaff}
-.tide-badge.tb-peak{background:rgba(120,90,255,.18);border-color:rgba(120,90,255,.28);color:#b8a8ff}
+.tide-badge.tb-jogeun,.tide-badge.tb-calm,.tide-badge.tb-mid,.tide-badge.tb-strong,.tide-badge.tb-peak{background:rgba(0,0,0,.32);border-color:rgba(255,255,255,.25);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .date-pill{display:flex;align-items:center;gap:4px;font-size:.82rem;color:#fff;font-weight:500;letter-spacing:.3px;padding:4px 8px;background:none;border:none;cursor:pointer;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .dp-arr{color:rgba(255,255,255,.3);cursor:pointer;padding:0 5px;font-size:1.32rem}
 .dp-arr:active{color:var(--accent)}
@@ -643,7 +640,7 @@ body.zen-mode #zen-next-tide{display:block}
 /* 조류 세기 바 */
 .ci-row{display:flex;align-items:center;gap:10px}
 .ci-label{
-  font-size:.71rem;font-weight:700;color:rgba(255,255,255,.45);
+  font-size:.71rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);
   letter-spacing:.5px;
   white-space:nowrap;flex-shrink:0;margin-left:5px;
 }
@@ -654,7 +651,11 @@ body.zen-mode #zen-next-tide{display:block}
   transition:background .4s ease,box-shadow .4s ease;
 }
 .ci-bar.on{background:var(--bar-color,var(--accent));box-shadow:0 0 10px var(--bar-glow,rgba(0,229,195,.25))}
-.ci-desc{font-size:.58rem;color:rgba(255,255,255,.55);font-weight:400;flex:1;text-align:right;line-height:1.3}
+.ci-desc{font-size:.62rem;color:#fff;font-weight:600;flex:1;text-align:right;line-height:1.3;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.ci-chevron{font-size:.8rem;color:rgba(255,255,255,.3);transition:transform .3s ease;flex-shrink:0}
+.ci-chevron.open{transform:rotate(90deg)}
+.ci-detail{max-height:0;overflow:hidden;transition:max-height .3s ease;display:flex;flex-direction:column;gap:8px}
+.ci-detail.open{max-height:200px}
 
 
 /* 미래 날짜 HIGH/LOW */
@@ -744,23 +745,26 @@ body.zen-mode #zen-next-tide{display:block}
 }
 .panel-upd{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.5rem;color:rgba(255,255,255,.25);font-weight:300}
 
-.tide-scroll{overflow-y:auto;padding:0 95px 0 81px;scrollbar-width:none;flex:1}
+.tide-scroll{overflow-y:auto;padding:0;scrollbar-width:none;flex:1;display:flex;flex-direction:column;align-items:center}
 .tide-scroll::-webkit-scrollbar{display:none}
 
 .tide-row{
   display:grid;
   grid-template-columns:20px 1fr auto;
   align-items:center;gap:10px;
-  padding:9px 6px;
+  padding:9px 16px;
+  width:calc((100vw - 40px) * .72);
   border-bottom:1px solid rgba(255,255,255,.04);
   transition:opacity .2s;
+  box-sizing:border-box;
 }
 .tide-row:last-child{border-bottom:none}
-.tide-row.is-current{
-  background:linear-gradient(90deg,rgba(0,229,195,.06),transparent);
-  border-bottom:1px solid rgba(0,229,195,.08);
-  border-top:1px solid rgba(0,229,195,.08);
-  border-radius:10px;margin:2px 0;padding:10px 6px;
+.tide-row.is-current,
+.tide-row.is-today{
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:18px;margin:2px 0;
 }
 .tide-row.is-dim{opacity:.15}
 .tr-icon{font-size:.75rem;text-align:center}
@@ -857,6 +861,7 @@ html.large-text .ci-desc{font-size:.65rem}
 html.large-text .ci-act-desc{font-size:.62rem}
 html.large-text .panel-title{font-size:.72rem}
 html.large-text #hero-glass{width:82%}
+html.large-text .tide-row{width:calc((100vw - 40px) * .82)}
 html.large-text #hero{margin-top:-10px}
 html.large-text #tide-panel{margin-top:-45px}
 html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
@@ -888,6 +893,13 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 .sheet.open{transform:translateY(0)}
 
 .sheet-handle,.auth-handle,.log-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:12px auto 0}
+.gps-nearest-btn{
+  display:block;width:calc(100% - 36px);margin:12px 18px 0;
+  padding:12px 14px;border:1px solid rgba(0,229,195,.3);border-radius:12px;
+  background:rgba(0,229,195,.08);color:#fff;font-size:.72rem;font-weight:600;
+  cursor:pointer;letter-spacing:.3px;text-align:center;
+}
+.gps-nearest-btn:active{background:rgba(0,229,195,.2)}
 .sheet-search-wrap{padding:12px 18px 0}
 .sheet-search{
   width:100%;box-sizing:border-box;
@@ -949,11 +961,7 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 .cal-day{padding:4px 2px 5px;border-radius:9px;font-size:.72rem;font-weight:700;cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center}
 .cal-tide-badge{font-size:.48rem;font-weight:700;letter-spacing:.2px;padding:2px 5px;border-radius:5px;line-height:1.3;opacity:.9}
 /* 물때 색상 클래스 */
-.tide-calm .cal-tide-badge{background:rgba(0,229,195,.18);color:#00e5c3}
-.tide-mid .cal-tide-badge{background:rgba(91,164,245,.18);color:#5ba4f5}
-.tide-strong .cal-tide-badge{background:rgba(61,126,245,.22);color:#7ab3f0}
-.tide-peak .cal-tide-badge{background:rgba(34,85,204,.25);color:#88aaff}
-.tide-jogeun .cal-tide-badge{background:rgba(0,229,195,.22);color:#00e5c3;font-size:.48rem}
+.tide-calm .cal-tide-badge,.tide-mid .cal-tide-badge,.tide-strong .cal-tide-badge,.tide-peak .cal-tide-badge,.tide-jogeun .cal-tide-badge{background:rgba(0,0,0,.3);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .cal-day.tide-calm{background:rgba(0,229,195,.04)}
 .cal-day.tide-mid{background:rgba(91,164,245,.04)}
 .cal-day.tide-strong{background:rgba(61,126,245,.05)}
@@ -1291,7 +1299,7 @@ body.zen-mode #app #header{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header>*{visibility:visible}
 body.zen-mode #app #hero-glass>.hero-top-row{visibility:visible;pointer-events:auto}
 body.zen-mode #app #header #wx-alert{visibility:visible}
-body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;transform:translateY(190px)}
+body.zen-mode #app #hero-glass{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;transform:translateY(130px)}
 body.zen-mode #gauge-rail{opacity:.7;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-dot{opacity:.7!important;pointer-events:none;transition:none!important}
 body.zen-mode #gauge-high-label{opacity:.8;pointer-events:none;transition:none!important}
@@ -1700,6 +1708,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
     </div>
     <div class="hdr-right">
       <div id="clock">--:--:--</div>
+      <div id="solar-date"></div>
       <div id="lunar" onclick="openMoonPopup()">음력 --월 --일 (-) 🌙</div>
       <div class="unit-switch" id="zen-switch" onclick="toggleZenMode()" role="button" aria-label="단순/디테일 모드 전환">
         <div class="unit-opt" data-val="simple">단순</div>
@@ -1759,41 +1768,44 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
         <div class="hg-divider"></div>
         <!-- 조류 -->
         <div id="ci-flip-wrap">
-          <div id="current-info" onclick="openTideGraph()">
-            <div class="ci-row">
+          <div id="current-info">
+            <div class="ci-row" onclick="toggleCiDetail(event)">
               <span class="ci-label">물살 세기</span>
               <div class="ci-bars" id="ci-bars">
                 <div class="ci-bar"></div><div class="ci-bar"></div>
                 <div class="ci-bar"></div><div class="ci-bar"></div><div class="ci-bar"></div>
               </div>
               <span class="ci-desc" id="ci-current-desc">--</span>
+              <span class="ci-chevron" id="ci-chevron">›</span>
             </div>
-            <div class="ci-divider"></div>
-            <div class="ci-act-row">
-              <span class="ci-act-icon">🤿</span>
-              <div class="ci-stars" id="ci-dive-stars">
-                <div class="ci-star"></div><div class="ci-star"></div>
-                <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+            <div id="ci-detail" class="ci-detail">
+              <div class="ci-divider"></div>
+              <div class="ci-act-row">
+                <span class="ci-act-icon">🤿</span>
+                <div class="ci-stars" id="ci-dive-stars">
+                  <div class="ci-star"></div><div class="ci-star"></div>
+                  <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+                </div>
+                <span class="ci-act-desc" id="ci-dive-desc">--</span>
               </div>
-              <span class="ci-act-desc" id="ci-dive-desc">--</span>
-            </div>
-            <div class="ci-act-row" id="ci-forage-row" style="display:none">
-              <span class="ci-act-icon">🦪</span>
-              <div class="ci-stars" id="ci-forage-stars">
-                <div class="ci-star"></div><div class="ci-star"></div>
-                <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+              <div class="ci-act-row" id="ci-forage-row" style="display:none">
+                <span class="ci-act-icon">🦪</span>
+                <div class="ci-stars" id="ci-forage-stars">
+                  <div class="ci-star"></div><div class="ci-star"></div>
+                  <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+                </div>
+                <span class="ci-act-desc" id="ci-forage-desc">--</span>
               </div>
-              <span class="ci-act-desc" id="ci-forage-desc">--</span>
-            </div>
-            <div class="ci-act-row">
-              <span class="ci-act-icon">🎣</span>
-              <div class="ci-stars" id="ci-fish-stars">
-                <div class="ci-star"></div><div class="ci-star"></div>
-                <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+              <div class="ci-act-row">
+                <span class="ci-act-icon">🎣</span>
+                <div class="ci-stars" id="ci-fish-stars">
+                  <div class="ci-star"></div><div class="ci-star"></div>
+                  <div class="ci-star"></div><div class="ci-star"></div><div class="ci-star"></div>
+                </div>
+                <span class="ci-act-desc" id="ci-fish-desc">--</span>
               </div>
-              <span class="ci-act-desc" id="ci-fish-desc">--</span>
+              <div style="text-align:center;font-size:.55rem;color:rgba(255,255,255,.25);margin-top:2px;cursor:pointer" onclick="openTideGraph()">탭하여 조석 그래프 보기</div>
             </div>
-            <div style="text-align:center;font-size:.55rem;color:rgba(255,255,255,.25);margin-top:2px">탭하여 조석 그래프 보기</div>
           </div>
         </div>
       </div>
@@ -1811,7 +1823,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
       <div class="panel-title" id="panel-title">오늘 물때</div>
       <div class="panel-upd" id="panel-upd"></div>
     </div>
-    <div class="tide-scroll" id="tide-list"></div>
+    <div class="tide-scroll" id="tide-list" onclick="if(!event.target.closest('.tide-alarm-btn'))openTideGraph()"></div>
     <div id="footer">
       <div class="credit" id="last-update"></div>
     </div>
@@ -1822,6 +1834,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
+  <button class="gps-nearest-btn" onclick="findNearestByGps()">📍 현재 위치에서 가장 가까운 바다 찾기</button>
   <!-- 검색 -->
   <div class="sheet-search-wrap">
     <input type="text" id="station-search" class="sheet-search" placeholder="관측소 검색" autocomplete="off" oninput="onStationSearch(this.value)">
@@ -1844,7 +1857,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
   <div class="sheet-step" id="step-region">
     <div class="sheet-title">지역 선택</div>
     <div class="region-grid">
-      <div class="region-item" onclick="selectRegion('jeju')"><span class="region-dot" style="color:#ff9f43">●</span><div><div class="region-label">제주</div><div class="region-count">7개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('jeju')"><span class="region-dot" style="color:#ff9f43">●</span><div><div class="region-label">제주</div><div class="region-count">6개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('west')"><span class="region-dot" style="color:#54a0ff">●</span><div><div class="region-label">서해</div><div class="region-count">19개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('south')"><span class="region-dot" style="color:#00d2d3">●</span><div><div class="region-label">남해</div><div class="region-count">7개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('east')"><span class="region-dot" style="color:#a29bfe">●</span><div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div></div>
@@ -1968,24 +1981,9 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
       <span class="drawer-item-text">달 위상 보기</span>
       <span class="drawer-item-arrow">›</span>
     </div>
-    <div class="drawer-item" onclick="toggleNightMode()">
-      <span class="drawer-item-icon">🌃</span>
-      <span class="drawer-item-text">밤 모드</span>
-      <span class="drawer-item-arrow" id="night-mode-status">OFF</span>
-    </div>
-    <div class="drawer-item" onclick="toggleDayMode()">
-      <span class="drawer-item-icon">☀️</span>
-      <span class="drawer-item-text">낮 모드</span>
-      <span class="drawer-item-arrow" id="day-mode-status">OFF</span>
-    </div>
     <div class="drawer-item" onclick="openTerms()">
       <span class="drawer-item-icon">📖</span>
       <span class="drawer-item-text">조석 용어 설명</span>
-      <span class="drawer-item-arrow">›</span>
-    </div>
-    <div class="drawer-item" onclick="closeDrawer();testPush1min()">
-      <span class="drawer-item-icon">🔔</span>
-      <span class="drawer-item-text">푸시 테스트 (1분 후)</span>
       <span class="drawer-item-arrow">›</span>
     </div>
     <div class="drawer-item" style="cursor:default">
@@ -2006,6 +2004,11 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
         <div class="unit-opt" data-val="m">m</div>
         <div class="unit-slider"></div>
       </div>
+    </div>
+    <div class="drawer-item" onclick="hardRefresh()">
+      <span class="drawer-item-icon">🔄</span>
+      <span class="drawer-item-text">최신버전 업데이트</span>
+      <span class="drawer-item-arrow">›</span>
     </div>
   </div>
   <div class="drawer-footer">
@@ -2268,6 +2271,22 @@ function starColor(stars){
   return '#3d7ef5';
 }
 
+/* 조류 세기 퍼센트 — 사리·조금 주기 sin² 모델 */
+function calcTidalPct(tn){
+  if(!tn)return 0;
+  let n=0;
+  const m=tn.match(/(\d+)물/);
+  if(m)n=parseInt(m[1]);
+  else if(tn==='조금')n=1;
+  else if(tn==='무시')n=2;
+  else return 0;
+  return Math.round(Math.sin(Math.PI*(n-1)/14)**2*100);
+}
+function toggleCiDetail(e){
+  e.stopPropagation();
+  document.getElementById('ci-detail').classList.toggle('open');
+  document.getElementById('ci-chevron').classList.toggle('open');
+}
 function renderCurrentInfo(tn){
   const wrap=document.getElementById('ci-flip-wrap');
   const el=document.getElementById('current-info');
@@ -2281,7 +2300,7 @@ function renderCurrentInfo(tn){
     bars[i].classList.toggle('on',i<d.bars);
     if(i<d.bars){bars[i].style.setProperty('--bar-color',bc.color);bars[i].style.setProperty('--bar-glow',bc.glow);}
   }
-  document.getElementById('ci-current-desc').textContent=Math.round(d.bars/5*100)+'%';
+  document.getElementById('ci-current-desc').textContent=calcTidalPct(tn)+'%';
 
   // 수중
   const diveStars=document.getElementById('ci-dive-stars').children;
@@ -3459,10 +3478,10 @@ async function updateLunarDisplay(){
   // 먼저 로컬 계산값으로 표시
   const ldLocal=getLunarDay(d),lmLocal=getLunarMonth(d);
   const msLocal=typeof lmLocal==='string'?lmLocal:lmLocal+'월';
-  document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 (${wd}) 🌙`;
+  document.getElementById('lunar').textContent=`음력 ${msLocal} ${ldLocal}일 🌙`;
 }
 function updateDateNav(){const d=getOffsetDate(selectedDateOffset);const ds=`${d.getMonth()+1}/${d.getDate()}`;const dl=selectedDateOffset===0?'오늘':selectedDateOffset>0?`+${selectedDateOffset}일`:`${selectedDateOffset}일`;document.getElementById('date-solar').textContent=ds;document.getElementById('date-label').textContent=dl;const dp=document.getElementById('date-pill-text');if(dp)dp.textContent=ds;const dpl=document.getElementById('date-pill-label');if(dpl)dpl.textContent=zenMode?(selectedDateOffset===0?'오늘':`${d.getMonth()+1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]})`):dl;const ll=document.getElementById('level-label-text');if(ll)ll.textContent=selectedDateOffset===0?'현재 물높이':selectedDateOffset>0?'예상 물높이':'같은시각 물높이';}
-function updateClock(){const n=new Date();(_elClock||(_elClock=$('clock'))).textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
+function updateClock(){const n=new Date();(_elClock||(_elClock=$('clock'))).textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');const sd=$('solar-date');if(sd)sd.textContent=(n.getMonth()+1)+'월 '+n.getDate()+'일 ('+WEEKDAYS[n.getDay()]+')';}
 let _clockInterval;if(!_clockInterval){_clockInterval=setInterval(updateClock,1000);}updateClock();
 
 /* 달 팝업 */
@@ -3520,6 +3539,7 @@ function onStationSearch(q){
   const results=[];
   // STATIONS 검색
   for(const[name,s]of Object.entries(STATIONS)){
+    if(HIDDEN_STATIONS.includes(name))continue;
     if(name.includes(q)||RI[s.region]?.label.includes(q)){
       results.push({name,region:s.region});
     }
@@ -3539,7 +3559,8 @@ function onStationSearch(q){
     return `<div class="station-item${isActive?' active':''}" onclick="pickStation('${r.name}')"><span class="station-item-dot" style="color:${clr}">●</span><span class="station-item-name">${r.name}</span><span style="font-size:.45rem;color:rgba(255,255,255,.25)">${label}</span></div>`;
   }).join('');
 }
-function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r);document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-dot" style="color:${info.color}">●</span><span class="station-item-name">${n}</span></div>`).join('');}
+const HIDDEN_STATIONS=['청굴물'];
+function selectRegion(r){document.getElementById('step-region').style.display='none';document.getElementById('step-station').style.display='block';const info=RI[r];document.getElementById('step-station-title').textContent=`${info.label} 관측소`;const names=Object.keys(STATIONS).filter(k=>STATIONS[k].region===r&&!HIDDEN_STATIONS.includes(k));document.getElementById('station-grid').innerHTML=names.map(n=>`<div class="station-item ${currentStation===n?'active':''}" onclick="pickStation('${n}')"><span class="station-item-dot" style="color:${info.color}">●</span><span class="station-item-name">${n}</span></div>`).join('');}
 function pickStation(n){closeSheet();_stationByGps=false;selectStation(n);}
 async function selectStation(name){
   document.getElementById('weather').classList.remove('show');
@@ -3548,7 +3569,7 @@ async function selectStation(name){
   const s=getStation(name);
   if(!s)return;
   const region=s.region,ri=RI[region];
-  document.getElementById('station-pill').innerHTML=zenMode?(_stationByGps?`📍 ${name}`:name):`<span class="sp-pin">${stationIcon()} </span>${ri.label} · ${name}`;
+  document.getElementById('station-pill').innerHTML=zenMode?name:`<span class="sp-pin">${stationIcon()} </span>${ri.label} · ${name}`;
   applyTheme(region,currentWeatherCode,currentWindSpeed);
   await Promise.all([loadTide(name),loadWeather(s.lat,s.lng)]);
 }
@@ -3709,7 +3730,7 @@ function renderTide(data,name,isToday,isRealToday){
     badge.className='tide-badge tb-'+getTideClass(tn).replace('tide-','');
   }else{badge.style.display='none';badge.className='tide-badge';}
   const _s=getStation(name),_ri=_s?RI[_s.region]:null;
-  document.getElementById('station-pill').innerHTML=zenMode?(_stationByGps?`📍 ${name}`:name):`<span class="sp-pin">${stationIcon()} </span>${_ri?_ri.label+' · ':''}${name}`;
+  document.getElementById('station-pill').innerHTML=zenMode?name:`<span class="sp-pin">${stationIcon()} </span>${_ri?_ri.label+' · ':''}${name}`;
 
   // min/max (현재 시각 기준 가장 가까운 간조/만조)
   const nm2=new Date().getHours()*60+new Date().getMinutes();
@@ -3874,7 +3895,7 @@ function renderTide(data,name,isToday,isRealToday){
         alarmBtn=`<button class="tide-alarm-btn${_aActive}" onclick="toggleTideAlarm(this,'${item.time}','${_atype}','${_aDateStr}')" title="30분 전 알림">🔔</button>`;
       }
     }
-    return `<div class="tide-row${isDim?' is-dim':''}">
+    return `<div class="tide-row${isDim?' is-dim':''}${!isDim?' is-today':''}">
       <div class="tr-icon" style="color:${color}">${isH?'▲':'▼'}</div>
       <div class="tr-body"><div class="tr-level">${item.level}cm${alarmBtn}${tag}</div><div class="tr-label">${isH?'만조':'간조'}</div></div>
       <div class="tr-time">${item.time}</div>
@@ -4280,7 +4301,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 
   const region=getStation(last).region,ri=RI[region];
   // 히어로 관측소 표시
-  document.getElementById('station-pill').innerHTML=zenMode?(_stationByGps?`📍 ${last}`:last):`<span class="sp-pin">${stationIcon()} </span>${ri.label} · ${last}`;
+  document.getElementById('station-pill').innerHTML=zenMode?last:`<span class="sp-pin">${stationIcon()} </span>${ri.label} · ${last}`;
   currentStation=last;
   applyTheme(region,0);
 
@@ -4567,6 +4588,23 @@ function checkAppUpdate(){
 setTimeout(checkAppUpdate,3000);
 
 /* ═══ 4. GPS 기반 자동 관측소 추천 ═══ */
+function findNearestByGps(){
+  if(!navigator.geolocation){showToast('GPS를 사용할 수 없어요');return;}
+  showToast('📍 위치 확인 중...');
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      const nearest=findNearestStation(pos.coords.latitude,pos.coords.longitude);
+      if(nearest&&nearest.name){
+        _stationByGps=true;
+        closeSheet();
+        showToast('📍 가장 가까운 관측소: '+nearest.name);
+        selectStation(nearest.name);
+      }else{showToast('관측소를 찾지 못했어요');}
+    },
+    function(){showToast('위치 권한을 허용해주세요');},
+    {timeout:8000,maximumAge:60000}
+  );
+}
 function tryGeolocate(){
   if(!navigator.geolocation)return;
   if(localStorage.getItem('lastStation'))return; // 이미 선택한 적 있으면 건너뜀
@@ -4888,7 +4926,14 @@ function toggleZenMode(){
   document.body.classList.toggle('zen-mode',zenMode);
   updateZenSwitch();
   updateDateNav();
+  updateStationPill();
   requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.style.removeProperty('--zen-t')));
+}
+function updateStationPill(){
+  const name=currentStation;if(!name)return;
+  const s=getStation(name),ri=s?RI[s.region]:null;
+  const pill=document.getElementById('station-pill');if(!pill)return;
+  pill.innerHTML=zenMode?name:`<span class="sp-pin">${stationIcon()} </span>${ri?ri.label+' · ':''}${name}`;
 }
 function updateZenSwitch(){
   const sw=document.getElementById('zen-switch');if(!sw)return;
@@ -5086,6 +5131,17 @@ function updateDrawerProfile(){
     if(loginLink)loginLink.style.display='block';
     if(logoutBtn)logoutBtn.style.display='none';
   }
+}
+async function hardRefresh(){
+  if(!confirm('캐시를 모두 삭제하고 최신 버전으로 새로고침합니다.\n계속할까요?'))return;
+  closeDrawer();
+  try{
+    const keys=await caches.keys();
+    await Promise.all(keys.map(k=>caches.delete(k)));
+    const regs=await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r=>r.unregister()));
+  }catch(e){}
+  location.reload(true);
 }
 function drawerLogout(){
   if(!confirm('로그아웃할까요?'))return;

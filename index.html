@@ -1743,7 +1743,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
       <button class="ob-btn" onclick="openSheet()">
         <span>📍</span> 관측소 선택하기
       </button>
-      <div class="ob-note">제주 · 서해 · 남해 · 동해 35개 관측소</div>
+      <div class="ob-note">제주 · 서해 · 남해 · 동해 37개 관측소</div>
       <div class="ob-features">
         🌊 실시간 물높이 · 간만조 시간<br>
         🎣 낚시·체험 적합도 안내<br>
@@ -1859,7 +1859,7 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
     <div class="sheet-title">지역 선택</div>
     <div class="region-grid">
       <div class="region-item" onclick="selectRegion('jeju')"><span class="region-dot" style="color:#ff9f43">●</span><div><div class="region-label">제주</div><div class="region-count">6개 관측소</div></div></div>
-      <div class="region-item" onclick="selectRegion('west')"><span class="region-dot" style="color:#54a0ff">●</span><div><div class="region-label">서해</div><div class="region-count">20개 관측소</div></div></div>
+      <div class="region-item" onclick="selectRegion('west')"><span class="region-dot" style="color:#54a0ff">●</span><div><div class="region-label">서해</div><div class="region-count">22개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('south')"><span class="region-dot" style="color:#00d2d3">●</span><div><div class="region-label">남해</div><div class="region-count">7개 관측소</div></div></div>
       <div class="region-item" onclick="selectRegion('east')"><span class="region-dot" style="color:#a29bfe">●</span><div><div class="region-label">동해</div><div class="region-count">3개 관측소</div></div></div>
     </div>
@@ -3179,7 +3179,9 @@ const STATIONS={
   '보령':{type:'single',obs:'DT_0025',lat:36.4167,lng:126.483,region:'west'},
   '서천마량':{type:'single',obs:'DT_0051',lat:36.0833,lng:126.633,region:'west'},
   '군산':{type:'single',obs:'DT_0018',lat:35.9833,lng:126.717,region:'west'},
+  '영광':{type:'single',obs:'DT_0068',scale:1.02,timeCorr:-8,lat:34.98,lng:126.42,region:'west'},
   '법성포':{type:'single',obs:'DT_0068',scale:0.97,timeCorr:-5,lat:35.17,lng:126.47,region:'west'},
+  '격포':{type:'single',obs:'DT_0068',scale:1.03,timeCorr:+4,tcH:0,tcL:+9,lat:35.58,lng:126.32,region:'west'},
   '위도':{type:'single',obs:'DT_0068',lat:35.6167,lng:126.3,region:'west'},
   '어청도':{type:'single',obs:'DT_0037',lat:36.1167,lng:125.983,region:'west'},
   '목포':{type:'single',obs:'DT_0035',scale:1.50,timeCorr:+12,tcH:+28,tcL:-5,lat:34.79,lng:126.38,region:'west'},

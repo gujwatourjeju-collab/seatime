@@ -4403,7 +4403,14 @@ document.addEventListener('keydown',function(e){
   if(openSheets.length){const last=openSheets[openSheets.length-1];const closeBtn=last.getAttribute('onclick');if(closeBtn)new Function(closeBtn)();return;}
 });
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/seatime/sw.js').then(reg=>{
+  // 새 SW 활성화되면 즉시 새로고침
+  let refreshing=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!refreshing){refreshing=true;window.location.reload();}
+  });
+  navigator.serviceWorker.register('/seatime/sw.js',{updateViaCache:'none'}).then(reg=>{
+    // 페이지 로드 시 즉시 업데이트 확인
+    reg.update().catch(()=>{});
     reg.addEventListener('updatefound',()=>{
       const nw=reg.installing;
       if(nw)nw.addEventListener('statechange',()=>{
@@ -4412,13 +4419,10 @@ if('serviceWorker' in navigator){
         }
       });
     });
-    // 새 SW 활성화되면 즉시 새로고침
-    let refreshing=false;
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-      if(!refreshing){refreshing=true;window.location.reload();}
-    });
-    // 주기적 업데이트 확인 (30분마다)
-    setInterval(()=>{reg.update().catch(()=>{});},1800000);
+    // waiting 중인 SW가 있으면 즉시 활성화
+    if(reg.waiting){reg.waiting.postMessage({action:'skipWaiting'});}
+    // 주기적 업데이트 확인 (10분마다)
+    setInterval(()=>{reg.update().catch(()=>{});},600000);
     // 페이지 포커스 시에도 업데이트 확인
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
     // 푸시 구독 자동 시도 (로그인 상태일 때)

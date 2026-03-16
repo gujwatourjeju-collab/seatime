@@ -393,7 +393,7 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 .loc-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .loc-arrow{font-size:.5rem;opacity:.3;flex-shrink:0}
 .date-nav{padding:0;overflow:hidden}
-.date-nav-btn{width:44px;height:100%;min-height:44px;flex-shrink:0;background:none;border:none;color:rgba(255,255,255,.35);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.date-nav-btn{width:44px;height:100%;min-height:44px;flex-shrink:0;background:none;border:none;color:rgba(255,255,255,.35);font-size:1.35rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .date-nav-btn:active{color:var(--accent)}
 .date-nav-ctr{flex:1;text-align:center;padding:7px 2px;cursor:pointer;min-width:0}
 .date-solar{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:.65rem;color:#fff}
@@ -678,7 +678,7 @@ body.zen-mode #zen-next-tide{display:block}
 #fav-star.active{opacity:1;filter:drop-shadow(0 0 6px rgba(255,210,0,.8));}
 #fav-star:active{transform:scale(1.35);}
 #level-wrap{display:inline-flex;align-items:flex-end;gap:2px}
-#tide-arrow{font-size:1.4rem;margin-left:4px;align-self:center;font-weight:700;transition:color .5s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+#tide-arrow{font-size:1.4rem;margin-left:4px;align-self:center;font-weight:700;transition:color .5s;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
 #hero-wx{
   display:none;flex-direction:row;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:2px 0;margin-bottom:10px;
@@ -724,7 +724,7 @@ body.zen-mode #zen-next-tide{display:block}
 #tide-panel{
   flex-shrink:0;max-height:46dvh;
   display:flex;flex-direction:column;
-  margin-top:-55px;
+  margin-top:-135px;
   padding:0 20px;
   position:relative;z-index:10;
 }
@@ -864,7 +864,7 @@ html.large-text .panel-title{font-size:.72rem}
 html.large-text #hero-glass{width:82%}
 html.large-text .tide-row{width:82%}
 html.large-text #hero{margin-top:-10px}
-html.large-text #tide-panel{margin-top:-45px}
+html.large-text #tide-panel{margin-top:-125px}
 html.large-text .tide-status-row{margin-top:4px;margin-bottom:6px}
 html.large-text #current-info{padding:8px 12px;gap:6px}
 html.large-text .ci-bar{width:17px;height:4px;border-radius:99px}
@@ -1756,6 +1756,8 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
         <!-- 날짜 + 관측소 -->
         <div class="hero-top-row">
           <div class="date-pill"><span class="dp-arr" onclick="shiftDate(-1)">‹</span><span id="date-pill-text" onclick="openCalendar()">--/--</span><span class="date-pill-label" id="date-pill-label" onclick="openCalendar()">오늘</span><span class="dp-arr" onclick="shiftDate(+1)">›</span></div>
+        </div>
+        <div class="hero-top-row" style="margin-top:-6px;margin-bottom:6px">
           <div class="station-pill" id="station-pill" onclick="openSheet()" role="button" aria-label="관측소 선택"></div><span id="fav-star" onclick="toggleFav()" role="button" aria-label="즐겨찾기">☆</span>
         </div>
         <!-- 날씨 -->
@@ -2479,7 +2481,7 @@ function drawTideGraph(){
     const isH=t.type==='high';
     // 점
     ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);
-    ctx.fillStyle=isH?'#7ab3f5':'#ff7a95';ctx.fill();
+    ctx.fillStyle=isH?'#1a5cff':'#ff7a95';ctx.fill();
     // 전 물때 대비 차이 (어제 마지막 물때 포함)
     let diffStr='';
     const prevTide=idx>0?todayTides[idx-1]:(ydLast||null);
@@ -2496,7 +2498,7 @@ function drawTideGraph(){
     ctx.lineWidth=1;ctx.stroke();
     // 시간
     ctx.font='bold 11px "Pretendard Variable",sans-serif';
-    ctx.fillStyle=isH?'#7ab3f5':'#ff7a95';
+    ctx.fillStyle=isH?'#1a5cff':'#ff7a95';
     ctx.fillText(t.time,px,boxY+12);
     // 수위
     ctx.font='600 9px "Pretendard Variable",sans-serif';
@@ -2912,33 +2914,34 @@ function getSunPosition(){
   const h=now.getHours()+(now.getMinutes()/60)+(now.getSeconds()/3600);
   const {rise,set}=getSunTimes();
 
-  // 일출 전/후 진입 여유 (화면 밖에서 시작)
-  const riseStart=rise-1.0; // 일출 1시간 전부터 화면 오른쪽 밖에서 진입
-  const setEnd=set+1.0;     // 일몰 1시간 후 화면 왼쪽 밖으로 사라짐
+  // 일출 전/후 진입 여유 (넉넉하게 — 완만한 호)
+  const riseStart=rise-1.5; // 일출 1.5시간 전부터 진입
+  const setEnd=set+1.5;     // 일몰 1.5시간 후 퇴장
 
   if(h<riseStart||h>setEnd) return null; // 화면 밖
 
   // 0~1 진행도 (일출~일몰)
   const progress=(h-riseStart)/(setEnd-riseStart);
 
-  // X: 오른쪽(110%)에서 왼쪽(-10%)으로
-  const x=110-progress*120; // 110% → -10%
+  // X: 오른쪽(105%)에서 왼쪽(-5%)으로 — 여유 있게
+  const x=105-progress*110; // 105% → -5%
 
-  // Y: 포물선 — 낮에 높고, 일출/일몰엔 낮게
-  // progress 0~1, 꼭짓점은 0.5(정오)
+  // Y: 완만한 호 — 낮에 높고, 일출/일몰엔 낮게
   const arc=Math.sin(progress*Math.PI); // 0→1→0
-  const yMin=8;   // 최고점
-  const yMax=38;  // 지평선 근처
+  const yMin=6;   // 최고점 (더 높이)
+  const yMax=32;  // 지평선 (살짝 올림 — 너무 아래까지 안 내려감)
   const y=yMax-(arc*(yMax-yMin));
 
   // 크기: 정오엔 크고 일출/몰엔 작게
-  const sizeMin=40, sizeMax=64;
+  const sizeMin=42, sizeMax=62;
   const size=sizeMin+arc*(sizeMax-sizeMin);
 
-  // 색: 일출/몰엔 주황/붉은빛, 정오엔 밝은 노랑
+  // 색: 거의 끝까지 밝은 노랑 유지, 지평선 아주 가까이서만 석양색
+  // colorArc: arc 0.15 이하에서만 주황 전환 시작
+  const colorArc=Math.min(1, arc*5);
   const r1=Math.round(255);
-  const g1=Math.round(140+arc*105); // 140→245→140
-  const b1=Math.round(20+arc*140);  // 20→160→20
+  const g1=Math.round(150+colorArc*95);  // 150→245→150
+  const b1=Math.round(30+colorArc*130);  // 30→160→30
   const glow1=`rgba(${r1},${g1},${b1},.6)`;
   const glow2=`rgba(${r1},${g1},${b1},.2)`;
   const core1=`rgba(255,${g1},${b1},1)`;
@@ -3762,8 +3765,8 @@ function renderTide(data,name,isToday,isRealToday){
     const lu=_elLevelUnit||(_elLevelUnit=$('level-unit'));if(lu)lu.textContent=unitM?'m':'cm';
     const nm=toMins(cur),nextTide=data.find(d=>!d.isCurrent&&toMins(d)>nm),isFalling=nextTide?.type==='low';
     const prevTide=[...data].reverse().find(d=>!d.isCurrent&&toMins(d)<=nm);
-    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;(_elStatusPill||(_elStatusPill=$('status-pill'))).textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';(_elTimeleftPill||(_elTimeleftPill=$('timeleft-pill'))).textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window.__app.nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=$('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#3d7fff':'#ff5c7c',nl=nextTide.type==='high'?'만조':'간조';znt.innerHTML=`<div><span style="color:${nc};text-shadow:0 0 8px rgba(0,0,0,.3)">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;}const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#ff5c7c':'#3d7fff';}}else{window.__app.nextTideLabel=null;const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta)ta.style.display='none';const znt=$('zen-next-tide');if(znt)znt.innerHTML='';}
-    document.getElementById('tide-panel').style.marginTop='-55px';
+    if(nextTide){const diff=toMins(nextTide)-nm,h=Math.floor(diff/60),m=diff%60;(_elStatusPill||(_elStatusPill=$('status-pill'))).textContent=isFalling?'↓ 빠지는 중':'↑ 차오르는 중';(_elTimeleftPill||(_elTimeleftPill=$('timeleft-pill'))).textContent=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 전`;window.__app.nextTideLabel=`${isFalling?'간조':'만조'} ${h>0?h+'시간 ':''}${m}분 남음`;const znt=$('zen-next-tide');if(znt){const nc=nextTide.type==='high'?'#ff5c7c':'#1a5cff',nl=nextTide.type==='high'?'만조':'간조';znt.innerHTML=`<div><span style="color:${nc};text-shadow:0 0 8px rgba(0,0,0,.3)">${nl}</span> ${h>0?h+'시간 ':''}${m}분 남음</div>`;}const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta){ta.style.display='';ta.textContent=isFalling?'▼':'▲';ta.style.color=isFalling?'#1a5cff':'#ff5c7c';}}else{window.__app.nextTideLabel=null;const ta=_elTideArrow||(_elTideArrow=$('tide-arrow'));if(ta)ta.style.display='none';const znt=$('zen-next-tide');if(znt)znt.innerHTML='';}
+    document.getElementById('tide-panel').style.marginTop='-135px';
     document.getElementById('hero').style.flex='1';
     document.getElementById('hero').style.paddingTop='0';
     document.getElementById('hero').style.marginTop='';
@@ -3885,7 +3888,7 @@ function renderTide(data,name,isToday,isRealToday){
         <div class="tr-time">${ntl?ntl:`<span>${ts}</span>`}</div>
       </div>`;
     }
-    const isH=item.type==='high',color=isH?'#7ab3f5':'#ff7a95',isDim=item.isYesterday||item.isNextDay;
+    const isH=item.type==='high',color=isH?'#ff7a95':'#1a5cff',isDim=item.isYesterday||item.isNextDay;
     const tag=item.isYesterday?'<span class="day-tag">어제</span>':item.isNextDay?'<span class="day-tag">내일</span>':'';
     // 알람 버튼: 현재 시각 이후 만조/간조 (오늘+미래)
     let alarmBtn='';
@@ -4405,12 +4408,17 @@ if('serviceWorker' in navigator){
       const nw=reg.installing;
       if(nw)nw.addEventListener('statechange',()=>{
         if(nw.state==='installed'&&navigator.serviceWorker.controller){
-          showToast('새 버전이 있어요. 새로고침 해주세요',4000);
+          nw.postMessage({action:'skipWaiting'});
         }
       });
     });
-    // 주기적 업데이트 확인 (1시간마다)
-    setInterval(()=>{reg.update().catch(()=>{});},3600000);
+    // 새 SW 활성화되면 즉시 새로고침
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(!refreshing){refreshing=true;window.location.reload();}
+    });
+    // 주기적 업데이트 확인 (30분마다)
+    setInterval(()=>{reg.update().catch(()=>{});},1800000);
     // 페이지 포커스 시에도 업데이트 확인
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{});});
     // 푸시 구독 자동 시도 (로그인 상태일 때)

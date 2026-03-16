@@ -1,4 +1,4 @@
-const CACHE = 'badangttae-v39';
+const CACHE = 'badangttae-v40';
 const API_CACHE = 'badangttae-api-v1';
 const ASSETS = [
   '/seatime/',
@@ -59,9 +59,17 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // 정적 자산: 캐시 우선, 없으면 네트워크
+  // 정적 자산: 네트워크 우선, 실패 시 캐시 fallback (강제 업데이트 보장)
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request).then(cached => cached || new Response('Offline', { status: 503 })))
   );
 });
 
@@ -95,9 +103,12 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// 새 버전 감지 → 클라이언트에 알림
+// 새 버전 감지 → 클라이언트에 알림 + 강제 활성화
 self.addEventListener('message', e => {
   if (e.data === 'CHECK_UPDATE') {
     e.source.postMessage({ type: 'SW_VERSION', version: CACHE });
+  }
+  if (e.data && e.data.action === 'skipWaiting') {
+    self.skipWaiting();
   }
 });

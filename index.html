@@ -29,6 +29,7 @@
   --text-dim:rgba(255,255,255,.22);
   --danger:#ff5e7a;
   --safe:#00e5c3;
+  --ad-h:0px;
 }
 
 html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-family:'Pretendard Variable','Pretendard','Noto Sans KR',sans-serif}
@@ -405,11 +406,11 @@ html,body{height:100dvh;overflow:hidden;background:var(--sky);color:#fff;font-fa
 #wx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);z-index:409}
 #wx-overlay.open{opacity:1;pointer-events:auto}
 #wx-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding:0 20px env(safe-area-inset-bottom);
   max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
@@ -831,7 +832,7 @@ body.zen-mode #zen-next-tide{display:block}
 
 /* 새로고침 버튼 */
 #refresh-btn{
-  position:fixed;bottom:calc(env(safe-area-inset-bottom,16px) + 14px);right:32px;
+  position:fixed;bottom:calc(env(safe-area-inset-bottom,16px) + 14px + var(--ad-h,0px));right:32px;
   width:40px;height:40px;border-radius:50%;
   background:rgba(6,15,30,.7);border:1px solid rgba(0,229,195,.25);
   backdrop-filter:blur(16px);color:var(--accent);cursor:pointer;
@@ -883,12 +884,12 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 .sheet-overlay{z-index:200}
 .sheet-overlay.open,#auth-overlay.open,#log-overlay.open,#loglist-overlay.open,#myinfo-overlay.open,#terms-overlay.open{opacity:1;pointer-events:auto}
 .sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:201;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:201;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.55);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;
   border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
 .sheet.open{transform:translateY(0)}
@@ -973,11 +974,11 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 /* ══ 로그인 시트 ══ */
 
 #auth-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.55);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
   max-height:85vh;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
@@ -1027,11 +1028,11 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 /* 기록 입력 시트 */
 
 #log-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.55);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
 #log-sheet.open{transform:translateY(0)}
@@ -1073,11 +1074,11 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 /* 기록 목록 시트 */
 
 #loglist-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   max-height:80vh;display:flex;flex-direction:column;
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -1270,11 +1271,11 @@ opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);-
 
 
 #myinfo-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
 #myinfo-sheet.open{transform:translateY(0)}
@@ -1386,11 +1387,11 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
 
 
 #terms-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:412;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:412;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   max-height:75vh;display:flex;flex-direction:column;
   padding-bottom:env(safe-area-inset-bottom);
 }
@@ -1458,11 +1459,11 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
 }
 #cp-overlay.open,#cpmap-overlay.open{opacity:1;pointer-events:auto}
 #cp-sheet,#cpmap-sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
+  position:fixed;bottom:var(--ad-h,0px);left:0;right:0;z-index:410;max-width:480px;margin:0 auto;
   background:rgba(12,20,36,.45);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border-radius:24px 24px 0 0;border-top:1px solid rgba(255,255,255,.12);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  transform:translateY(calc(100% + var(--ad-h,0px)));transition:transform .38s cubic-bezier(.4,0,.2,1);
   padding-bottom:env(safe-area-inset-bottom);
 }
 #cp-sheet.open,#cpmap-sheet.open{transform:translateY(0)}
@@ -1505,6 +1506,20 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
   color:#1a1a2e;padding:2px 6px;border-radius:8px;
   letter-spacing:.5px;margin-left:6px;
 }
+/* PRO 업그레이드 시트 */
+#pro-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;opacity:0;pointer-events:none;transition:opacity .3s}
+#pro-overlay.open{opacity:1;pointer-events:auto}
+#pro-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:linear-gradient(180deg,#0d1b2a 0%,#060f1e 100%);
+  border-radius:20px 20px 0 0;
+  transform:translateY(calc(100% + 10px));transition:transform .35s cubic-bezier(.32,.72,0,1);
+  max-height:85vh;overflow-y:auto;
+  border-top:1px solid rgba(255,215,0,.15);
+  padding-bottom:env(safe-area-inset-bottom,20px);
+  visibility:hidden;
+}
+#pro-sheet.open{transform:translateY(0);visibility:visible}
 /* 커스텀 포인트 맵 시트 */
 #cpmap-container{width:100%;height:280px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.05)}
 .cpmap-info{
@@ -1537,6 +1552,8 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
 #step-custom-points{display:none}
 
 </style>
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6779126825041569" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -2013,6 +2030,11 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
       <span class="drawer-item-text">최신버전 업데이트</span>
       <span class="drawer-item-arrow">›</span>
     </div>
+    <div class="drawer-item" id="drawer-pro-btn" onclick="closeDrawer();openProSheet()" style="display:none">
+      <span class="drawer-item-icon">⭐</span>
+      <span class="drawer-item-text" style="background:linear-gradient(135deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900">PRO 업그레이드</span>
+      <span class="drawer-item-arrow">›</span>
+    </div>
   </div>
   <div class="drawer-footer">
     <button class="drawer-logout-btn" id="drawer-logout-btn" onclick="drawerLogout()" style="display:none">로그아웃</button>
@@ -2059,6 +2081,32 @@ body.zen-mode #level-unit{font-size:1.2rem!important;font-weight:300!important;o
     </div>
     <div class="auth-err" id="myinfo-err"></div>
     <button class="log-save-btn" onclick="saveMyInfo()">저장</button>
+  </div>
+</div>
+
+<!-- PRO 업그레이드 시트 -->
+<div id="pro-overlay" onclick="closeProSheet()"></div>
+<div id="pro-sheet" onclick="event.stopPropagation()">
+  <div class="log-handle" style="margin-bottom:0"></div>
+  <div style="padding:24px 20px calc(28px + env(safe-area-inset-bottom,20px));text-align:center">
+    <div style="font-size:1.6rem;font-weight:900;margin-bottom:4px">
+      <span style="background:linear-gradient(135deg,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">PRO</span>
+    </div>
+    <div style="font-size:.68rem;color:rgba(255,255,255,.5);margin-bottom:20px">바당때의 모든 기능을 잠금 해제하세요</div>
+    <div id="pro-features" style="text-align:left;margin:0 auto;max-width:280px;font-size:.62rem;line-height:2.2;color:rgba(255,255,255,.7)">
+      <div>✓ 즐겨찾기 무제한</div>
+      <div>✓ 커스텀 포인트 5개</div>
+      <div>✓ 출조 기록 무제한 + 사진 첨부</div>
+      <div>✓ 푸시 알림 무제한</div>
+      <div>✓ 미래 물때 무제한</div>
+      <div>✓ 광고 제거</div>
+    </div>
+    <button id="pro-purchase-btn" onclick="purchasePro()" style="
+      width:100%;margin-top:20px;padding:14px;border-radius:12px;border:none;
+      background:linear-gradient(135deg,#ffd700,#ffaa00);color:#1a1a2e;
+      font-size:.72rem;font-weight:900;cursor:pointer;font-family:'Pretendard Variable',sans-serif;
+    ">PRO 구독하기</button>
+    <div style="font-size:.48rem;color:rgba(255,255,255,.25);margin-top:10px">월 ₩2,900 · 언제든 해지 가능</div>
   </div>
 </div>
 
@@ -2234,6 +2282,46 @@ const SUPABASE_URL='https://raykkfvchlfsjtlkbpji.supabase.co';
 const SUPABASE_KEY='sb_publishable_HV81jL04Eq8m52cMm-LhSw_FX9pSikn';
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const VAPID_PUBLIC='BOjGmff0uphqOEfgGYezZ_gal5j-ZFp_Fu1Q8JFAgbi0yH05efGAV5aQR3BJsefpLp0KnpRYZ12rt1RMQD-d7xs';
+
+/* ═══ Pro 구독 관리 ═══ */
+let _userPlan='free'; // 'free' | 'pro'
+function isPro(){return _userPlan==='pro';}
+
+async function loadUserPlan(userId){
+  // localStorage 캐시 먼저 (즉시 반영)
+  const cached=localStorage.getItem('plan_'+userId);
+  if(cached==='pro')_userPlan='pro';
+  // Supabase RPC로 최신 상태 확인
+  try{
+    const{data,error}=await supabaseClient.rpc('get_user_plan',{p_user_id:userId});
+    if(!error&&data){
+      _userPlan=data;
+      localStorage.setItem('plan_'+userId,data);
+    }
+  }catch(e){console.warn('plan 조회 실패',e);}
+  updateProUI();
+}
+
+function updateProUI(){
+  // Pro 뱃지 업데이트
+  document.querySelectorAll('.premium-badge').forEach(el=>{
+    el.style.display=isPro()?'none':'';
+  });
+  // 광고 표시/숨김
+  const ad=document.getElementById('ad-banner');
+  if(ad)ad.style.display=isPro()?'none':'';
+  document.documentElement.style.setProperty('--ad-h',isPro()?'0px':'58px');
+  // 드로어 PRO 버튼 (Free면 보이기)
+  const proBtn=document.getElementById('drawer-pro-btn');
+  if(proBtn)proBtn.style.display=isPro()?'none':'';
+}
+
+/* Pro 전용 기능 제한 상수 */
+const LIMITS={
+  free:{favorites:1, customPoints:0, logs:10, photos:false, pushAlarms:1, futureDays:1},
+  pro: {favorites:99,customPoints:5, logs:9999,photos:true, pushAlarms:99,futureDays:99}
+};
+function getLimit(key){return LIMITS[_userPlan][key];}
 
 /* ═══ 물때 데이터 ═══ */
 const TIDE_DATA={
@@ -3290,8 +3378,98 @@ async function loadCustomPoints(){
   }
 }
 
+function openProSheet(){
+  document.getElementById('pro-overlay').classList.add('open');
+  document.getElementById('pro-sheet').classList.add('open');
+}
+function closeProSheet(){
+  document.getElementById('pro-overlay').classList.remove('open');
+  document.getElementById('pro-sheet').classList.remove('open');
+}
+
+/* ═══ Capacitor 인앱결제 (Google Play Billing) ═══ */
+const PRODUCT_ID='pro_monthly';
+let _billingReady=false;
+
+// Capacitor Billing 플러그인 사용 가능 여부
+function hasBilling(){
+  try{return !!(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.PlayBilling);}catch(e){return false;}
+}
+
+async function initBilling(){
+  if(!hasBilling())return;
+  try{
+    const r=await Capacitor.Plugins.PlayBilling.initialize();
+    _billingReady=r&&r.ready;
+    console.log('PlayBilling 초기화:',_billingReady);
+  }catch(e){console.warn('PlayBilling 초기화 실패:',e);}
+}
+
+async function purchasePro(){
+  if(!currentUser){openAuth();showLoginNudge();return;}
+  if(!hasBilling()||!_billingReady){
+    showToast('Google Play 앱에서 구독할 수 있어요');return;
+  }
+  const btn=document.getElementById('pro-purchase-btn');
+  btn.textContent='처리 중...';btn.disabled=true;
+  try{
+    const result=await Capacitor.Plugins.PlayBilling.subscribe({productId:PRODUCT_ID});
+    if(result&&result.purchaseToken){
+      const verified=await verifyPurchase(result.purchaseToken);
+      if(verified){
+        _userPlan='pro';
+        localStorage.setItem('plan_'+currentUser.id,'pro');
+        updateProUI();
+        closeProSheet();
+        showToast('PRO 구독 완료!');
+      }else{
+        showToast('결제 검증에 실패했어요. 다시 시도해주세요');
+      }
+    }
+  }catch(e){
+    if(e.message&&e.message.includes('cancel')){/* 사용자 취소 */}
+    else{console.error('결제 오류:',e);showToast('결제 처리 중 오류가 발생했어요');}
+  }finally{
+    btn.textContent='PRO 구독하기';btn.disabled=false;
+  }
+}
+
+async function verifyPurchase(purchaseToken){
+  try{
+    const res=await fetch(SUPABASE_URL+'/functions/v1/verify-purchase',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_KEY},
+      body:JSON.stringify({user_id:currentUser.id,purchase_token:purchaseToken,product_id:PRODUCT_ID})
+    });
+    const data=await res.json();
+    return data?.verified===true;
+  }catch(e){console.error('검증 실패:',e);return false;}
+}
+
+// 앱 시작 시 기존 구독 상태 복원
+async function restoreSubscriptions(){
+  if(!hasBilling()||!_billingReady)return;
+  try{
+    const result=await Capacitor.Plugins.PlayBilling.restorePurchases();
+    if(result&&result.purchases){
+      for(const p of result.purchases){
+        if(p.productId===PRODUCT_ID&&p.purchaseToken){
+          await verifyPurchase(p.purchaseToken);
+        }
+      }
+    }
+  }catch(e){console.warn('구독 복원 실패:',e);}
+}
+
+// 초기화 — DOM 로드 후
+window.addEventListener('load',async()=>{
+  await initBilling();
+  if(_billingReady&&currentUser)restoreSubscriptions();
+});
+
 function openCustomPointSheet(){
   if(!currentUser){openAuth();showLoginNudge();return;}
+  if(!isPro()){openProSheet();showToast('커스텀 포인트는 PRO 전용 기능이에요');return;}
   document.getElementById('cp-overlay').classList.add('open');
   document.getElementById('cp-sheet').classList.add('open');
   renderCustomPointList();
@@ -3303,7 +3481,8 @@ function closeCustomPointSheet(){
 
 function renderCustomPointList(){
   const body=document.getElementById('cp-body');
-  const canAdd=customPoints.length<3;
+  const cpMax=getLimit('customPoints');
+  const canAdd=customPoints.length<cpMax;
   let h='';
   if(customPoints.length===0){
     h='<div class="cp-empty">등록된 커스텀 포인트가 없어요<br>지도에서 원하는 바다 위치를 선택해보세요</div>';
@@ -3319,7 +3498,7 @@ function renderCustomPointList(){
     });
   }
   h+=`<button class="cp-add-btn" onclick="openCustomPointMap()" ${canAdd?'':'disabled'}>+ 새 포인트 추가</button>`;
-  if(!canAdd)h+='<div class="cp-limit">최대 3개까지 등록할 수 있어요</div>';
+  if(!canAdd)h+='<div class="cp-limit">최대 '+cpMax+'개까지 등록할 수 있어요</div>';
   body.innerHTML=h;
 }
 
@@ -3330,7 +3509,8 @@ function pickCustomPoint(name){
 }
 
 function openCustomPointMap(){
-  if(customPoints.length>=3){showToast('최대 3개까지 등록 가능해요');return;}
+  const cpMax2=getLimit('customPoints');
+  if(customPoints.length>=cpMax2){showToast('최대 '+cpMax2+'개까지 등록 가능해요');return;}
   closeCustomPointSheet();
   document.getElementById('cpmap-overlay').classList.add('open');
   document.getElementById('cpmap-sheet').classList.add('open');
@@ -4179,6 +4359,7 @@ let _tideAC=null;
 function shiftDate(d){
   if(selectedDateOffset+d<-1)return;
   if(d>0&&selectedDateOffset+d>0&&!currentUser){openAuth();showLoginNudge();return;}
+  if(d>0&&selectedDateOffset+d>getLimit('futureDays')&&!isPro()){showToast('PRO로 업그레이드하면 더 먼 미래 물때를 볼 수 있어요');openProSheet();return;}
   selectedDateOffset+=d;updateLunarDisplay();updateDateNav();
   // 날짜 변경 즉시 테마 반영 (fetch 기다리지 않고)
   if(currentStation){const s=getStation(currentStation);applyTheme(s?.region,currentWeatherCode,currentWindSpeed);}
@@ -4189,6 +4370,7 @@ function calSelectDate(y,m,d){
   const t=new Date();t.setHours(0,0,0,0);
   const offset=Math.round((new Date(y,m,d)-t)/86400000);
   if(offset>0&&!currentUser){closeCalendar();openAuth();showLoginNudge();return;}
+  if(offset>getLimit('futureDays')&&!isPro()){closeCalendar();showToast('PRO로 업그레이드하면 더 먼 미래 물때를 볼 수 있어요');openProSheet();return;}
   selectedDateOffset=offset;updateLunarDisplay();updateDateNav();
   closeCalendar();
   if(currentStation){++_loadSeq;loadTide(currentStation);const s=getStation(currentStation);loadWeather(s.lat,s.lng);}
@@ -4511,6 +4693,12 @@ async function registerPushAlarm(dateStr,time,type){
   try{
     const{data:{user}}=await supabaseClient.auth.getUser();
     if(!user||!_pushSub)return;
+    // Free 유저 알림 수 제한
+    const pushMax=getLimit('pushAlarms');
+    if(!isPro()){
+      const{data:existing}=await supabaseClient.from('push_alarms').select('id',{count:'exact'}).eq('user_id',user.id).eq('sent',false);
+      if(existing&&existing.length>=pushMax){showToast('PRO로 업그레이드하면 알림을 더 등록할 수 있어요');openProSheet();return;}
+    }
     const[h,m]=time.split(':').map(Number);
     const[y,mo,d]=dateStr.split('-').map(Number);
     const target=new Date(y,mo-1,d,h,m,0,0);
@@ -4593,7 +4781,7 @@ function getCachedTide(name,dateStr){
 })();
 
 /* ═══ 인앱 업데이트 체크 ═══ */
-const MIN_APP_VERSION=7; // 이 숫자를 올리면 구버전 앱에 업데이트 배너 표시
+const MIN_APP_VERSION=10; // 이 숫자를 올리면 구버전 앱에 업데이트 배너 표시
 function checkAppUpdate(){
   const params=new URLSearchParams(location.search);
   const nv=parseInt(params.get('nv'));
@@ -4771,12 +4959,22 @@ function clearPhoto(){
 }
 async function saveLog(){
   if(!logSnapshot||!currentUser)return;
+  // Free 유저 기록 수 제한
+  const logKey='tidelog_'+currentUser.id;
+  const existLogs=JSON.parse(localStorage.getItem(logKey)||'[]');
+  const logMax=getLimit('logs');
+  if(existLogs.length>=logMax&&!isPro()){
+    showToast('PRO로 업그레이드하면 기록을 무제한 저장할 수 있어요');openProSheet();return;
+  }
   const memo=document.getElementById('log-memo').value.trim();
   const point=document.getElementById('log-point').value.trim();
   const entry={...logSnapshot,memo,point,user_id:currentUser.id};
   const btn=document.querySelector('.log-save-btn');
   btn.textContent='저장 중...';btn.disabled=true;
   // 사진 업로드 (있으면)
+  if(selectedPhotoBlob&&!getLimit('photos')){
+    showToast('사진 첨부는 PRO 전용 기능이에요');selectedPhotoBlob=null;
+  }
   if(selectedPhotoBlob){
     try{
       const ext='jpg';
@@ -5144,6 +5342,7 @@ function updateDrawerProfile(){
     if(emailEl)emailEl.textContent=currentUser.email;
     if(loginLink)loginLink.style.display='none';
     if(logoutBtn)logoutBtn.style.display='block';
+    updateProUI();
   }else{
     if(nameEl){nameEl.innerHTML='<img class="drawer-logo" src="https://raw.githubusercontent.com/gujwatourjeju-collab/seatime/main/logo.png">바당때';nameEl.classList.remove('clickable');nameEl.onclick=null;}
     if(emailEl)emailEl.textContent='';
@@ -5166,6 +5365,7 @@ function drawerLogout(){
   if(!confirm('로그아웃할까요?'))return;
   supabaseClient.auth.signOut().then(()=>{
     currentUser=null;
+    _userPlan='free';
     customPoints=[];
     const sub=document.getElementById('hdr-sub');
     if(sub)sub.textContent='로그인 해주세요';
@@ -5262,7 +5462,11 @@ async function toggleFav(){
     try{await supabaseClient.from('favorites').delete().eq('user_id',currentUser.id).eq('station',currentStation);}
     catch(e){safeLSSet('fav_'+currentUser.id,JSON.stringify(favorites));}
   }else{
-    if(favorites.length>=3){showToast('즐겨찾기는 최대 3개까지 가능해요');return;}
+    const favMax=getLimit('favorites');
+    if(favorites.length>=favMax){
+      if(!isPro()){showToast('PRO로 업그레이드하면 즐겨찾기를 더 추가할 수 있어요');openProSheet();return;}
+      showToast('즐겨찾기는 최대 '+favMax+'개까지 가능해요');return;
+    }
     favorites.push(currentStation);
     try{await supabaseClient.from('favorites').insert({user_id:currentUser.id,station:currentStation});}
     catch(e){safeLSSet('fav_'+currentUser.id,JSON.stringify(favorites));}
@@ -5535,6 +5739,7 @@ function onAuthSuccess(user){
   const _syncEl=document.getElementById('drawer-email');
   const _syncOrig=_syncEl?_syncEl.textContent:'';
   if(_syncEl)_syncEl.textContent='동기화 중...';
+  loadUserPlan(user.id);
   Promise.all([loadFavorites(),loadCustomPoints()]).then(()=>{
     if(_syncEl)_syncEl.textContent=_syncOrig||currentUser?.email||'';
   }).catch(()=>{
@@ -5576,5 +5781,42 @@ supabaseClient.auth.onAuthStateChange((_,session)=>{
     <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
   </svg>
 </button>
+
+<!-- AdSense 하단 배너 (Free 유저만) -->
+<div id="ad-banner" style="
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  text-align:center;background:rgba(0,0,0,.85);
+  padding:4px 0;height:50px;display:flex;align-items:center;justify-content:center;
+">
+  <ins class="adsbygoogle" id="ad-slot"
+    style="display:inline-block;width:320px;height:50px"
+    data-ad-client="ca-pub-6779126825041569"
+    data-ad-slot="XXXXXXXXXX"></ins>
+  <!-- AdSense 로드 전 플레이스홀더 -->
+  <div id="ad-placeholder" style="
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:.5rem;color:rgba(255,255,255,.2);letter-spacing:1px;
+  ">광고 영역</div>
+</div>
+<script>
+// 광고 배너 높이 즉시 반영
+document.documentElement.style.setProperty('--ad-h','58px');
+
+// Pro 유저면 광고 숨김
+function hideAdsForPro(){
+  if(typeof isPro==='function'&&isPro()){
+    var b=document.getElementById('ad-banner');
+    if(b)b.style.display='none';
+    document.documentElement.style.setProperty('--ad-h','0px');
+  }
+}
+
+// AdSense 슬롯 로드
+function loadAdSlot(){
+  try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+}
+setTimeout(loadAdSlot,2000);
+</script>
+
 </body>
 </html>

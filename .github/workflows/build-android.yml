@@ -52,7 +52,7 @@ jobs:
             "appName": "바당때",
             "webDir": "www",
             "server": {
-              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=9",
+              "url": "https://gujwatourjeju-collab.github.io/seatime/?nv=10",
               "cleartext": false
             },
             "plugins": {
@@ -107,8 +107,11 @@ jobs:
           sed -i '/release {/,/}/{s/minifyEnabled false/signingConfig signingConfigs.release\n                minifyEnabled false/}' app/build.gradle
 
           # Update version
-          sed -i 's/versionCode 1/versionCode 9/' app/build.gradle
-          sed -i 's/versionName "1.0"/versionName "1.0.8"/' app/build.gradle
+          sed -i 's/versionCode 1/versionCode 10/' app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.1.0"/' app/build.gradle
+
+          # Add Google Play Billing dependency
+          sed -i '/dependencies {/a\    implementation "com.android.billingclient:billing:7.1.1"' app/build.gradle
 
           # Set app theme colors (status bar, nav bar, splash)
           cat > app/src/main/res/values/styles.xml << 'STYLES'
@@ -160,6 +163,157 @@ jobs:
 
           # Lock portrait orientation
           sed -i 's/<activity/<activity android:screenOrientation="portrait"/' app/src/main/AndroidManifest.xml
+
+          # Add BILLING permission to AndroidManifest
+          sed -i '/<application/i\    <uses-permission android:name="com.android.vending.BILLING" />' app/src/main/AndroidManifest.xml
+
+          # Create PlayBilling Capacitor Plugin
+          PLUGIN_DIR="app/src/main/java/com/badangttae/app/plugins/billing"
+          mkdir -p $PLUGIN_DIR
+
+          cat > $PLUGIN_DIR/PlayBillingPlugin.java << 'BILLING_PLUGIN'
+          package com.badangttae.app.plugins.billing;
+
+          import android.util.Log;
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+          import com.getcapacitor.JSObject;
+          import com.getcapacitor.JSArray;
+          import com.android.billingclient.api.*;
+          import java.util.Arrays;
+          import java.util.List;
+
+          @CapacitorPlugin(name = "PlayBilling")
+          public class PlayBillingPlugin extends Plugin {
+              private static final String TAG = "PlayBilling";
+              private BillingClient billingClient;
+              private PluginCall pendingCall;
+
+              @PluginMethod
+              public void initialize(PluginCall call) {
+                  billingClient = BillingClient.newBuilder(getContext())
+                      .setListener((billingResult, purchases) -> {
+                          if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+                              for (Purchase purchase : purchases) {
+                                  handlePurchase(purchase);
+                              }
+                          } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+                              if (pendingCall != null) {
+                                  pendingCall.reject("cancel");
+                                  pendingCall = null;
+                              }
+                          } else {
+                              if (pendingCall != null) {
+                                  pendingCall.reject("error: " + billingResult.getDebugMessage());
+                                  pendingCall = null;
+                              }
+                          }
+                      })
+                      .enablePendingPurchases()
+                      .build();
+
+                  billingClient.startConnection(new BillingClientStateListener() {
+                      @Override
+                      public void onBillingSetupFinished(BillingResult billingResult) {
+                          JSObject ret = new JSObject();
+                          ret.put("ready", billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK);
+                          call.resolve(ret);
+                      }
+                      @Override
+                      public void onBillingServiceDisconnected() {
+                          Log.w(TAG, "Billing service disconnected");
+                      }
+                  });
+              }
+
+              @PluginMethod
+              public void subscribe(PluginCall call) {
+                  String productId = call.getString("productId");
+                  if (productId == null) { call.reject("missing productId"); return; }
+                  pendingCall = call;
+
+                  QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                      .setProductList(Arrays.asList(
+                          QueryProductDetailsParams.Product.newBuilder()
+                              .setProductId(productId)
+                              .setProductType(BillingClient.ProductType.SUBS)
+                              .build()))
+                      .build();
+
+                  billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
+                      if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK || productDetailsList.isEmpty()) {
+                          pendingCall.reject("product not found");
+                          pendingCall = null;
+                          return;
+                      }
+                      ProductDetails details = productDetailsList.get(0);
+                      List<ProductDetails.SubscriptionOfferDetails> offers = details.getSubscriptionOfferDetails();
+                      if (offers == null || offers.isEmpty()) {
+                          pendingCall.reject("no offers");
+                          pendingCall = null;
+                          return;
+                      }
+                      BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                          .setProductDetailsParamsList(Arrays.asList(
+                              BillingFlowParams.ProductDetailsParams.newBuilder()
+                                  .setProductDetails(details)
+                                  .setOfferToken(offers.get(0).getOfferToken())
+                                  .build()))
+                          .build();
+                      getActivity().runOnUiThread(() -> {
+                          billingClient.launchBillingFlow(getActivity(), flowParams);
+                      });
+                  });
+              }
+
+              @PluginMethod
+              public void restorePurchases(PluginCall call) {
+                  QueryPurchasesParams params = QueryPurchasesParams.newBuilder()
+                      .setProductType(BillingClient.ProductType.SUBS)
+                      .build();
+                  billingClient.queryPurchasesAsync(params, (billingResult, purchases) -> {
+                      JSObject ret = new JSObject();
+                      JSArray arr = new JSArray();
+                      if (purchases != null) {
+                          for (Purchase p : purchases) {
+                              JSObject obj = new JSObject();
+                              obj.put("productId", p.getProducts().get(0));
+                              obj.put("purchaseToken", p.getPurchaseToken());
+                              arr.put(obj);
+                          }
+                      }
+                      ret.put("purchases", arr);
+                      call.resolve(ret);
+                  });
+              }
+
+              private void handlePurchase(Purchase purchase) {
+                  if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                      // Acknowledge
+                      if (!purchase.isAcknowledged()) {
+                          AcknowledgePurchaseParams ackParams = AcknowledgePurchaseParams.newBuilder()
+                              .setPurchaseToken(purchase.getPurchaseToken())
+                              .build();
+                          billingClient.acknowledgePurchase(ackParams, billingResult -> {});
+                      }
+                      if (pendingCall != null) {
+                          JSObject ret = new JSObject();
+                          ret.put("purchaseToken", purchase.getPurchaseToken());
+                          ret.put("productId", purchase.getProducts().get(0));
+                          pendingCall.resolve(ret);
+                          pendingCall = null;
+                      }
+                  }
+              }
+          }
+          BILLING_PLUGIN
+
+          # Register plugin in MainActivity
+          MAIN_ACTIVITY="app/src/main/java/com/badangttae/app/MainActivity.java"
+          sed -i 's/import com.getcapacitor.BridgeActivity;/import com.getcapacitor.BridgeActivity;\nimport com.badangttae.app.plugins.billing.PlayBillingPlugin;/' $MAIN_ACTIVITY
+          sed -i '/super.onCreate/a\        registerPlugin(PlayBillingPlugin.class);' $MAIN_ACTIVITY
 
           # Set app label in strings.xml
           sed -i 's/<string name="app_name">.*<\/string>/<string name="app_name">바당때<\/string>/' app/src/main/res/values/strings.xml
